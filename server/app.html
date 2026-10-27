@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4F6FA">
+<title>Cell Counter</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 30 30%22%3E%3Crect width=%2230%22 height=%2230%22 rx=%228%22 fill=%22%232E4FB3%22/%3E%3Cpath d=%22M8 8h14v14H8z M15 8v14 M8 15h14%22 stroke=%22white%22 stroke-width=%221.6%22 fill=%22none%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F4F6FA; --surface:#FFFFFF; --ink:#10182B; --ink2:#3A4358; --muted:#5B6478; --faint:#8A93A6;
+  --line:#DDE2EC; --line2:#C3CAD8; --trypan:#2E4FB3; --trypan-d:#1F3A8A; --trypan-tint:#E7ECFA; --trypan-tint2:#EEF2FC;
+  --good:#0B6B4E; --good-bg:#E3F5EE; --good-line:#C9EBDD; --warn:#8A5300; --warn-bg:#FFF1DC; --bad:#A3361B; --bad-bg:#FDE8E2;
+  --manual:#E07A10; --night:#0F1522; --night2:#161E2E; --nline:#2A3449; --nmuted:#A9B2C6;
+  --f:'IBM Plex Sans Thai',system-ui,-apple-system,sans-serif; --m:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --pad:max(16px,env(safe-area-inset-left,0px));
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f);-webkit-text-size-adjust:100%}
+body{min-height:100dvh}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--trypan)}
+:focus-visible{outline:3px solid var(--trypan);outline-offset:2px}
+.mono{font-family:var(--m);font-variant-numeric:tabular-nums}
+.app{max-width:520px;margin:0 auto;min-height:100dvh;position:relative}
+.screen{min-height:100dvh;display:flex;flex-direction:column}
+.dark{background:var(--night);color:#EEF1F7}
+
+/* header */
+.top{display:flex;align-items:center;gap:8px;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 8px}
+.icon-btn{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:0;background:transparent;color:inherit}
+.icon-btn.ring{border:1px solid var(--nline)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--good);background:var(--good-bg)} .pill.off{color:var(--bad);background:var(--bad-bg)} .pill.blue{color:var(--trypan);background:var(--trypan-tint)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.title-col{flex:1;min-width:0;display:flex;flex-direction:column}
+.title-col b{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title-col span{font-size:12px;color:var(--muted)}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:1.5px solid var(--line2);background:var(--surface);color:var(--ink);font-size:15px;font-weight:600;text-decoration:none}
+.btn.primary{min-height:56px;border:0;border-radius:16px;background:var(--trypan);color:#fff;font-size:17px}
+.btn.primary:active{background:var(--trypan-d)}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.45;cursor:default}
+.btn[aria-disabled="true"]{pointer-events:none}
+.btn.split{justify-content:space-between;padding:0 18px}
+.btn .sub{font-size:13px;font-weight:500;opacity:.9;display:inline-flex;align-items:center;gap:4px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.foot{position:sticky;bottom:0;display:flex;flex-direction:column;gap:10px;padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);margin-top:auto;z-index:2}
+
+/* start */
+.start-main{display:flex;flex-direction:column;gap:18px;padding:6px 20px 24px}
+h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.legend{font-size:13px;font-weight:600;color:var(--ink2)}
+.field input{font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);width:100%;min-width:0}
+.field input:focus{border-color:var(--trypan);outline:none;box-shadow:0 0 0 3px var(--trypan-tint)}
+.field .hint{font-size:12px;color:var(--muted)}
+.field input.mono{font-family:var(--m)}
+.choice{display:flex;gap:12px;align-items:center;text-align:left;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface)}
+.choice[aria-pressed="true"]{border:2px solid var(--trypan);background:var(--trypan-tint2)}
+.choice b{display:block;font-size:16px}.choice span{font-size:12px;color:var(--muted)}
+.recent{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.recent a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid #EDF0F5;color:var(--ink);text-decoration:none}
+.recent a:first-child{border-top:0}
+.recent .nm{display:flex;flex-direction:column;min-width:0}
+.recent .nm b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent .nm span{font-size:12px;color:var(--muted)}
+.recent .v{font-family:var(--m);font-size:14px;font-weight:500;white-space:nowrap}
+.empty-note{font-size:13px;color:var(--muted);padding:14px}
+
+/* count */
+.slotnav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0 16px 12px}
+.slot{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:7px 9px;border-radius:12px;border:1px dashed var(--line2);background:transparent;min-width:0;min-height:52px}
+.slot small{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.slot .n{font-family:var(--m);font-size:15px;font-weight:600;color:var(--faint)}
+.slot.done{border:1px solid var(--good-line);background:#EAF7F1}.slot.done small{color:var(--good)}.slot.done .n{color:var(--ink)}
+.slot.cur{border:2px solid var(--trypan);background:var(--surface)}.slot.cur small{color:var(--trypan)}.slot.cur .n{color:var(--ink)}
+.stage{position:relative;margin:0 16px;border-radius:18px;overflow:hidden;background:var(--night);aspect-ratio:1/1}
+.stage canvas{display:block;width:100%;height:100%}
+.stage .badge{position:absolute;left:12px;bottom:12px;display:flex;align-items:baseline;gap:6px;background:rgba(12,18,32,.84);color:#fff;padding:8px 14px;border-radius:12px}
+.stage .badge b{font-family:var(--m);font-size:30px;font-weight:600;line-height:1}
+.stage .meta{position:absolute;right:12px;bottom:12px;font-size:12px;color:#fff;background:rgba(12,18,32,.84);padding:6px 10px;border-radius:10px}
+.stage .busy{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,18,32,.55);color:#fff;font-size:15px}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+.shoot{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;color:#EEF1F7}
+.shoot p{margin:0;font-size:14px;color:var(--nmuted);max-width:30ch}
+.shoot .btn.primary{padding:0 24px}
+.shoot .ghost{background:transparent;color:#fff;border-color:var(--nline)}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 20px 0;font-size:12px;color:var(--ink2)}
+.legend-row span{display:inline-flex;align-items:center;gap:6px}
+.ring-ai{width:10px;height:10px;border-radius:50%;border:2px solid #12936B}
+.ring-man{width:10px;height:10px;border-radius:50%;border:2px solid var(--manual)}
+.dash{width:14px;border-top:2px dashed #C99A1E}
+.notice{margin:10px 16px 0;padding:10px 12px;border-radius:12px;font-size:13px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.notice.warn{background:var(--warn-bg);color:var(--warn)}
+.notice.info{background:var(--trypan-tint);color:var(--trypan-d)}
+.notice button{border:0;background:transparent;color:inherit;font-weight:600;text-decoration:underline;padding:6px 2px;white-space:nowrap}
+
+/* review */
+.rv-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 10px}
+.rv-head .mid{display:flex;flex-direction:column;align-items:center;min-width:0}
+.rv-head .mid b{font-size:15px;font-weight:600}
+.rv-head .mid span{font-family:var(--m);font-size:12px;color:var(--nmuted)}
+.done-btn{min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:12px;border:0;background:#fff;color:var(--night);font-size:15px;font-weight:600}
+.rv-stage{position:relative;flex:1;min-height:300px;overflow:hidden;touch-action:none;background:#000}
+.rv-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:rgba(12,18,32,.85)}
+.zoom button{width:44px;height:44px;border:0;background:transparent;color:#fff;font-size:22px}
+.zoom button+button{border-top:1px solid var(--nline)}
+.zlabel{position:absolute;left:12px;top:12px;font-family:var(--m);font-size:12px;color:#fff;background:rgba(12,18,32,.85);padding:6px 10px;border-radius:10px}
+.hint-chip{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-size:12px;color:#fff;background:rgba(12,18,32,.85);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.rv-panel{display:flex;flex-direction:column;gap:14px;padding:14px 16px calc(18px + env(safe-area-inset-bottom,0px));background:var(--night2);border-top:1px solid var(--nline)}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:var(--night);padding:4px;border-radius:14px}
+.tools button{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:10px;background:transparent;color:var(--nmuted);font-size:12px}
+.tools button[aria-pressed="true"]{background:var(--manual);color:var(--ink);font-weight:600}
+.tools button[data-tool="frame"][aria-pressed="true"]{background:#FFD166}
+.tools button[data-tool="pan"][aria-pressed="true"]{background:#fff}
+.slider{display:flex;flex-direction:column;gap:4px}
+.slider .lab{display:flex;justify-content:space-between;font-size:13px}
+.slider .lab label{color:var(--nmuted)}
+.slider input{width:100%;accent-color:#7E9BFF;height:28px}
+.slider .ends{display:flex;justify-content:space-between;font-size:11px;color:#8590A8}
+.recount{min-height:40px;border-radius:10px;border:1px solid var(--nline);background:transparent;color:#fff;font-size:13px;font-weight:600;padding:0 12px}
+
+/* summary */
+.sum-main{display:flex;flex-direction:column;gap:14px;padding:4px 16px 16px}
+.sum-title{padding:0 4px}
+.sum-title h1{font-size:20px;line-height:1.3}
+.sum-title span{font-size:12px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.big{font-family:var(--m);font-size:38px;font-weight:600;line-height:1.1;color:var(--trypan)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:12px;background:var(--ground);min-width:0}
+.stat span{font-size:11px;color:var(--muted)}
+.stat b{font-family:var(--m);font-size:17px;font-weight:600}
+.stat.good{background:var(--good-bg)}.stat.good span,.stat.good b{color:var(--good)}
+.stat.warn{background:var(--warn-bg)}.stat.warn span,.stat.warn b{color:var(--warn)}
+.stat.bad{background:var(--bad-bg)}.stat.bad span,.stat.bad b{color:var(--bad)}
+.formula{font-family:var(--m);font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.chambers{font-size:13px;color:var(--ink2)}
+.thumbs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.thumbs.eight{grid-template-columns:repeat(4,minmax(0,1fr))}
+.thumbs figure{margin:0;position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1/1;background:var(--night)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs figcaption{position:absolute;left:6px;top:6px;font-size:12px;font-weight:600;color:#fff;background:rgba(12,18,32,.84);padding:3px 8px;border-radius:8px}
+.thumbs.eight figcaption{font-size:10px;padding:2px 6px}
+.thumbs .missing{display:flex;align-items:center;justify-content:center;color:var(--nmuted);font-size:12px}
+.small-actions{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;font-size:13px;padding-top:2px}
+.small-actions button{border:0;background:transparent;color:var(--trypan);font-weight:600;padding:8px 2px;text-decoration:underline}
+
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(92vw,460px);background:var(--ink);color:#fff;font-size:14px;padding:10px 16px;border-radius:12px;z-index:20;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.toast.err{background:var(--bad)}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);min-height:32px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ================= 1 · START ================= -->
+<section class="screen" id="sStart" aria-labelledby="hStart">
+  <header class="top" style="padding-left:20px;padding-right:20px;justify-content:space-between;flex-wrap:wrap;row-gap:8px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="#2E4FB3"/><path d="M8 8h14v14H8z M15 8v14 M8 15h14" stroke="#fff" stroke-width="1.6" fill="none"/></svg>
+      <div style="display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">Cell Counter</span><span style="font-size:12px;color:var(--muted)">Neubauer improved</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="lang" role="group" aria-label="Language / ภาษา"><button type="button" data-lang="th" aria-pressed="true">TH</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+      <span class="pill off" id="macPill" role="status"><span class="dot"></span><span id="macText"></span></span>
+    </div>
+  </header>
+  <div class="start-main">
+    <h1 id="hStart" data-i18n="startTitle"></h1>
+    <div class="notice info" id="resumeBox" hidden style="margin:0"><span id="resumeText"></span><button type="button" id="resumeBtn" data-i18n="resume"></button></div>
+    <div class="field">
+      <label for="runName" data-i18n="sampleName"></label>
+      <input id="runName" type="text" maxlength="120" autocomplete="off" data-i18n-ph="sampleNamePh">
+      <span class="hint" data-i18n="sampleNameHint"></span>
+    </div>
+    <div>
+      <div class="legend" id="layoutLegend" style="margin-bottom:8px" data-i18n="squaresCounted"></div>
+      <div class="row2" role="group" aria-labelledby="layoutLegend">
+        <button type="button" class="choice" data-layout="4" aria-pressed="true">
+          <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="4" fill="#fff" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="3" width="9" height="9" fill="currentColor"/><rect x="22" y="3" width="9" height="9" fill="currentColor"/><rect x="3" y="22" width="9" height="9" fill="currentColor"/><rect x="22" y="22" width="9" height="9" fill="currentColor"/></svg>
+          <span><b data-i18n="four"></b><span>1 chamber</span></span>
+        </button>
+        <button type="button" class="choice" data-layout="8" aria-pressed="false">
+          <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="15" height="32" rx="3" fill="#fff" stroke="currentColor" stroke-width="1.3"/><rect x="18" y="1" width="15" height="32" rx="3" fill="#fff" stroke="currentColor" stroke-width="1.3"/><rect x="3" y="3" width="4" height="4" fill="currentColor"/><rect x="10" y="3" width="4" height="4" fill="currentColor"/><rect x="3" y="27" width="4" height="4" fill="currentColor"/><rect x="10" y="27" width="4" height="4" fill="currentColor"/><rect x="20" y="3" width="4" height="4" fill="currentColor"/><rect x="27" y="3" width="4" height="4" fill="currentColor"/><rect x="20" y="27" width="4" height="4" fill="currentColor"/><rect x="27" y="27" width="4" height="4" fill="currentColor"/></svg>
+          <span><b data-i18n="eight"></b><span>2 chambers</span></span>
+        </button>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="df">Dilution factor</label><input id="df" class="mono" type="text" inputmode="decimal" value="2"><span class="hint" data-i18n="dfHint"></span></div>
+      <div class="field"><label for="cellSize" data-i18n="cellSizePx"></label><input id="cellSize" class="mono" type="text" inputmode="numeric" value="11"><span class="hint" data-i18n="cellSizeHint"></span></div>
+    </div>
+    <button type="button" class="btn primary" id="startBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      <span data-i18n="startCounting"></span>
+    </button>
+    <section style="display:flex;flex-direction:column;gap:8px;margin-top:4px" aria-labelledby="hRecent">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <h2 id="hRecent" style="margin:0;font-size:13px;font-weight:600;color:var(--ink2)" data-i18n="recentRounds"></h2>
+        <span style="display:flex;gap:14px;font-size:13px;font-weight:500"><a href="reports/runs.csv" style="text-decoration:none" data-i18n="allCsv"></a><a href="old" style="text-decoration:none;color:var(--muted)" data-i18n="oldPage"></a></span>
+      </div>
+      <div class="recent" id="recent"><p class="empty-note" data-i18n="loading"></p></div>
+    </section>
+  </div>
+</section>
+
+<!-- ================= 2 · COUNT ================= -->
+<section class="screen" id="sCount" hidden data-i18n-aria="countScreen">
+  <header class="top">
+    <button type="button" class="icon-btn" id="countBack" data-i18n-aria="backToStart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="cName"></b><span id="cMeta"></span></div>
+    <span class="pill blue mono" id="cProg"></span>
+  </header>
+  <nav class="slotnav" id="slotNav" data-i18n-aria="squares"></nav>
+  <section class="stage" id="stage" data-i18n-aria="stageLabel">
+    <canvas id="countCv" width="800" height="800" aria-hidden="true"></canvas>
+    <div class="shoot" id="shootBox">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      <b id="shootTitle" style="font-size:18px"></b>
+      <p data-i18n="shootHint"></p>
+      <label class="btn primary" for="camIn" data-i18n="takePhoto"></label>
+      <label class="btn ghost" for="pickIn" data-i18n="fromAlbum"></label>
+    </div>
+    <div class="badge" id="cBadge" hidden><b id="cCount">0</b><span data-i18n="cells"></span></div>
+    <span class="meta" id="cTime" hidden></span>
+    <div class="busy" id="cBusy" hidden><div class="spin"></div><span id="cBusyText"></span></div>
+  </section>
+  <input id="camIn" class="visually-hidden" type="file" accept="image/*" capture="environment">
+  <input id="pickIn" class="visually-hidden" type="file" accept="image/*">
+  <div class="legend-row" id="cLegend" hidden>
+    <span><span class="ring-ai"></span><span data-i18n="legendAi"></span></span><span><span class="ring-man"></span><span data-i18n="legendManual"></span></span><span><span class="dash"></span><span data-i18n="legendFrame"></span></span>
+  </div>
+  <div class="notice warn" id="roiNote" hidden><span data-i18n="noFrame"></span><button type="button" id="roiFix" data-i18n="setFrame"></button></div>
+  <div class="notice info" id="roiReuse" hidden><span data-i18n="frameReused"></span><button type="button" id="roiCheck" data-i18n="checkFrame"></button></div>
+  <footer class="foot">
+    <div class="row2">
+      <button type="button" class="btn" id="toReview" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span data-i18n="review"></span></button>
+      <label class="btn" for="camIn" id="reshoot" aria-disabled="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-i18n="retake"></span></label>
+    </div>
+    <button type="button" class="btn primary split" id="saveSlot" disabled><span id="saveMain"></span><span class="sub" id="saveNext"></span></button>
+  </footer>
+</section>
+
+<!-- ================= 3 · REVIEW ================= -->
+<section class="screen dark" id="sReview" hidden data-i18n-aria="review">
+  <header class="rv-head">
+    <button type="button" class="icon-btn ring" id="undoBtn" data-i18n-aria="undo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+    <div class="mid"><b id="rTitle"></b><span id="rTally"></span></div>
+    <button type="button" class="done-btn" id="rDone" data-i18n="done"></button>
+  </header>
+  <div class="rv-stage" id="rvStage">
+    <canvas id="rvCv" data-i18n-aria="rvCanvas"></canvas>
+    <span class="zlabel mono" id="zLabel">1×</span>
+    <span class="zlabel" id="rBusy" hidden style="left:auto;right:64px;top:12px" data-i18n="recounting"></span>
+    <div class="zoom"><button type="button" id="zIn" data-i18n-aria="zoomIn">+</button><button type="button" id="zOut" data-i18n-aria="zoomOut">−</button></div>
+    <span class="hint-chip" id="rHint"></span>
+  </div>
+  <div class="rv-panel">
+    <div class="tools" role="group" data-i18n-aria="tools">
+      <button type="button" data-tool="pan" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><span data-i18n="toolPan"></span></button>
+      <button type="button" data-tool="add" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg><span data-i18n="toolAdd"></span></button>
+      <button type="button" data-tool="erase" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></svg><span data-i18n="toolErase"></span></button>
+      <button type="button" data-tool="frame" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/></svg><span data-i18n="toolFrame"></span></button>
+    </div>
+    <div class="slider">
+      <div class="lab"><label for="thr" data-i18n="strictness"></label><span class="mono" id="thrOut">0.85</span></div>
+      <input id="thr" type="range" min="40" max="97" value="85">
+      <div class="ends"><span data-i18n="strictLow"></span><span data-i18n="strictHigh"></span></div>
+    </div>
+    <div class="slider">
+      <div class="lab"><label for="diam" data-i18n="cellSize"></label><span class="mono" id="diamOut">11 px</span></div>
+      <input id="diam" type="range" min="4" max="60" value="11">
+      <div class="ends"><span data-i18n="sizeHint"></span><button type="button" class="recount" id="recount" hidden data-i18n="recountSize"></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4 · SUMMARY ================= -->
+<section class="screen" id="sSummary" hidden aria-labelledby="sName">
+  <header class="top">
+    <button type="button" class="icon-btn" id="sumBack" data-i18n-aria="backToSquares"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <span style="font-size:15px;font-weight:600" data-i18n="summary"></span>
+    <span class="pill ok" id="sDone" style="margin-left:auto"></span>
+  </header>
+  <div class="sum-main">
+    <div class="sum-title"><h1 id="sName"></h1><span id="sWhen"></span></div>
+    <section class="card" data-i18n-aria="results">
+      <div style="display:flex;flex-direction:column;gap:2px"><span class="eyebrow">CELLS / mL</span><span class="big" id="sPerMl">–</span></div>
+      <div class="stats">
+        <div class="stat"><span data-i18n="meanPerSquare"></span><b id="sMean">–</b></div>
+        <div class="stat"><span>SD</span><b id="sSd">–</b></div>
+        <div class="stat" id="sCvBox"><span id="sCvLab">CV</span><b id="sCv">–</b></div>
+      </div>
+      <span class="chambers" id="sCh" hidden></span>
+      <span class="formula" id="sFormula"></span>
+    </section>
+    <section class="thumbs" id="sThumbs" data-i18n-aria="squareImages"></section>
+    <div class="small-actions"><button type="button" id="sendTrain" data-i18n="sendTraining"></button></div>
+  </div>
+  <footer class="foot">
+    <button type="button" class="btn primary" id="reportBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg><span id="reportLab"></span></button>
+    <div class="row2"><a class="btn" href="reports/runs.csv" data-i18n="exportCsv"></a><button type="button" class="btn" id="nextRun" data-i18n="nextRound"></button></div>
+  </footer>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+
+/* ---------------- language ---------------- */
+const I18N={
+ th:{
+  startTitle:'เริ่มรอบการนับใหม่',resume:'นับต่อ',sampleName:'ชื่อตัวอย่าง',sampleNamePh:'เช่น Hep-55.1C + pinocembrin 50 µM 24 h',sampleNameHint:'ใช้เป็นชื่อรายงานและไฟล์',
+  squaresCounted:'จำนวนช่องที่นับ',four:'4 ช่อง',eight:'8 ช่อง',dfHint:'trypan blue 1:1 = 2',cellSizePx:'ขนาดเซลล์ในภาพ (px)',cellSizeHint:'ปรับละเอียดได้ตอนตรวจแก้',
+  startCounting:'เริ่มนับ',recentRounds:'รอบล่าสุด',allCsv:'CSV ทุกรอบ',oldPage:'หน้าเดิม',loading:'กำลังโหลด…',
+  countScreen:'นับช่อง',backToStart:'กลับหน้าเริ่มรอบ',squares:'ช่องที่นับ',stageLabel:'ภาพช่องที่กำลังนับ',
+  shootHint:'ให้ 1 large square อยู่เต็มภาพ โฟกัสให้ขอบเซลล์คม',takePhoto:'ถ่ายรูป',fromAlbum:'เลือกจากอัลบั้ม',cells:'เซลล์',
+  legendAi:'CellNet เจอ',legendManual:'เพิ่มเอง',legendFrame:'ขอบช่อง (กฎขอบ)',noFrame:'ยังไม่ได้ตั้งกรอบช่อง จึงยังไม่ใช้กฎขอบ',setFrame:'ตั้งกรอบ',
+  frameReused:'ใช้กรอบเดียวกับช่องก่อนหน้า',checkFrame:'ตรวจกรอบ',review:'ตรวจแก้',retake:'ถ่ายใหม่',undo:'ย้อนการแก้ล่าสุด',done:'เสร็จ',
+  rvCanvas:'ภาพขยาย แตะเพื่อแก้จุดเซลล์',recounting:'กำลังนับใหม่…',zoomIn:'ซูมเข้า',zoomOut:'ซูมออก',tools:'เครื่องมือ',
+  toolPan:'เลื่อน',toolAdd:'เพิ่มเซลล์',toolErase:'ลบ',toolFrame:'กรอบช่อง',strictness:'ความเข้มงวด',strictLow:'นับมากขึ้น',strictHigh:'เข้มขึ้น ตัด noise',
+  cellSize:'ขนาดเซลล์',sizeHint:'ให้วงเท่าเซลล์จริง',recountSize:'นับใหม่ด้วยขนาดนี้',backToSquares:'กลับไปช่องที่นับ',summary:'สรุปรอบ',results:'ผลลัพธ์',
+  meanPerSquare:'เฉลี่ย/ช่อง',squareImages:'ภาพแต่ละช่อง',sendTraining:'ส่งเป็นข้อมูลฝึก CellNet',exportCsv:'ส่งออก CSV',nextRound:'รอบถัดไป',
+  tl:'บนซ้าย',tr:'บนขวา',bl:'ล่างซ้าย',br:'ล่างขวา',
+  connecting:'กำลังเชื่อมต่อ',offline:h=>`${h} ออฟไลน์`,noRounds:'ยังไม่มีรอบที่บันทึก',unnamed:'ไม่ได้ตั้งชื่อ',today:'วันนี้',recentFail:'โหลดรอบล่าสุดไม่ได้',
+  resumeText:(n,k,N)=>`มีรอบที่ค้างอยู่: "${n}" (${k}/${N} ช่อง)`,needName:'ตั้งชื่อตัวอย่างก่อนเริ่ม',badDf:'Dilution factor ต้องเป็นตัวเลขมากกว่า 0',badSize:'ขนาดเซลล์ต้องอยู่ระหว่าง 4–60 px',
+  perSquare:df=>`DF ${df} · 0.1 µL ต่อช่อง`,discard:'ภาพนี้ยังไม่ได้บันทึก แตะอีกครั้งเพื่อทิ้ง',shootTitle:(name,again)=>`${again?'ถ่ายใหม่ · ':'ถ่าย'}ช่อง${name}`,
+  saveThis:'บันทึกช่องนี้',saveN:(n,name)=>`บันทึก ${n} · ${name}`,nextIs:name=>`ต่อไป ${name}`,toSummary:'ไปสรุปรอบ',secs:s=>`${s} วิ`,
+  badImage:'เปิดรูปนี้ไม่ได้ ลองไฟล์ JPG หรือ PNG',noServer:h=>`ติดต่อ ${h} ไม่ได้ ตรวจว่าเปิดเซิร์ฟเวอร์อยู่ แล้วกดถ่ายใหม่`,counting:h=>`กำลังนับบน ${h}…`,
+  countFail:m=>`นับไม่สำเร็จ (${m}) ถ้าเปิดหน้านี้ไว้นาน ลองรีเฟรชเพื่อเข้าสู่ระบบใหม่`,savedGoNext:name=>`บันทึกแล้ว · ถ่ายช่อง${name}ต่อได้เลย`,reviewOf:name=>`ตรวจแก้ · ${name}`,
+  hintPan:'ลากเพื่อเลื่อนภาพ · สองนิ้วเพื่อซูม',hintAdd:'แตะเพื่อเพิ่มเซลล์ · สองนิ้วเพื่อซูม',hintErase:'แตะวงเพื่อลบ · สองนิ้วเพื่อซูม',hintFrame:'ลากให้ทับกึ่งกลางเส้นขอบ large square',
+  nothingUndo:'ไม่มีอะไรให้ย้อน',cvGood:'CV · ดี',cvOk:'CV · พอใช้',cvBad:'CV · ควรนับซ้ำ',complete:(n,N)=>`ครบ ${n}/${N}`,partial:(n,N)=>`นับแล้ว ${n}/${N}`,
+  chambers:(a,b,d)=>`Chamber A ${a} · Chamber B ${b} เซลล์/ช่อง${d?` (ต่างกัน ${d}%)`:''}`,notCounted:'ยังไม่นับ',open:name=>`เปิด${name}`,nCells:(name,n)=>`${name} ${n} เซลล์`,
+  saveReport:'บันทึกรายงาน',building:'กำลังสร้างรายงาน…',savedAgain:'บันทึกแล้ว · บันทึกอีกครั้ง',downloadedOnly:h=>`ดาวน์โหลดแล้ว (${h} ไม่ได้เก็บ)`,
+  reportSaved:h=>`เก็บรายงานบน ${h} แล้ว และดาวน์โหลดสำเนาลงเครื่องนี้`,reportLocal:h=>`${h} เก็บรายงานไม่สำเร็จ ดาวน์โหลดลงเครื่องนี้แทน`,reportFail:m=>`สร้างรายงานไม่สำเร็จ: ${m}`,
+  trainSent:n=>`ส่งข้อมูลฝึก ${n} ช่องแล้ว ขอบคุณครับ`,trainFail:'ส่งข้อมูลฝึกไม่สำเร็จ',unsavedRound:'รอบนี้ยังไม่ได้บันทึกรายงาน แตะอีกครั้งเพื่อเริ่มรอบใหม่',
+  months:['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],
+  rpPerSquare:vol=>`${vol} mL ต่อช่อง`,rpCounter:c=>`ตัวนับ: ${c} + ตรวจแก้ด้วยตา`,rpNotCounted:'ไม่ได้นับ',rpCells:n=>`${n} เซลล์`,
+  rpCols:['ช่อง','เซลล์ที่นับ','AI ตรวจพบ','เพิ่มเอง','ลบออก'],rpMean:(m,s,cv,n,N)=>`Mean ± SD: ${m} ± ${s} เซลล์/ช่อง   ·   CV ${cv}   ·   n = ${n}/${N}`,
+  rpMethod:e=>`นับ ${e?'8 large squares มุม (2 chambers × 4)':'4 large squares มุม'} (ช่องละ 0.1 µL) · นับเซลล์ที่ทับเส้นบน/ซ้าย ไม่นับเส้นล่าง/ขวา · cells/mL = ค่าเฉลี่ยทุกช่อง × DF ÷ ปริมาตรต่อช่อง`,
+  rpLegend:'วงเขียว = CellNet ตรวจพบ · วงส้ม = เพิ่มด้วยมือ · กรอบเหลือง = ขอบ large square'
+ },
+ en:{
+  startTitle:'Start a new count',resume:'Continue',sampleName:'Sample name',sampleNamePh:'e.g. Hep-55.1C + pinocembrin 50 µM 24 h',sampleNameHint:'Used for the report and file names',
+  squaresCounted:'Squares to count',four:'4 squares',eight:'8 squares',dfHint:'trypan blue 1:1 = 2',cellSizePx:'Cell size in photo (px)',cellSizeHint:'Fine-tune it while reviewing',
+  startCounting:'Start counting',recentRounds:'Recent rounds',allCsv:'All rounds (CSV)',oldPage:'Classic page',loading:'Loading…',
+  countScreen:'Count a square',backToStart:'Back to start',squares:'Squares',stageLabel:'Photo of the square being counted',
+  shootHint:'Fill the photo with one large square and focus on the cell edges',takePhoto:'Take photo',fromAlbum:'Choose from album',cells:'cells',
+  legendAi:'Found by CellNet',legendManual:'Added by you',legendFrame:'Square border (edge rule)',noFrame:'No square border set, so the edge rule is off',setFrame:'Set border',
+  frameReused:'Using the border from the previous square',checkFrame:'Check border',review:'Review',retake:'Retake',undo:'Undo last edit',done:'Done',
+  rvCanvas:'Zoomed photo. Tap to edit cell marks',recounting:'Recounting…',zoomIn:'Zoom in',zoomOut:'Zoom out',tools:'Tools',
+  toolPan:'Move',toolAdd:'Add cell',toolErase:'Remove',toolFrame:'Border',strictness:'Strictness',strictLow:'Count more',strictHigh:'Stricter, less noise',
+  cellSize:'Cell size',sizeHint:'Match the rings to real cells',recountSize:'Recount at this size',backToSquares:'Back to squares',summary:'Round summary',results:'Results',
+  meanPerSquare:'Mean / square',squareImages:'Square images',sendTraining:'Send as CellNet training data',exportCsv:'Export CSV',nextRound:'Next round',
+  tl:'Top left',tr:'Top right',bl:'Bottom left',br:'Bottom right',
+  connecting:'Connecting',offline:h=>`${h} offline`,noRounds:'No saved rounds yet',unnamed:'Untitled',today:'Today',recentFail:'Couldn’t load recent rounds',
+  resumeText:(n,k,N)=>`Unfinished round: "${n}" (${k}/${N} squares)`,needName:'Name the sample first',badDf:'Dilution factor must be a number above 0',badSize:'Cell size must be 4–60 px',
+  perSquare:df=>`DF ${df} · 0.1 µL per square`,discard:'This photo isn’t saved. Tap again to discard it',shootTitle:(name,again)=>`${again?'Retake ':'Photograph '}${name}`,
+  saveThis:'Save this square',saveN:(n,name)=>`Save ${n} · ${name}`,nextIs:name=>`Next: ${name}`,toSummary:'Go to summary',secs:s=>`${s} s`,
+  badImage:'Can’t open this image. Try a JPG or PNG',noServer:h=>`Can’t reach the ${h}. Check that the server is running, then retake`,counting:h=>`Counting on the ${h}…`,
+  countFail:m=>`Counting failed (${m}). If this page has been open a long time, reload it to sign in again`,savedGoNext:name=>`Saved. Photograph ${name} next`,reviewOf:name=>`Review · ${name}`,
+  hintPan:'Drag to move · pinch to zoom',hintAdd:'Tap to add a cell · pinch to zoom',hintErase:'Tap a ring to remove it · pinch to zoom',hintFrame:'Drag along the middle of the large-square border lines',
+  nothingUndo:'Nothing to undo',cvGood:'CV · good',cvOk:'CV · fair',cvBad:'CV · recount',complete:(n,N)=>`Done ${n}/${N}`,partial:(n,N)=>`Counted ${n}/${N}`,
+  chambers:(a,b,d)=>`Chamber A ${a} · Chamber B ${b} cells/square${d?` (${d}% apart)`:''}`,notCounted:'Not counted',open:name=>`Open ${name}`,nCells:(name,n)=>`${name}, ${n} cells`,
+  saveReport:'Save report',building:'Building report…',savedAgain:'Saved · save again',downloadedOnly:h=>`Downloaded (not stored on the ${h})`,
+  reportSaved:h=>`Report stored on the ${h} and a copy downloaded here`,reportLocal:h=>`The ${h} couldn’t store the report, so it was downloaded here instead`,reportFail:m=>`Couldn’t build the report: ${m}`,
+  trainSent:n=>`Sent ${n} square${n>1?'s':''} as training data. Thank you!`,trainFail:'Couldn’t send training data',unsavedRound:'This round’s report isn’t saved. Tap again to start a new round',
+  months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+  rpPerSquare:vol=>`${vol} mL per square`,rpCounter:c=>`Counter: ${c} + visual review`,rpNotCounted:'Not counted',rpCells:n=>`${n} cells`,
+  rpCols:['Square','Cells counted','Found by AI','Added','Removed'],rpMean:(m,s,cv,n,N)=>`Mean ± SD: ${m} ± ${s} cells/square   ·   CV ${cv}   ·   n = ${n}/${N}`,
+  rpMethod:e=>`${e?'8 corner large squares (2 chambers × 4)':'4 corner large squares'} counted (0.1 µL each) · cells touching the top/left lines counted, bottom/right not · cells/mL = mean of all squares × DF ÷ volume per square`,
+  rpLegend:'Green ring = found by CellNet · orange ring = added by hand · yellow frame = large-square border'
+ }
+};
+let LANG=(()=>{try{const v=localStorage.getItem('cellcounter.lang');if(v==='th'||v==='en')return v;}catch(e){}return /^th/i.test(navigator.language||'')?'th':'en';})();
+const t=(k,...a)=>{const v=(I18N[LANG][k]??I18N.en[k]);return typeof v==='function'?v(...a):v;};
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18n-ph]').forEach(e=>e.placeholder=t(e.dataset.i18nPh));
+  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.i18nAria)));
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));
+}
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;try{localStorage.setItem('cellcounter.lang',LANG);}catch(e){}applyLang();refreshAll();});
+
+/* ---------------- helpers ---------------- */
+const CORNERS=['tl','tr','bl','br'];
+const LAYOUTS={4:CORNERS.map(k=>[k,'A']),8:[...CORNERS.map(k=>[k,'A']),...CORNERS.map(k=>['b-'+k,'B'])]};
+const slotLabel=(k,layout)=>{const c=k.replace(/^b-/,'');const n=t(c);return layout===8?`${k.startsWith('b-')?'B':'A'} ${n}`:n;};
+const KEY='cellcounter.app.v1', PREF='cellcounter.prefs.v1';
+const api=(p,o)=>fetch(p,{credentials:'same-origin',...o});
+const sup=e=>String(e).split('').map(ch=>ch==='-'?'⁻':'⁰¹²³⁴⁵⁶⁷⁸⁹'[+ch]).join('');
+const sci=n=>{if(!isFinite(n)||n<=0)return '–';const e=Math.floor(Math.log10(n));return `${(n/10**e).toFixed(2)} × 10${sup(e)}`;};
+const sciShort=n=>{if(!isFinite(n)||n<=0)return '–';const e=Math.floor(Math.log10(n));return `${(n/10**e).toFixed(2)}×10${sup(e)}`;};
+const pad2=n=>String(n).padStart(2,'0');
+const stamp=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+const niceDate=d=>`${d.getDate()} ${t('months')[d.getMonth()]} ${d.getFullYear()} · ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+function toast(msg,err){const el=$('toast');el.textContent=msg;el.className='toast'+(err?' err':'');el.hidden=false;clearTimeout(el._h);el._h=setTimeout(()=>el.hidden=true,err?5200:2800);}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}},del(k){try{localStorage.removeItem(k);}catch(e){}}};
+
+/* ---------------- state ---------------- */
+let INFO=null;
+let R=null;          // the round
+let shot=null;       // the photo in hand
+let thrV=0.85;
+let lastRoiFrac=null;
+const host=()=>INFO?.host||'Mac';
+const slots=()=>LAYOUTS[R.layout];
+const curKey=()=>slots()[R.cur][0];
+const curName=()=>slotLabel(curKey(),R.layout);
+const diam=()=>+$('diam').value;
+function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
+
+function show(id){for(const s of ['sStart','sCount','sReview','sSummary']) $(s).hidden=s!==id; window.scrollTo(0,0);
+  if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
+function refreshAll(){
+  paintPill(); loadRecent(); checkResume();
+  if(R&&!$('sCount').hidden){$('cMeta').textContent=t('perSquare',R.df);paintCount();}
+  if(!$('sReview').hidden){$('rTitle').textContent=t('reviewOf',curName());setTool(tool);drawReview();}
+  if(R&&!$('sSummary').hidden) paintSummary();
+  if(!$('cBusy').hidden) $('cBusyText').textContent=t('counting',host());
+}
+
+/* ---------------- server status ---------------- */
+function paintPill(){
+  const p=$('macPill');
+  if(INFO){const gpu=/MLX/.test(INFO.engine||'');p.className='pill ok';$('macText').textContent=`${host()} · ${gpu?'GPU':'CPU'}`;}
+  else if(pinged){p.className='pill off';$('macText').textContent=t('offline',host());}
+  else{p.className='pill off';$('macText').textContent=t('connecting');}
+}
+let pinged=false;
+async function ping(){
+  try{const r=await api('api/info');if(!r.ok)throw 0;INFO=await r.json();
+    if(!R||!shot){thrV=INFO.thr;$('thr').value=Math.round(thrV*100);$('thrOut').textContent=thrV.toFixed(2);}}
+  catch(e){INFO=null;}
+  pinged=true; paintPill();
+}
+
+/* ---------------- start ---------------- */
+const prefs=store.get(PREF,{df:'2',diam:'11',layout:4});
+$('df').value=prefs.df; $('cellSize').value=prefs.diam;
+let layoutPick=prefs.layout===8?8:4;
+function paintLayout(){document.querySelectorAll('[data-layout]').forEach(b=>{const on=+b.dataset.layout===layoutPick;b.setAttribute('aria-pressed',on);b.style.color=on?'#2E4FB3':'#8A93A6';});}
+document.querySelectorAll('[data-layout]').forEach(b=>b.onclick=()=>{layoutPick=+b.dataset.layout;paintLayout();});
+
+async function loadRecent(){
+  const box=$('recent');
+  try{const r=await api('api/runs');if(!r.ok)throw 0;const runs=(await r.json()).runs||[];
+    if(!runs.length){box.innerHTML='';const p=document.createElement('p');p.className='empty-note';p.textContent=t('noRounds');box.append(p);return;}
+    box.innerHTML='';
+    for(const m of runs.slice(0,4)){const a=document.createElement('a');a.href=m.report_url||'#';a.target='_blank';a.rel='noopener';
+      const nm=document.createElement('span');nm.className='nm';const b=document.createElement('b');b.textContent=m.name||t('unnamed');
+      const s=document.createElement('span');const d=new Date(m.at);
+      s.textContent=`${d.toDateString()===new Date().toDateString()?t('today')+' '+pad2(d.getHours())+':'+pad2(d.getMinutes()):niceDate(d)} · ${m.n}/${m.layout||4}${isFinite(m.cv)?' · CV '+(+m.cv).toFixed(1)+'%':''}`;
+      nm.append(b,s);const v=document.createElement('span');v.className='v';v.textContent=sciShort(m.cells_per_ml);a.append(nm,v);box.append(a);}
+  }catch(e){box.innerHTML='';const p=document.createElement('p');p.className='empty-note';p.textContent=t('recentFail');box.append(p);}
+}
+function checkResume(){
+  const s=store.get(KEY,null);
+  if(s&&s.R&&Object.keys(s.R.slots||{}).length&&!R){
+    $('resumeBox').hidden=false;
+    $('resumeText').textContent=t('resumeText',s.R.name,Object.keys(s.R.slots).length,s.R.layout);
+    $('resumeBtn').onclick=()=>{R=s.R;lastRoiFrac=s.lastRoiFrac||null;$('diam').value=R.diam;$('diamOut').textContent=R.diam+' px';enterCount();};
+  } else if(!R||!s) $('resumeBox').hidden=true;
+}
+$('startBtn').onclick=()=>{
+  const name=$('runName').value.trim();
+  if(!name){$('runName').focus();toast(t('needName'),true);return;}
+  const df=parseFloat($('df').value), d=parseFloat($('cellSize').value);
+  if(!(df>0)){$('df').focus();toast(t('badDf'),true);return;}
+  if(!(d>=4&&d<=60)){$('cellSize').focus();toast(t('badSize'),true);return;}
+  store.set(PREF,{df:$('df').value,diam:String(d),layout:layoutPick});
+  R={name,layout:layoutPick,df,vol:1e-4,diam:d,at:new Date().toISOString(),slots:{},cur:0};
+  $('diam').value=d;$('diamOut').textContent=d+' px';
+  shot=null; saveRound(); enterCount();
+};
+
+/* ---------------- count ---------------- */
+function enterCount(){$('cName').textContent=R.name;$('cMeta').textContent=t('perSquare',R.df);paintCount();show('sCount');}
+function nextEmpty(from){const s=slots();for(let i=1;i<=s.length;i++){const j=(from+i)%s.length;if(!R.slots[s[j][0]])return j;}return -1;}
+function paintNav(){
+  const nav=$('slotNav');nav.innerHTML='';
+  slots().forEach(([k],i)=>{const b=document.createElement('button');b.type='button';
+    const done=R.slots[k];b.className='slot'+(i===R.cur?' cur':done?' done':'');if(i===R.cur)b.setAttribute('aria-current','step');
+    const sm=document.createElement('small');sm.textContent=slotLabel(k,R.layout)+(done&&i!==R.cur?' ✓':'');
+    const n=document.createElement('span');n.className='n';n.textContent=i===R.cur&&shot?cellsNow().length:done?done.n:'–';
+    b.append(sm,n);b.onclick=()=>{if(i===R.cur)return;if(shot&&!confirmLeave())return;R.cur=i;shot=null;saveRound();paintCount();};nav.append(b);});
+  const nDone=Object.keys(R.slots).length;
+  $('cProg').textContent=`${Math.min(nDone+(R.slots[curKey()]?0:1),slots().length)} / ${slots().length}`;
+}
+let leaveArmed=0;
+function confirmLeave(){if(Date.now()-leaveArmed<4000){leaveArmed=0;return true;}leaveArmed=Date.now();toast(t('discard'),true);return false;}
+function paintCount(){
+  paintNav();
+  const has=!!shot, saved=R.slots[curKey()];
+  $('shootBox').hidden=has;
+  $('shootTitle').textContent=t('shootTitle',curName(),!!saved);
+  $('cBadge').hidden=!has; $('cTime').hidden=!has||!shot.secs; $('cLegend').hidden=!has;
+  $('toReview').disabled=!has; $('reshoot').setAttribute('aria-disabled',!has);
+  $('roiNote').hidden=!(has&&!shot.roi); $('roiReuse').hidden=!(has&&shot.roi&&shot.roiReused);
+  $('saveSlot').disabled=!has||shot.pts==null;
+  if(has){const n=cellsNow().length,nx=nextEmpty(R.cur);
+    $('cCount').textContent=n; $('saveMain').textContent=t('saveN',n,curName());
+    $('saveNext').innerHTML='';
+    const sp=document.createElement('span');sp.textContent=nx>=0&&nx!==R.cur?t('nextIs',slotLabel(slots()[nx][0],R.layout)):t('toSummary');$('saveNext').append(sp);
+    if(nx>=0&&nx!==R.cur)$('saveNext').insertAdjacentHTML('beforeend','<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
+    if(shot.secs) $('cTime').textContent=`${t('secs',shot.secs<1?shot.secs.toFixed(2):shot.secs.toFixed(1))} · ${/MLX/.test(INFO?.engine||'')?'GPU':'CPU'}`;
+  } else {$('saveMain').textContent=t('saveThis');$('saveNext').textContent='';}
+  drawCount();
+}
+$('countBack').onclick=()=>{saveRound();R&&($('resumeBox').hidden=true);const keep=R;R=null;checkResume();R=keep;show('sStart');};
+
+function loadFile(f){
+  if(!f) return;
+  const url=URL.createObjectURL(f), im=new Image();
+  im.onload=()=>{
+    const MAX=2000,k=Math.min(1,MAX/Math.max(im.width,im.height));
+    const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    autoLevels(c);
+    shot={img:c,roi:null,roiReused:false,pts:null,added:[],removed:new Set(),undo:[]};
+    if(lastRoiFrac){const fr=lastRoiFrac;shot.roi={x:fr.x*c.width,y:fr.y*c.height,w:fr.w*c.width,h:fr.h*c.height};shot.roiReused=true;}
+    paintCount(); countShot();
+  };
+  im.onerror=()=>{URL.revokeObjectURL(url);toast(t('badImage'),true);};
+  im.src=url;
+}
+function autoLevels(c){
+  const g=c.getContext('2d',{willReadFrequently:true}),id=g.getImageData(0,0,c.width,c.height),d=id.data,h=new Uint32Array(256);
+  for(let j=0;j<d.length;j+=16)h[(d[j]*.299+d[j+1]*.587+d[j+2]*.114)|0]++;
+  const tot=h.reduce((a,b)=>a+b,0);let acc=0,lo=0,hi=255;
+  for(let i=0;i<256;i++){acc+=h[i];if(acc<tot*.01)lo=i;if(acc<tot*.995)hi=i;}
+  if(hi-lo<20)return;const s=255/(hi-lo);
+  for(let j=0;j<d.length;j+=4)for(let k=0;k<3;k++){const v=(d[j+k]-lo)*s;d[j+k]=v<0?0:v>255?255:v;}
+  g.putImageData(id,0,0);
+}
+$('camIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadFile(f);};
+$('pickIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadFile(f);};
+
+function frameOf(s){return s.roi||{x:0,y:0,w:s.img.width,h:s.img.height};}
+async function countShot(){
+  if(!shot) return;
+  if(!INFO) await ping();
+  if(!INFO){toast(t('noServer',host()),true);return;}
+  const s=shot,d=diam(),r=frameOf(s),mg=d*2;
+  const x0=Math.max(0,Math.floor(r.x-mg)),y0=Math.max(0,Math.floor(r.y-mg)),x1=Math.min(s.img.width,Math.ceil(r.x+r.w+mg)),y1=Math.min(s.img.height,Math.ceil(r.y+r.h+mg));
+  const k=Math.min(1,INFO.target/d);
+  const c=document.createElement('canvas');c.width=Math.max(8,Math.round((x1-x0)*k));c.height=Math.max(8,Math.round((y1-y0)*k));
+  const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(s.img,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+  const blob=await new Promise(res=>c.toBlob(res,'image/jpeg',.93));
+  s.ctl?.abort(); const ctl=s.ctl=new AbortController(); const seq=s.seq=(s.seq||0)+1;
+  $('cBusy').hidden=false;$('rBusy').hidden=false;$('cBusyText').textContent=t('counting',host());
+  const t0=performance.now();
+  try{
+    const res=await api(`api/count?diam=${(d*k).toFixed(2)}`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob,signal:ctl.signal});
+    if(!res.ok){const m=await res.text().catch(()=>'');throw new Error(res.status+(m?' '+m.slice(0,80):''));}
+    const j=await res.json(); if(shot!==s||seq!==s.seq) return;
+    s.pts=j.points.map(([x,y,p],i)=>({x:x0+(x+.5)/k-.5,y:y0+(y+.5)/k-.5,p,i}));
+    s.secs=j.secs; s.diamUsed=d; s.removed=new Set();
+  }catch(e){
+    if(e.name==='AbortError') return;
+    toast(t('countFail',e.message||e),true);
+  }finally{if(seq===s.seq){$('cBusy').hidden=true;$('rBusy').hidden=true;}}
+  paintCount(); if(!$('sReview').hidden) drawReview(); updateRecount();
+}
+function inFrame(p,roi,d){if(!roi)return true;const rad=d/2;return p.x>=roi.x-rad&&p.y>=roi.y-rad&&p.x<roi.x+roi.w-rad&&p.y<roi.y+roi.h-rad;}
+function aiCells(){
+  if(!shot||!shot.pts) return [];
+  const d=diam(),sep=d*.55,out=[];
+  for(const p of shot.pts.filter(p=>p.p>thrV).sort((a,b)=>b.p-a.p)) if(!out.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<sep)) out.push(p);
+  return out.filter(p=>inFrame(p,shot.roi,d));
+}
+function cellsNow(){
+  if(!shot) return [];
+  return aiCells().filter(p=>!shot.removed.has(p.i)).map(p=>({x:p.x,y:p.y,src:'ai',i:p.i})).concat(shot.added.map((p,j)=>({x:p.x,y:p.y,src:'man',j})));
+}
+function tally(){const ai=aiCells();return {ai:ai.length,added:shot.added.length,removed:ai.filter(p=>shot.removed.has(p.i)).length};}
+
+function drawCells(g,list,map,rad,lw){
+  for(const c of list){const [X,Y]=map(c.x,c.y);
+    g.lineWidth=lw+1.6;g.strokeStyle='rgba(0,0,0,.6)';g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();
+    g.lineWidth=lw;g.strokeStyle=c.src==='man'?'#FF9F1C':'#29E0A8';g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();}
+}
+function drawRoi(g,roi,map,lw){if(!roi)return;const [a,b]=map(roi.x,roi.y),[c,d]=map(roi.x+roi.w,roi.y+roi.h);
+  g.save();g.setLineDash([lw*4,lw*3]);g.lineWidth=lw;g.strokeStyle='#FFD166';g.strokeRect(a,b,c-a,d-b);g.restore();}
+function drawCount(){
+  const cv=$('countCv'),g=cv.getContext('2d'),W=cv.width,H=cv.height;
+  g.fillStyle='#0F1522';g.fillRect(0,0,W,H);
+  if(!shot){const saved=R&&R.slots[curKey()];if(saved&&saved.thumb){const im=new Image();im.onload=()=>{if(shot)return;const k=Math.min(W/im.width,H/im.height);g.globalAlpha=.35;g.drawImage(im,(W-im.width*k)/2,(H-im.height*k)/2,im.width*k,im.height*k);g.globalAlpha=1;};im.src=saved.thumb;}return;}
+  const im=shot.img,f=shot.roi?{x:shot.roi.x-diam()*2,y:shot.roi.y-diam()*2,w:shot.roi.w+diam()*4,h:shot.roi.h+diam()*4}:{x:0,y:0,w:im.width,h:im.height};
+  const k=Math.min(W/f.w,H/f.h),ox=(W-f.w*k)/2-f.x*k,oy=(H-f.h*k)/2-f.y*k;
+  g.drawImage(im,ox,oy,im.width*k,im.height*k);
+  const map=(x,y)=>[ox+x*k,oy+y*k];
+  drawRoi(g,shot.roi,map,2);
+  drawCells(g,cellsNow(),map,Math.max(3,(diam()/2+1.5)*k),Math.max(1.4,k*1.4));
+}
+
+function snapshot(){
+  const s=shot,d=diam(),r=frameOf(s),mg=Math.max(8,d*2);
+  const x0=Math.max(0,r.x-mg),y0=Math.max(0,r.y-mg),x1=Math.min(s.img.width,r.x+r.w+mg),y1=Math.min(s.img.height,r.y+r.h+mg);
+  const k=Math.min(1,900/Math.max(x1-x0,y1-y0)),c=document.createElement('canvas');c.width=Math.round((x1-x0)*k);c.height=Math.round((y1-y0)*k);
+  const g=c.getContext('2d');g.drawImage(s.img,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+  const map=(x,y)=>[(x-x0)*k,(y-y0)*k];
+  drawRoi(g,s.roi,map,Math.max(1.2,c.width/650));
+  drawCells(g,cellsNow(),map,Math.max(2.5,(d/2+1.5)*k),Math.max(1.2,c.width/650));
+  return c.toDataURL('image/jpeg',.82);
+}
+function trainingPayload(){
+  const s=shot,d=diam(),r=frameOf(s),mg=d*3;
+  const x0=Math.max(0,Math.floor(r.x-mg)),y0=Math.max(0,Math.floor(r.y-mg)),x1=Math.min(s.img.width,Math.ceil(r.x+r.w+mg)),y1=Math.min(s.img.height,Math.ceil(r.y+r.h+mg));
+  const c=document.createElement('canvas');c.width=x1-x0;c.height=y1-y0;c.getContext('2d').drawImage(s.img,x0,y0,c.width,c.height,0,0,c.width,c.height);
+  return {format:'cellcount-v1',source:'photo',slot:curKey(),cell_diameter_px:d,roi:{x:r.x-x0,y:r.y-y0,w:r.w,h:r.h},
+    cells:cellsNow().map(p=>[+(p.x-x0).toFixed(1),+(p.y-y0).toFixed(1)]),note:'auto-levelled image; cells confirmed by the user; boundary rule applied',image:c.toDataURL('image/jpeg',.92)};
+}
+const training={};
+$('saveSlot').onclick=()=>{
+  if(!shot||!shot.pts) return;
+  const tl=tally(),n=cellsNow().length;
+  R.slots[curKey()]={n,ai:tl.ai,added:tl.added,removed:tl.removed,thumb:snapshot(),counter:`${INFO?.version||'CellNet'} (threshold ${thrV.toFixed(2)})`,diam:diam(),at:new Date().toISOString()};
+  try{training[curKey()]=trainingPayload();}catch(e){}
+  if(shot.roi) lastRoiFrac={x:shot.roi.x/shot.img.width,y:shot.roi.y/shot.img.height,w:shot.roi.w/shot.img.width,h:shot.roi.h/shot.img.height};
+  R.diam=diam();
+  const nx=nextEmpty(R.cur); shot=null; saveRound();
+  if(nx<0){paintSummary();show('sSummary');return;}
+  R.cur=nx; saveRound(); paintCount(); toast(t('savedGoNext',curName()));
+};
+
+/* ---------------- review ---------------- */
+let tool='add',view={s:1,tx:0,ty:0},fitS=1;
+const rvCv=$('rvCv');
+$('toReview').onclick=()=>{if(!shot)return;setTool('add');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
+$('roiFix').onclick=$('roiCheck').onclick=()=>{if(!shot)return;setTool('frame');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
+$('rDone').onclick=()=>{paintCount();show('sCount');};
+function setTool(x){tool=x;document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tool===x));
+  $('rHint').textContent=t({pan:'hintPan',add:'hintAdd',erase:'hintErase',frame:'hintFrame'}[x]);}
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+function sizeCanvas(){const r=$('rvStage').getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);rvCv.width=Math.round(r.width*dpr);rvCv.height=Math.round(r.height*dpr);}
+function fitView(){if(!shot)return;sizeCanvas();const f=frameOf(shot),W=rvCv.width,H=rvCv.height;fitS=Math.min(W/f.w,H/f.h)*.96;view={s:fitS,tx:W/2-(f.x+f.w/2)*fitS,ty:H/2-(f.y+f.h/2)*fitS};}
+const toScr=(x,y)=>[x*view.s+view.tx,y*view.s+view.ty];
+const toImg=(X,Y)=>[(X-view.tx)/view.s,(Y-view.ty)/view.s];
+let dragRect=null;
+function drawReview(){
+  if(!shot)return;const g=rvCv.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,rvCv.width,rvCv.height);
+  g.imageSmoothingEnabled=view.s<2;g.drawImage(shot.img,view.tx,view.ty,shot.img.width*view.s,shot.img.height*view.s);
+  const dpr=rvCv.width/Math.max(1,rvCv.clientWidth);
+  drawRoi(g,dragRect||shot.roi,toScr,2*dpr);
+  drawCells(g,cellsNow(),toScr,Math.max(4*dpr,(diam()/2+1.5)*view.s),Math.max(1.6*dpr,Math.min(3*dpr,view.s*1.2)));
+  const tl=tally();$('rTally').textContent=`AI ${tl.ai-tl.removed} · +${tl.added} · −${tl.removed} = ${cellsNow().length}`;
+  $('zLabel').textContent=(view.s/fitS).toFixed(view.s/fitS<10?1:0).replace(/\.0$/,'')+'×';
+}
+function zoomAt(f,X,Y){const ns=Math.max(fitS*.8,Math.min(fitS*12,view.s*f));const [ix,iy]=toImg(X,Y);view.s=ns;view.tx=X-ix*ns;view.ty=Y-iy*ns;drawReview();}
+$('zIn').onclick=()=>zoomAt(1.6,rvCv.width/2,rvCv.height/2);
+$('zOut').onclick=()=>zoomAt(1/1.6,rvCv.width/2,rvCv.height/2);
+const ptrs=new Map();let gest=null;
+const evXY=e=>{const r=rvCv.getBoundingClientRect(),dpr=rvCv.width/r.width;return [(e.clientX-r.left)*dpr,(e.clientY-r.top)*dpr];};
+rvCv.addEventListener('pointerdown',e=>{rvCv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,evXY(e));
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];gest={type:'pinch',d:Math.hypot(a[0]-b[0],a[1]-b[1]),m:[(a[0]+b[0])/2,(a[1]+b[1])/2],s:view.s,tx:view.tx,ty:view.ty};dragRect=null;return;}
+  const p=evXY(e);gest={type:tool==='frame'?'frame':'tap',start:p,last:p,moved:0,pan:tool==='pan'};});
+rvCv.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!gest)return;const p=evXY(e);ptrs.set(e.pointerId,p);
+  if(gest.type==='pinch'&&ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    const ns=Math.max(fitS*.8,Math.min(fitS*12,gest.s*d/gest.d)),ix=(gest.m[0]-gest.tx)/gest.s,iy=(gest.m[1]-gest.ty)/gest.s;
+    view.s=ns;view.tx=m[0]-ix*ns;view.ty=m[1]-iy*ns;drawReview();return;}
+  gest.moved=Math.max(gest.moved,Math.hypot(p[0]-gest.start[0],p[1]-gest.start[1]));
+  if(gest.type==='frame'){const [ax,ay]=toImg(...gest.start),[bx,by]=toImg(...p);dragRect={x:Math.min(ax,bx),y:Math.min(ay,by),w:Math.abs(bx-ax),h:Math.abs(by-ay)};drawReview();return;}
+  if(gest.pan||gest.moved>14){view.tx+=p[0]-gest.last[0];view.ty+=p[1]-gest.last[1];gest.last=p;drawReview();}});
+function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!gest)return;
+  if(gest.type==='pinch'){if(ptrs.size===0)gest=null;return;}
+  if(gest.type==='frame'){if(dragRect&&dragRect.w*view.s>40&&dragRect.h*view.s>40){shot.undo.push({t:'roi',prev:shot.roi});shot.roi=dragRect;shot.roiReused=false;dragRect=null;drawReview();countShot();}else{dragRect=null;drawReview();}gest=null;return;}
+  if(gest.type==='tap'&&!gest.pan&&gest.moved<=14&&e.type==='pointerup') tap(...gest.start);
+  gest=null;}
+rvCv.addEventListener('pointerup',endPtr);rvCv.addEventListener('pointercancel',endPtr);
+rvCv.addEventListener('wheel',e=>{e.preventDefault();const [X,Y]=evXY(e);zoomAt(e.deltaY<0?1.15:1/1.15,X,Y);},{passive:false});
+function tap(X,Y){
+  const [x,y]=toImg(X,Y),list=cellsNow();
+  const fingerImg=(16*(rvCv.width/rvCv.clientWidth))/view.s;
+  const hitR=tool==='erase'?Math.max(diam()*.8,Math.min(fingerImg,diam()*2)):diam()*.6;
+  let best=null,bd=Infinity;for(const c of list){const d=Math.hypot(c.x-x,c.y-y);if(d<bd){bd=d;best=c;}}
+  const hit=bd<hitR?best:null;
+  if(tool==='erase'){if(!hit)return;
+    if(hit.src==='ai'){shot.removed.add(hit.i);shot.undo.push({t:'rm',i:hit.i});}
+    else{const p=shot.added.splice(hit.j,1)[0];shot.undo.push({t:'rmAdd',p,j:hit.j});}}
+  else if(tool==='add'){if(hit)return;shot.added.push({x,y});shot.undo.push({t:'add'});}
+  drawReview();
+}
+$('undoBtn').onclick=()=>{if(!shot||!shot.undo.length){toast(t('nothingUndo'));return;}const u=shot.undo.pop();
+  if(u.t==='add')shot.added.pop();else if(u.t==='rm')shot.removed.delete(u.i);else if(u.t==='rmAdd')shot.added.splice(u.j,0,u.p);
+  else if(u.t==='roi'){shot.roi=u.prev;countShot();}drawReview();};
+$('thr').oninput=()=>{thrV=+$('thr').value/100;$('thrOut').textContent=thrV.toFixed(2);drawReview();};
+function updateRecount(){$('recount').hidden=!shot||!shot.diamUsed||Math.abs(diam()-shot.diamUsed)<1;}
+$('diam').oninput=()=>{$('diamOut').textContent=diam()+' px';updateRecount();drawReview();};
+$('recount').onclick=()=>{$('recount').hidden=true;countShot();};
+window.addEventListener('resize',()=>{if(!$('sReview').hidden){fitView();drawReview();}});
+
+/* ---------------- summary ---------------- */
+function stats(){
+  const recs=slots().map(([k,c])=>({k,c,name:slotLabel(k,R.layout),s:R.slots[k]})),done=recs.filter(r=>r.s);
+  const v=done.map(r=>r.s.n),n=v.length,mean=n?v.reduce((a,b)=>a+b,0)/n:NaN;
+  const sd=n>1?Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/(n-1)):NaN;
+  const ch={};for(const r of done)(ch[r.c]||=[]).push(r.s.n);
+  const chambers=Object.fromEntries(Object.entries(ch).map(([c,a])=>[c,a.reduce((x,y)=>x+y,0)/a.length]));
+  return {recs,done,n,total:slots().length,sum:v.reduce((a,b)=>a+b,0),mean,sd,cv:sd/mean*100,df:R.df,vol:R.vol,perMl:mean*R.df/R.vol,chambers};
+}
+const cvTag=cv=>!isFinite(cv)?['','CV']:cv<10?['good',t('cvGood')]:cv<=15?['warn',t('cvOk')]:['bad',t('cvBad')];
+const chText=ch=>t('chambers',isFinite(ch.A)?ch.A.toFixed(1):'–',isFinite(ch.B)?ch.B.toFixed(1):'–',isFinite(ch.A)&&isFinite(ch.B)?(Math.abs(ch.A-ch.B)/((ch.A+ch.B)/2)*100).toFixed(1):'');
+function paintSummary(){
+  const S=stats();
+  $('sName').textContent=R.name; $('sWhen').textContent=niceDate(new Date(R.at));
+  $('sDone').textContent=S.n===S.total?t('complete',S.n,S.total):t('partial',S.n,S.total); $('sDone').className='pill '+(S.n===S.total?'ok':'blue');
+  $('sPerMl').textContent=sci(S.perMl); $('sMean').textContent=isFinite(S.mean)?S.mean.toFixed(1):'–';
+  $('sSd').textContent=isFinite(S.sd)?'±'+S.sd.toFixed(1):'–';
+  const [cls,lab]=cvTag(S.cv);$('sCvBox').className='stat '+cls;$('sCvLab').textContent=lab;$('sCv').textContent=isFinite(S.cv)?S.cv.toFixed(1)+'%':'–';
+  $('sFormula').textContent=`(${S.sum} ÷ ${S.n}) × ${S.df} ÷ ${S.vol} mL`;
+  $('sCh').hidden=R.layout!==8; if(R.layout===8) $('sCh').textContent=chText(S.chambers);
+  const box=$('sThumbs');box.className='thumbs'+(R.layout===8?' eight':'');box.innerHTML='';
+  S.recs.forEach((r,i)=>{const f=document.createElement('figure');
+    if(r.s){const im=document.createElement('img');im.src=r.s.thumb;im.alt=t('nCells',r.name,r.s.n);f.append(im);}
+    else{f.classList.add('missing');f.append(document.createTextNode(t('notCounted')));}
+    const cap=document.createElement('figcaption');cap.textContent=`${r.name} · ${r.s?r.s.n:'–'}`;f.append(cap);
+    f.style.cursor='pointer';f.tabIndex=0;f.setAttribute('role','button');f.setAttribute('aria-label',t('open',r.name));
+    f.onclick=f.onkeydown=ev=>{if(ev.type==='keydown'&&ev.key!=='Enter')return;R.cur=i;shot=null;saveRound();enterCount();};
+    box.append(f);});
+  $('reportBtn').disabled=!S.n; $('sendTrain').hidden=!Object.keys(training).length;
+  if(!reportBusy) $('reportLab').textContent=reportSaved?t('savedAgain'):t('saveReport');
+}
+$('sumBack').onclick=()=>enterCount();
+
+const loadImg=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u;});
+async function buildReport(meta){
+  try{await document.fonts.load('600 40px "IBM Plex Sans Thai"');await document.fonts.load('400 30px "IBM Plex Mono"');}catch(e){}
+  const S=stats(),eight=S.total===8,COLS=eight?4:2,W=eight?2600:2000,P=60,cell=(W-P*(COLS+1))/COLS,rows=Math.ceil(S.total/COLS),H=P+170+rows*(cell+P)+130+46*S.total+400+P;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const F='"IBM Plex Sans Thai",system-ui,sans-serif',M='"IBM Plex Mono",ui-monospace,monospace';
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#10182B';g.textBaseline='top';
+  g.font=`700 58px ${F}`;g.fillText(meta.name||t('unnamed'),P,P,W-2*P);
+  g.font=`400 30px ${F}`;g.fillStyle='#5B6478';
+  g.fillText(`${stamp(new Date(meta.at))} · Neubauer improved · DF ${S.df} · ${t('rpPerSquare',S.vol)}`,P,P+82,W-2*P);
+  g.fillText(t('rpCounter',[...new Set(S.done.map(r=>r.s.counter))].join(', ')||'–'),P,P+124,W-2*P);
+  const top=P+180;
+  for(let i=0;i<S.total;i++){const Rr=S.recs[i],x=P+(i%COLS)*(cell+P),y=top+Math.floor(i/COLS)*(cell+P);
+    g.fillStyle='#EEF1F4';g.fillRect(x,y,cell,cell);
+    if(Rr.s){const im=await loadImg(Rr.s.thumb);if(im){const k=Math.min(cell/im.width,cell/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,x+(cell-w)/2,y+(cell-h)/2,w,h);}}
+    else{g.fillStyle='#93A2B0';g.font=`500 40px ${F}`;g.textAlign='center';g.fillText(t('rpNotCounted'),x+cell/2,y+cell/2-20);g.textAlign='left';}
+    const lab=`${Rr.name}  ·  ${Rr.s?t('rpCells',Rr.s.n):'–'}`;g.font=`600 36px ${F}`;const tw=g.measureText(lab).width;
+    g.fillStyle='rgba(16,24,43,.84)';g.fillRect(x+16,y+16,tw+36,60);g.fillStyle='#fff';g.fillText(lab,x+34,y+26);}
+  let y=top+rows*(cell+P)+10;const cols=[P,P+420,P+700,P+1000,P+1300];
+  g.font=`600 30px ${F}`;g.fillStyle='#5B6478';t('rpCols').forEach((h,i)=>g.fillText(h,cols[i],y));
+  g.fillStyle='#DDE2EC';g.fillRect(P,y+46,W-2*P,2);y+=62;
+  for(const Rr of S.recs){g.font=`400 30px ${F}`;g.fillStyle='#10182B';g.fillText(Rr.name,cols[0],y);g.font=`400 30px ${M}`;
+    (Rr.s?[Rr.s.n,Rr.s.ai,Rr.s.added,Rr.s.removed]:['–','–','–','–']).forEach((v,i)=>g.fillText(String(v),cols[i+1],y));y+=46;}
+  g.fillStyle='#DDE2EC';g.fillRect(P,y+4,W-2*P,2);y+=24;
+  g.font=`600 34px ${F}`;g.fillStyle='#10182B';
+  g.fillText(t('rpMean',isFinite(S.mean)?S.mean.toFixed(1):'–',isFinite(S.sd)?S.sd.toFixed(1):'–',isFinite(S.cv)?S.cv.toFixed(1)+'%':'–',S.n,S.total),P,y,W-2*P);y+=56;
+  if(eight){g.font=`400 30px ${F}`;g.fillText(chText(S.chambers),P,y,W-2*P);y+=50;}
+  g.font=`700 44px ${M}`;g.fillStyle='#2E4FB3';g.fillText(`${sci(S.perMl)} cells/mL`,P,y);y+=70;
+  g.font=`400 26px ${F}`;g.fillStyle='#5B6478';
+  g.fillText(t('rpMethod',eight),P,y,W-2*P);y+=38;
+  g.fillText(t('rpLegend'),P,y,W-2*P);
+  const out=document.createElement('canvas');out.width=W;out.height=Math.min(H,Math.ceil(y+38+P));out.getContext('2d').drawImage(c,0,0);return out;
+}
+const SQ8=LAYOUTS[8].map(([k])=>k);
+const CSV_HEAD=['name','date','operator','squares_planned',...SQ8.map(k=>k.startsWith('b-')?'B-'+k.slice(2):'A-'+k),'n_squares','mean','sd','cv_percent','chamber_A_mean','chamber_B_mean','dilution_factor','ml_per_square','cells_per_ml','counter'];
+const f2=v=>isFinite(v)?(+v).toFixed(2):'';
+const csvRow=m=>[m.name,stamp(new Date(m.at)),m.operator||'',m.layout,...SQ8.map(k=>m.squares[k]?.n??''),m.n,f2(m.mean),f2(m.sd),isFinite(m.cv)?m.cv.toFixed(1):'',f2(m.chambers?.A),f2(m.chambers?.B),m.df,m.vol,isFinite(m.cells_per_ml)?m.cells_per_ml.toExponential(3):'',m.counter]
+  .map(v=>{v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',');
+const fileBase=m=>`${stamp(new Date(m.at)).replace(/[: ]/g,'').replace(/-/g,'')}_${(m.name||'cellcount').replace(/[^\p{L}\p{N}\p{M} ()_.,-]+/gu,'-').replace(/-+/g,'-').slice(0,60)}`;
+function runMeta(){const S=stats();return {name:R.name,at:new Date().toISOString(),n:S.n,layout:S.total,mean:S.mean,sd:S.sd,cv:S.cv,df:S.df,vol:S.vol,cells_per_ml:S.perMl,chambers:S.chambers,
+  counter:[...new Set(S.done.map(r=>r.s.counter))].join(' / '),lang:LANG,
+  squares:Object.fromEntries(S.recs.map(r=>[r.k,r.s?{n:r.s.n,ai:r.s.ai,added:r.s.added,removed:r.s.removed,cell_diameter_px:r.s.diam,counted_at:r.s.at}:null]))};}
+let reportSaved=false,reportBusy=false;
+$('reportBtn').onclick=async()=>{
+  const b=$('reportBtn');if(b.disabled)return;b.disabled=true;reportBusy=true;$('reportLab').textContent=t('building');
+  try{
+    const meta=runMeta(),cv=await buildReport(meta);
+    const body={meta,csv_head:CSV_HEAD,csv_row:csvRow(meta),report_png:cv.toDataURL('image/png'),images:Object.fromEntries(slots().map(([k])=>[k,R.slots[k]?.thumb||null]))};
+    let onServer=false;
+    try{const r=await api('api/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});onServer=r.ok;}catch(e){}
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase(meta)+'.png';
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+    reportSaved=true;$('reportLab').textContent=onServer?t('savedAgain'):t('downloadedOnly',host());
+    toast(onServer?t('reportSaved',host()):t('reportLocal',host()),!onServer);
+    loadRecent();
+  }catch(e){toast(t('reportFail',e.message||e),true);$('reportLab').textContent=t('saveReport');}
+  finally{b.disabled=false;reportBusy=false;}
+};
+$('sendTrain').onclick=async()=>{
+  const ks=Object.keys(training);let ok=0;$('sendTrain').disabled=true;
+  for(const k of ks){const d=new Date(),name=`cells_${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}_${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}_${k}.json`;
+    try{const r=await api('api/training?name='+encodeURIComponent(name),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(training[k])});if(r.ok){ok++;delete training[k];}}catch(e){}}
+  $('sendTrain').disabled=false;toast(ok?t('trainSent',ok):t('trainFail'),!ok);paintSummary();
+};
+let nextArmed=0;
+$('nextRun').onclick=()=>{
+  if(!reportSaved&&Date.now()-nextArmed>4000){nextArmed=Date.now();toast(t('unsavedRound'),true);return;}
+  const m=R.name.match(/^(.*?)(\s*rep\s*)(\d+)\s*$/i);
+  $('runName').value=m?`${m[1]}${m[2]}${+m[3]+1}`:R.name;
+  layoutPick=R.layout;paintLayout();
+  R=null;shot=null;reportSaved=false;lastRoiFrac=null;for(const k in training)delete training[k];store.del(KEY);checkResume();show('sStart');$('runName').focus();
+};
+window.addEventListener('beforeunload',saveRound);
+
+/* ---------------- boot ---------------- */
+applyLang(); paintLayout(); paintPill(); ping(); setInterval(ping,60000); loadRecent(); checkResume(); setTool('add');
+})();
+</script>
+</body>
+</html>

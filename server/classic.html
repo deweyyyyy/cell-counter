@@ -1,0 +1,582 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Trypan Cell Counter · Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: bench instrument — photo stage left, four-corner tally + readout right; stacks on phones */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#16202b; --muted:#5d6b78; --line:#d9dfe5; --soft:#eef1f4;
+  --cell:#0f8a6a; --accent:#16202b; --warn:#b45309; --ai:#6d3fc0; --good:#0f8a6a;
+  --f-body:"IBM Plex Sans Thai",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --panel:#17202a; --ink:#e6edf3; --muted:#93a2b0; --line:#2a3644; --soft:#1d2733;
+  --cell:#3cc79f; --accent:#e6edf3; --warn:#f0a35a; --ai:#b493f5; --good:#3cc79f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#17202a; --ink:#e6edf3; --muted:#93a2b0; --line:#2a3644; --soft:#1d2733;
+  --cell:#3cc79f; --accent:#e6edf3; --warn:#f0a35a; --ai:#b493f5; --good:#3cc79f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px}
+h1{font-size:1.5rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:0;color:var(--muted);font-size:.9rem}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+.btn.ai{background:var(--ai);color:#fff;border-color:var(--ai)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,.seg button:focus-visible,input:focus-visible,select:focus-visible,.slot:focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+input[type=file]{display:none}
+.stage{position:relative;border-radius:8px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+.badge{position:absolute;top:8px;left:8px;font-size:.75rem;background:var(--panel);color:var(--warn);border:1px solid var(--line);padding:2px 8px;border-radius:99px;max-width:calc(100% - 16px)}
+.status{font-size:.88rem;color:var(--muted);min-height:1.4em;margin:0}
+.status.ai{color:var(--ai)} .status.err{color:var(--warn)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:.88rem;border:0;background:transparent;color:var(--muted);padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.toggle{display:inline-flex;gap:6px;align-items:center;font-size:.88rem;color:var(--muted)}
+.ctl{display:grid;gap:2px;min-width:200px;flex:1}
+.ctl label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+.ctl output{font-family:var(--f-mono);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--ink)}
+.count{border-radius:8px;padding:10px 12px;border:1px solid var(--line)}
+.count b{display:block;font-family:var(--f-mono);font-size:2.4rem;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--cell)}
+.count span{font-size:.85rem;color:var(--muted)}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.slot{font:inherit;text-align:left;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;background:var(--panel);color:var(--ink);cursor:pointer;display:grid;gap:2px}
+.slot small{color:var(--muted);font-size:.78rem}
+.slot .v{font-family:var(--f-mono);font-size:.95rem;font-variant-numeric:tabular-nums}
+.slot.filled{border-style:solid;background:var(--soft)}
+.slot.active{border:2px solid var(--ink)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fields label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+.fields input{font:inherit;font-family:var(--f-mono);padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.result{display:grid;gap:6px}
+.result div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.result .big{font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.formula{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);background:var(--soft);border-radius:6px;padding:8px 10px;overflow-x:auto;white-space:nowrap}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.tips{font-size:.85rem;color:var(--muted);margin:0;padding-left:1.1em;display:grid;gap:4px}
+.check{font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:grid;gap:2px}
+.check b{font-family:var(--f-mono);font-weight:500}
+.namefield{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+.namefield input{font:inherit;font-size:1rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.slot .thumb{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;background:var(--soft);display:block}
+.hist{display:grid;gap:6px;max-height:320px;overflow:auto}
+.hist .h{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.85rem}
+.hist .h b{font-weight:600;overflow-wrap:anywhere}
+.hist .h span{color:var(--muted)}
+.hist .h .n{font-family:var(--f-mono);text-align:right;color:var(--ink)}
+.hist a{color:var(--ai)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Trypan Cell Counter</h1>
+    <p>CellNet บน Mac ของแล็บ · Neubauer improved · 1 square = 0.1 µL</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-label="ภาพและการนับ">
+      <div class="row">
+        <label class="btn primary" for="cam">📷 ถ่ายรูป</label>
+        <input id="cam" type="file" accept="image/*" capture="environment">
+        <label class="btn" for="pick">เลือกรูป</label>
+        <input id="pick" type="file" accept="image/*">
+        <button class="btn" id="newSample" type="button">ภาพตัวอย่างใหม่</button>
+      </div>
+      <div class="row">
+        <span class="toggle" id="srv">กำลังเชื่อมต่อ Mac…</span>
+        <button class="btn ai" id="countBtn" type="button">✦ นับเซลล์</button>
+              </div>
+      <div class="row">
+        <div class="ctl"><label for="diam">ขนาดเซลล์ในภาพ (px) <output id="diamOut">11</output></label><input id="diam" type="range" min="4" max="60" value="11"></div>
+        <div class="ctl" id="thrWrap"><label for="thr">ความเข้มงวด <output id="thrOut">0.85</output></label><input id="thr" type="range" min="40" max="97" value="85"></div>
+        <label class="toggle" for="enh"><input id="enh" type="checkbox" checked> เพิ่มความสว่าง</label>
+      </div>
+      <p class="status" id="status"></p>
+
+      <div class="stage">
+        <canvas id="cv" width="600" height="600" aria-label="ภาพ hemocytometer พร้อมจุดที่นับ"></canvas>
+        <span class="badge" id="sampleBadge" hidden></span>
+      </div>
+
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <span class="label">แตะภาพเพื่อ</span>
+          <div class="seg" role="group" aria-label="โหมดแก้ไข">
+            <button type="button" data-mode="roi" aria-pressed="true">▢ ลากกรอบ</button>
+            <button type="button" data-mode="add" aria-pressed="false">+ เซลล์</button>
+            <button type="button" data-mode="erase" aria-pressed="false">ลบ</button>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="clearAll" type="button">ล้างจุด</button>
+          <button class="btn" id="exportBtn" type="button" title="ภาพ + ตำแหน่งเซลล์ที่แก้แล้ว สำหรับฝึก CellNet">⤓ ส่งข้อมูลฝึก</button>
+        </div>
+      </div>
+      <p class="note">ขยับ "ขนาดเซลล์" ให้วงกลมเท่ากับเซลล์จริง CellNet ใช้ค่านี้ย่อ/ขยายภาพก่อนนับ</p>
+    </section>
+
+    <aside class="panel" aria-label="ผลการนับ">
+      <div class="count"><b id="nCells">0</b><span>เซลล์ในกรอบ (ใช้กฎขอบแล้ว)</span></div>
+      <div class="check" id="truthBox" hidden></div>
+
+      <label class="namefield" for="runName">ชื่อรอบ / ตัวอย่าง
+        <input id="runName" type="text" maxlength="120" placeholder="เช่น HCC + pinocembrin 50 µM 24 h rep 1">
+      </label>
+      <div>
+        <div class="row" style="justify-content:space-between;margin-bottom:6px">
+          <span class="label">ภาพนี้คือช่อง</span>
+          <select id="layout" aria-label="จำนวนช่องต่อรอบ"><option value="4" selected>4 ช่อง (1 chamber)</option><option value="8">8 ช่อง (2 chambers)</option></select>
+        </div>
+        <div class="slots" id="slots"></div>
+      </div>
+      <button class="btn primary" id="saveSlot" type="button">บันทึกช่องบนซ้าย</button>
+
+      <div class="fields">
+        <label for="df">Dilution factor<input id="df" type="number" min="1" step="0.1" value="2"></label>
+        <label for="vol">ปริมาตร/ช่อง (mL)<input id="vol" type="text" value="1e-4"></label>
+      </div>
+      <div class="result">
+        <div><span>เฉลี่ยต่อช่อง</span><span class="big" id="rAvg">–</span></div>
+        <div><span>Cells/mL</span><span class="big" id="rTotal">–</span></div>
+      </div>
+      <div class="formula" id="formula">cells/mL = (เซลล์ ÷ จำนวนช่อง) × DF ÷ 0.0001 mL</div>
+      <p class="note" id="basis"></p>
+      <div class="row">
+        <button class="btn primary" id="reportBtn" type="button">📄 บันทึกรายงาน</button>
+        <button class="btn" id="newRun" type="button">เริ่มรอบใหม่</button>
+      </div>
+
+      <div>
+        <div class="row" style="justify-content:space-between;margin-bottom:6px">
+          <span class="label">ประวัติรอบที่บันทึก</span>
+          <button class="btn" id="csvBtn" type="button" style="padding:4px 10px;font-size:.82rem">⤓ CSV</button>
+        </div>
+        <div class="hist" id="history"><p class="note">ยังไม่มีรอบที่บันทึก</p></div>
+      </div>
+
+      <div>
+        <div class="label" style="margin-bottom:4px">วิธีใช้</div>
+        <ul class="tips">
+          <li>ถ่าย 1 large square ต่อรูป ลากกรอบทับกึ่งกลางเส้นขอบช่อง แอปใช้กรอบนี้ตัดสินกฎขอบ (นับเส้นบน/ซ้าย ไม่นับเส้นล่าง/ขวา)</li>
+          <li>ตั้งขนาดเซลล์ให้ตรง แล้วกดนับ ตรวจ แตะแก้ แล้วบันทึกช่อง</li>
+          <li>ภาพที่แก้ครบแล้ว กด "ส่งข้อมูลฝึก" ภาพกับตำแหน่งเซลล์จะถูกเก็บบน Mac ไว้ฝึก CellNet รุ่นถัดไป</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const CELLNET_W=null;
+const MODE='mac';
+(()=>{
+const $=id=>document.getElementById(id);
+const cv=$('cv'), ctx=cv.getContext('2d');
+const raw=document.createElement('canvas'), rctx=raw.getContext('2d',{willReadFrequently:true});
+const src=document.createElement('canvas'), sctx=src.getContext('2d',{willReadFrequently:true});
+let cells=[], mode='roi', roi=null, drag=null, truth=null, sampleSeed=20261027;
+const CORNERS=[['tl','บนซ้าย'],['tr','บนขวา'],['bl','ล่างซ้าย'],['br','ล่างขวา']];
+const LAYOUTS={4:CORNERS,8:[...CORNERS.map(([k,n])=>[k,'A '+n,'A']),...CORNERS.map(([k,n])=>['b-'+k,'B '+n,'B'])]};
+let SLOTS=LAYOUTS[4];
+const slots={}; let slotIdx=0;
+const setStatus=(t,cls='')=>{const s=$('status');s.textContent=t;s.className='status '+cls;};
+const diam=()=>+$('diam').value;
+
+/* ---------- synthetic sample: dim, very transparent, small cells ---------- */
+async function makeSample(seed){
+  const yieldUI=()=>new Promise(r=>setTimeout(r,0));
+  setStatus('กำลังสร้างภาพตัวอย่าง…');
+  const S=1200, A=50, B=1150, L=B-A; raw.width=S; raw.height=S;
+  let sd=seed; const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  const id=rctx.createImageData(S,S), px=new Float32Array(S*S*3);
+  const base=.26+rnd()*.08, tint=[1,1.03,.9];
+  for(let y=0;y<S;y++){if(y%150===0)await yieldUI();for(let x=0;x<S;x++){const i=(y*S+x)*3;
+    const il=1+.25*(1-Math.hypot((x-S*.45)/S,(y-S*.42)/S)*1.8);
+    for(let c=0;c<3;c++)px[i+c]=base*il*tint[c];}}
+  const mul=(x,y,f)=>{if(x<0||y<0||x>=S||y>=S)return;const i=(y*S+x)*3;px[i]*=f[0];px[i+1]*=f[1];px[i+2]*=f[2];};
+  // grid lines (single inner, triple outer)
+  const line=(p,vert,th,dark)=>{for(let o=-4;o<=4;o++){const f=1-dark*Math.exp(-.5*(o/(th/2))**2);
+    const q=Math.round(p+o); for(let t=0;t<S;t++) vert?mul(q,t,[f,f,f]):mul(t,q,[f,f,f]);}};
+  for(let i=1;i<4;i++){line(A+i*L/4,1,1.4,.45);line(A+i*L/4,0,1.4,.45);}
+  for(const p of [A,B])for(const o of [-6,0,6]){line(p+o,1,1.3,.5);line(p+o,0,1.3,.5);}
+  // debris
+  for(let i=0;i<160;i++){const cx=rnd()*S,cy=rnd()*S,r=.6+rnd()*(rnd()<.85?2:4),k=.15+rnd()*.4;
+    for(let y=Math.floor(cy-r-1);y<=cy+r+1;y++)for(let x=Math.floor(cx-r-1);x<=cx+r+1;x++){
+      const m=Math.max(0,Math.min(1,1.3-Math.hypot(x-cx,y-cy)/r));if(m>0){const f=1-k*m;mul(x,y,[f,f,f]);}}}
+  // cells
+  const rimC=.16;
+  const drawCell=(cx,cy,r,stained)=>{
+    const a=rnd()*3.14,e=.9+rnd()*.2,rimw=.13+rnd()*.06,c=rimC*(.6+rnd()*.8),core=rnd()*.1,s=.3+rnd()*.5;
+    for(let y=Math.floor(cy-2*r);y<=cy+2*r;y++)for(let x=Math.floor(cx-2*r);x<=cx+2*r;x++){
+      const dx=x-cx,dy=y-cy,u=(dx*Math.cos(a)+dy*Math.sin(a))/(r*e),v=(-dx*Math.sin(a)+dy*Math.cos(a))/(r/e),rr=Math.hypot(u,v);
+      if(rr>2)continue;
+      const rim=Math.exp(-.5*((rr-1)/rimw)**2), ins=Math.max(0,Math.min(1,(1-rr)/.15));
+      if(!stained){const halo=.08*Math.exp(-.5*((rr-1.35)/.18)**2),f=1+core*ins+halo-c*rim;mul(x,y,[f,f,f]);}
+      else{const bl=[1-.5*s,1-.38*s,1-.06*s],dk=1-.2*s;
+        mul(x,y,[(1-ins)+ins*bl[0]*dk,(1-ins)+ins*bl[1]*dk,(1-ins)+ins*bl[2]*dk]);const f=1-c*.6*rim;mul(x,y,[f,f,f]);}
+    }};
+  const pts=[]; const R=()=>4.6+rnd()*1.4;      // diameter ~9–12 px
+  const free=(x,y,r,k)=>pts.every(p=>Math.hypot(p.x-x,p.y-y)>k*(p.r+r));
+  // 8 on top/left lines (counted), 8 on bottom/right lines (not counted)
+  for(let i=0;i<16;i++){const r=R(),q=A+60+rnd()*(L-120),on=(i%2?-1:1)*rnd()*r*.6;
+    const [x,y,cnt]=[[q,A+on,1],[A+on,q,1],[q,B+on,0],[B+on,q,0]][i%4];
+    if(free(x,y,r,1.3))pts.push({x,y,r,c:cnt,edge:cnt?'tl':'br'});else i--;}
+  const need=212-pts.filter(p=>p.c).length;
+  let placed=0;
+  while(placed<need){const r=R();let x,y;
+    if(pts.length>20&&rnd()<.15){const p=pts[(rnd()*pts.length)|0],a=rnd()*6.28;x=p.x+Math.cos(a)*(p.r+r)*1.02;y=p.y+Math.sin(a)*(p.r+r)*1.02;if(!free(x,y,r,.97))continue;}
+    else{x=A+rnd()*L;y=A+rnd()*L;if(!free(x,y,r,1.4))continue;}
+    if(x<A+r+3||y<A+r+3||x>B-r-3||y>B-r-3)continue;
+    pts.push({x,y,r,c:1});placed++;}
+  for(let i=0;i<14;i++){const r=R(),side=i%4,q=60+rnd()*(S-120),o=A-r-14;
+    const [x,y]=[[q,o],[q,S-o],[o,q],[S-o,q]][side];pts.push({x,y,r,c:0});}
+  await yieldUI();
+  for(const p of pts)drawCell(p.x,p.y,p.r,rnd()<.12);
+  await yieldUI();
+  // blur 1px + noise, write out
+  const tmp=new Float32Array(px.length);
+  for(let y=0;y<S;y++){if(y%80===0)await yieldUI();for(let x=0;x<S;x++)for(let c=0;c<3;c++){let s=0,n=0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=x+dx;if(yy<0||xx<0||yy>=S||xx>=S)continue;const w=(dx||dy)?(dx&&dy?.5:1):2;s+=px[(yy*S+xx)*3+c]*w;n+=w;}
+    tmp[(y*S+x)*3+c]=s/n;}}
+  for(let i=0;i<S*S;i++){const nz=(rnd()-.5)*.05;for(let c=0;c<3;c++)id.data[i*4+c]=Math.max(0,Math.min(255,(tmp[i*3+c]+nz)*255));id.data[i*4+3]=255;}
+  rctx.putImageData(id,0,0);
+  truth=pts.filter(p=>p.c||p.edge).map(p=>({x:p.x,y:p.y,c:p.c,edge:p.edge||null}));
+  $('diam').value=11;$('diamOut').textContent=11;
+  roi={x:A,y:A,w:L,h:L}; cells=[];
+  $('sampleBadge').textContent='ภาพจำลอง · เฉลย 212 เซลล์ (มี 8 ตัวบนเส้นบน/ซ้ายที่ต้องนับ และ 8 ตัวบนเส้นล่าง/ขวาที่ต้องไม่นับ)';
+  $('sampleBadge').hidden=false;
+  lastHM=null; prepare(); render();
+  setStatus('ภาพจำลอง: มืด เซลล์ใสและเล็ก ตั้งกรอบไว้แล้ว กด "นับเซลล์" ได้เลย');
+}
+let busy=false;
+const guard=fn=>async()=>{if(busy)return;busy=true;document.querySelectorAll('#countBtn,#newSample').forEach(b=>b.disabled=true);
+  try{await fn();}catch(e){console.error(e);setStatus('เกิดข้อผิดพลาด: '+(e?.message||e),'err');}
+  finally{busy=false;document.querySelectorAll('#countBtn,#newSample').forEach(b=>b.disabled=false);}};
+$('newSample').onclick=guard(()=>{sampleSeed=(sampleSeed*48271)%2147483647;return makeSample(sampleSeed);});
+
+/* ---------- load + enhance ---------- */
+function loadFile(f){
+  if(!f) return;
+  const url=URL.createObjectURL(f), im=new Image();
+  im.onload=()=>{
+    const MAX=2000, k=Math.min(1,MAX/Math.max(im.width,im.height));
+    raw.width=Math.round(im.width*k); raw.height=Math.round(im.height*k);
+    rctx.drawImage(im,0,0,raw.width,raw.height); URL.revokeObjectURL(url);
+    lastHM=null; truth=null; $('sampleBadge').hidden=true; roi=null; cells=[]; prepare(); render();
+    setStatus('ลากกรอบรอบ large square ตั้งขนาดเซลล์ แล้วกด "นับเซลล์"'); setMode('roi');
+  };
+  im.onerror=()=>{URL.revokeObjectURL(url);setStatus('เปิดรูปนี้ไม่ได้ ลองไฟล์ JPG หรือ PNG','err');};
+  im.src=url;
+}
+$('cam').onchange=e=>{loadFile(e.target.files[0]);e.target.value='';};
+$('pick').onchange=e=>{loadFile(e.target.files[0]);e.target.value='';};
+function prepare(){
+  src.width=raw.width; src.height=raw.height; sctx.drawImage(raw,0,0);
+  if(!$('enh').checked) return;
+  const id=sctx.getImageData(0,0,src.width,src.height), d=id.data, hist=new Uint32Array(256);
+  for(let j=0;j<d.length;j+=16) hist[(d[j]*.299+d[j+1]*.587+d[j+2]*.114)|0]++;
+  const tot=hist.reduce((a,b)=>a+b,0); let acc=0,lo=0,hi=255;
+  for(let i=0;i<256;i++){acc+=hist[i];if(acc<tot*.01)lo=i;if(acc<tot*.995)hi=i;}
+  if(hi-lo<20) return;
+  const s=255/(hi-lo);
+  for(let j=0;j<d.length;j+=4)for(let c=0;c<3;c++){const v=(d[j+c]-lo)*s;d[j+c]=v<0?0:v>255?255:v;}
+  sctx.putImageData(id,0,0);
+}
+$('enh').onchange=()=>{lastHM=null;prepare();render();};
+$('diam').oninput=()=>{lastHM=null;$('diamOut').textContent=$('diam').value;render();};
+
+/* ---------- shared: frame + boundary rule ---------- */
+const frame=()=>roi||{x:0,y:0,w:src.width,h:src.height};
+function applyBoundary(list){
+  if(!roi) return list; const r=roi, rad=diam()/2;
+  return list.filter(p=>p.x>=r.x-rad&&p.y>=r.y-rad&&p.x<r.x+r.w-rad&&p.y<r.y+r.h-rad);
+}
+function dedupe(list){const d=diam()*.55,out=[];for(const p of list)if(!out.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<d))out.push(p);return out;}
+
+/* ---------- CellNet on the lab Mac ---------- */
+let INFO=null, lastHM=null;
+const api=(p,o)=>fetch(p,{credentials:'same-origin',...o});
+async function ping(){
+  try{const r=await api('api/info');if(!r.ok)throw new Error(r.status);INFO=await r.json();globalThis.CC_INFO=INFO;
+    $('srv').textContent=`Mac ออนไลน์ · ${INFO.version}${INFO.engine?" · "+INFO.engine.split(" (")[0]:""}`;$('srv').style.color='var(--good)';
+    $('thr').value=Math.round(INFO.thr*100);$('thrOut').textContent=INFO.thr.toFixed(2);}
+  catch(e){INFO=null;$('srv').textContent='ติดต่อ Mac ไม่ได้';$('srv').style.color='var(--warn)';}
+}
+ping(); setInterval(ping,60000);
+async function countCellNet(){
+  if(!INFO) await ping();
+  if(!INFO){setStatus('ติดต่อ Mac ไม่ได้ ตรวจว่าเปิดโปรแกรมบน Mac อยู่ หรือรีเฟรชหน้าเพื่อเข้าสู่ระบบใหม่','err');return;}
+  const r=frame(), mg=diam()*2;
+  const x0=Math.max(0,Math.floor(r.x-mg)),y0=Math.max(0,Math.floor(r.y-mg)),x1=Math.min(src.width,Math.ceil(r.x+r.w+mg)),y1=Math.min(src.height,Math.ceil(r.y+r.h+mg));
+  const s=Math.min(1,INFO.target/diam());          // never upload more pixels than the model needs
+  const c=document.createElement('canvas');c.width=Math.max(8,Math.round((x1-x0)*s));c.height=Math.max(8,Math.round((y1-y0)*s));
+  const cc=c.getContext('2d');cc.imageSmoothingQuality='high';cc.drawImage(src,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+  const blob=await new Promise(res=>c.toBlob(res,'image/jpeg',.93));
+  setStatus(`ส่งภาพ ${(blob.size/1e6).toFixed(1)} MB ไปนับบน Mac…`,'ai');
+  const t0=performance.now(); let j;
+  try{
+    const res=await api(`api/count?diam=${(diam()*s).toFixed(2)}`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob});
+    if(!res.ok){const m=await res.text().catch(()=>'' );throw new Error(res.status+' '+m.slice(0,120));}
+    j=await res.json();
+  }catch(e){setStatus(`นับไม่สำเร็จ (${e.message}) ถ้าเปิดหน้านี้ค้างไว้นาน ลองรีเฟรชเพื่อเข้าสู่ระบบใหม่`,'err');return;}
+  lastHM={pts:j.points.map(([x,y,p])=>({x:x0+(x+.5)/s-.5,y:y0+(y+.5)/s-.5,p})),secs:j.secs,rtt:(performance.now()-t0)/1000};
+  pickPeaks();
+}
+function pickPeaks(){
+  if(!lastHM) return; const thr=+$('thr').value/100;
+  const ordered=lastHM.pts.filter(p=>p.p>thr).sort((a,b)=>b.p-a.p);
+  cells=applyBoundary(dedupe(ordered)).map(({x,y})=>({x,y,src:'ai'})); removedAI=0; render();
+  setStatus(`CellNet พบ ${cells.length} เซลล์ · Mac นับ ${lastHM.secs.toFixed(1)} วิ, รวมส่งภาพ ${lastHM.rtt.toFixed(1)} วิ · ปรับ "ความเข้มงวด" ได้ทันที`,'ai');
+}
+$('thr').oninput=()=>{$('thrOut').textContent=(+$('thr').value/100).toFixed(2);pickPeaks();};
+$('countBtn').onclick=guard(countCellNet);
+
+/* ---------- drawing ---------- */
+function render(){
+  cv.width=src.width; cv.height=src.height; ctx.drawImage(src,0,0);
+  const lw=Math.max(1.5,cv.width/700), R=roi||drag;
+  if(R){ctx.save();ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.rect(0,0,cv.width,cv.height);ctx.rect(R.x,R.y,R.w,R.h);ctx.fill('evenodd');
+    ctx.setLineDash([lw*4,lw*3]);ctx.lineWidth=lw;ctx.strokeStyle='#ffd166';ctx.strokeRect(R.x,R.y,R.w,R.h);ctx.restore();}
+  const rad=diam()/2+lw*1.5;
+  ctx.lineWidth=lw;
+  for(const c of cells){ctx.strokeStyle='rgba(0,0,0,.6)';ctx.beginPath();ctx.arc(c.x,c.y,rad+lw,0,7);ctx.stroke();
+    ctx.strokeStyle='#29e0a8';ctx.beginPath();ctx.arc(c.x,c.y,rad,0,7);ctx.stroke();}
+  updateCounts();
+}
+
+/* ---------- pointer ---------- */
+const toImg=e=>{const b=cv.getBoundingClientRect();return{x:(e.clientX-b.left)*cv.width/b.width,y:(e.clientY-b.top)*cv.height/b.height};};
+let down=null;
+cv.addEventListener('pointerdown',e=>{down=toImg(e);cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!down||mode!=='roi')return;const p=toImg(e);
+  drag={x:Math.min(down.x,p.x),y:Math.min(down.y,p.y),w:Math.abs(p.x-down.x),h:Math.abs(p.y-down.y)};roi=null;render();});
+cv.addEventListener('pointerup',e=>{if(!down)return;const p=toImg(e),start=down;down=null;
+  if(mode==='roi'){
+    if(drag&&drag.w>15&&drag.h>15){roi=drag;lastHM=null;cells=applyBoundary(cells);setStatus('เลือกกรอบแล้ว กด "นับเซลล์"');}
+    else if(!drag){roi=null;setStatus('ยกเลิกกรอบ จะนับทั้งภาพ');}
+    drag=null;render();return;}
+  if(Math.hypot(p.x-start.x,p.y-start.y)>12)return;
+  let best=-1,bd=Infinity; cells.forEach((c,i)=>{const dd=Math.hypot(c.x-p.x,c.y-p.y);if(dd<bd){bd=dd;best=i;}});
+  const hit=bd<Math.max(diam()*.8,cv.width/80)?best:-1;
+  if(mode==='erase'){if(hit>=0){if(cells[hit].src==='ai')removedAI++;cells.splice(hit,1);}} else if(hit<0) cells.push({x:p.x,y:p.y,src:'man'});
+  render();
+});
+function setMode(m){mode=m;document.querySelectorAll('.seg button').forEach(o=>o.setAttribute('aria-pressed',o.dataset.mode===m));}
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+$('clearAll').onclick=()=>{cells=[];removedAI=0;render();};
+
+/* ---------- export training data ---------- */
+$('exportBtn').onclick=async()=>{
+  const r=frame(), mg=diam()*3;
+  const x0=Math.max(0,Math.floor(r.x-mg)),y0=Math.max(0,Math.floor(r.y-mg)),x1=Math.min(raw.width,Math.ceil(r.x+r.w+mg)),y1=Math.min(raw.height,Math.ceil(r.y+r.h+mg));
+  const c=document.createElement('canvas');c.width=x1-x0;c.height=y1-y0;c.getContext('2d').drawImage(raw,x0,y0,c.width,c.height,0,0,c.width,c.height);
+  const data={format:'cellcount-v1',source:truth?'synthetic':'photo',slot:SLOTS[slotIdx][0],cell_diameter_px:diam(),
+    roi:{x:r.x-x0,y:r.y-y0,w:r.w,h:r.h},cells:cells.map(p=>[+(p.x-x0).toFixed(1),+(p.y-y0).toFixed(1)]),
+    note:'cells = every cell the user confirmed inside the frame, boundary rule applied',image:c.toDataURL('image/jpeg',.95)};
+  const t=new Date(),pad=n=>String(n).padStart(2,'0');
+  const name=`cells_${t.getFullYear()}${pad(t.getMonth()+1)}${pad(t.getDate())}_${pad(t.getHours())}${pad(t.getMinutes())}${pad(t.getSeconds())}_${SLOTS[slotIdx][0]}.json`;
+  if(!cells.length){setStatus('ยังไม่มีจุดเซลล์ให้ส่ง','err');return;}
+  setStatus('กำลังส่งข้อมูลฝึกไป Mac…');
+  try{const res=await api('api/training?name='+encodeURIComponent(name),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(!res.ok)throw new Error(res.status);const j=await res.json();
+    setStatus(`เก็บบน Mac แล้ว (${cells.length} เซลล์) · ตอนนี้มีข้อมูลฝึก ${j.total} ช่อง`);}
+  catch(e){setStatus('ส่งข้อมูลฝึกไม่สำเร็จ ลองใหม่อีกครั้ง','err');}
+};
+
+/* ---------- slots (one record per corner) ---------- */
+let removedAI=0, lastCounter=null;
+const counterName=()=>{
+  if($('model')&&$('model').value!=='cellnet') return lastCounter||$('model').selectedOptions[0].textContent;
+  const v=MODE==='mac'?(globalThis.CC_INFO?.version||'CellNet'):(CELLNET_W?.version||'CellNet');
+  return `${v} (threshold ${(+$('thr').value/100).toFixed(2)})`;
+};
+function snapshot(){        // the counted frame (+ small margin) with every counted cell circled
+  const r=frame(), mg=Math.max(8,diam()*2);
+  const x0=Math.max(0,r.x-mg),y0=Math.max(0,r.y-mg),x1=Math.min(src.width,r.x+r.w+mg),y1=Math.min(src.height,r.y+r.h+mg);
+  const s=Math.min(1,1000/Math.max(x1-x0,y1-y0)), c=document.createElement('canvas');
+  c.width=Math.round((x1-x0)*s); c.height=Math.round((y1-y0)*s);
+  const g=c.getContext('2d'); g.drawImage(src,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
+  const lw=Math.max(1.2,c.width/650);
+  if(roi){g.setLineDash([lw*4,lw*3]);g.lineWidth=lw;g.strokeStyle='#ffd166';g.strokeRect((r.x-x0)*s,(r.y-y0)*s,r.w*s,r.h*s);g.setLineDash([]);}
+  const rad=Math.max(2.5,(diam()/2+1.5)*s);
+  for(const p of cells){const X=(p.x-x0)*s,Y=(p.y-y0)*s;
+    g.lineWidth=lw;g.strokeStyle='rgba(0,0,0,.65)';g.beginPath();g.arc(X,Y,rad+lw,0,7);g.stroke();
+    g.strokeStyle=p.src==='man'?'#ff9f1c':'#29e0a8';g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();}
+  return c.toDataURL('image/jpeg',.86);
+}
+function drawSlots(){
+  const box=$('slots'); box.innerHTML='';
+  SLOTS.forEach(([k,name],i)=>{const b=document.createElement('button');b.type='button'; const s=slots[k];
+    b.className='slot'+(s?' filled':'')+(i===slotIdx?' active':'');
+    b.innerHTML=`${s?`<img class="thumb" alt="" src="${s.thumb}">`:''}<small>${name}</small><span class="v">${s?s.n+' เซลล์':'ยังไม่นับ'}</span>`;
+    b.onclick=()=>{slotIdx=i;updateCounts();};box.appendChild(b);});
+  $('saveSlot').textContent=`บันทึกช่อง${SLOTS[slotIdx][1]}${slots[SLOTS[slotIdx][0]]?' (ทับของเดิม)':''}`;
+}
+$('saveSlot').onclick=()=>{
+  const ai=cells.filter(c=>c.src==='ai').length, added=cells.filter(c=>c.src==='man').length;
+  slots[SLOTS[slotIdx][0]]={n:cells.length,ai:ai+removedAI,added,removed:removedAI,thumb:snapshot(),
+    counter:counterName(),diam:diam(),at:new Date().toISOString(),sample:!!truth};
+  const next=SLOTS.findIndex(([k])=>!slots[k]); if(next>=0) slotIdx=next; updateCounts();
+  setStatus(next>=0?`บันทึกแล้ว ถ่ายช่อง${SLOTS[next][1]}ต่อได้เลย`:`ครบ ${SLOTS.length} ช่องแล้ว ตั้งชื่อรอบแล้วกด "บันทึกรายงาน"`);};
+
+/* ---------- statistics + report ---------- */
+function stats(){
+  const recs=SLOTS.map(([k,name,c])=>({k,name,c,s:slots[k]})), done=recs.filter(r=>r.s);
+  const v=done.map(r=>r.s.n), n=v.length, mean=n?v.reduce((a,b)=>a+b,0)/n:NaN;
+  const sd=n>1?Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/(n-1)):NaN;
+  const df=parseFloat($('df').value)||1, vol=parseFloat($('vol').value)||1e-4;
+  const ch={}; for(const r of done){const c=r.c||'A';(ch[c]||=[]).push(r.s.n);}
+  const chambers=Object.fromEntries(Object.entries(ch).map(([c,a])=>[c,a.reduce((x,y)=>x+y,0)/a.length]));
+  return {recs,done,n,total:SLOTS.length,mean,sd,cv:sd/mean*100,df,vol,perMl:mean*df/vol,chambers};
+}
+const pad2=n=>String(n).padStart(2,'0');
+const stamp=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+const expTxt=n=>{if(!isFinite(n)||n<=0)return '–';const e=Math.floor(Math.log10(n));return `${(n/10**e).toFixed(2)} × 10${String(e).split('').map(ch=>ch==='-'?'⁻':'⁰¹²³⁴⁵⁶⁷⁸⁹'[+ch]).join('')}`;};
+const loadImg=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=u;});
+async function buildReport(meta){
+  try{await document.fonts.load('600 40px "IBM Plex Sans Thai"');await document.fonts.load('400 30px "IBM Plex Mono"');}catch(e){}
+  const S=stats(), eight=S.total===8, COLS=eight?4:2, W=eight?2600:2000, P=60, cell=(W-P*(COLS+1))/COLS,
+        rows=Math.ceil(S.total/COLS), H=P+170+rows*(cell+P)+130+46*S.total+330+P;
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  const F='"IBM Plex Sans Thai",system-ui,sans-serif', M='"IBM Plex Mono",ui-monospace,monospace';
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#16202b';g.textBaseline='top';
+  g.font=`700 58px ${F}`;g.fillText(meta.name||'ไม่ได้ตั้งชื่อ',P,P,W-2*P);
+  g.font=`400 30px ${F}`;g.fillStyle='#5d6b78';
+  g.fillText(`${stamp(new Date(meta.at))}${meta.operator?' · '+meta.operator:''} · Neubauer improved · DF ${S.df} · ${S.vol} mL ต่อช่อง`,P,P+82,W-2*P);
+  g.fillText(`ตัวนับ: ${[...new Set(S.done.map(r=>r.s.counter))].join(', ')||'–'} + ตรวจแก้ด้วยตา`,P,P+124,W-2*P);
+  const top=P+180;
+  for(let i=0;i<S.total;i++){const R=S.recs[i],x=P+(i%COLS)*(cell+P),y=top+Math.floor(i/COLS)*(cell+P);
+    g.fillStyle='#eef1f4';g.fillRect(x,y,cell,cell);
+    if(R.s){const im=await loadImg(R.s.thumb); if(im){const k=Math.min(cell/im.width,cell/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,x+(cell-w)/2,y+(cell-h)/2,w,h);}}
+    else{g.fillStyle='#93a2b0';g.font=`500 40px ${F}`;g.textAlign='center';g.fillText('ไม่ได้นับ',x+cell/2,y+cell/2-20);g.textAlign='left';}
+    const lab=`${R.name}  ·  ${R.s?R.s.n+' เซลล์':'–'}`;g.font=`600 36px ${F}`;const tw=g.measureText(lab).width;
+    g.fillStyle='rgba(22,32,43,.82)';g.fillRect(x+16,y+16,tw+36,60);g.fillStyle='#fff';g.fillText(lab,x+34,y+26);}
+  // table
+  let y=top+rows*(cell+P)+10; const cols=[P,P+420,P+700,P+1000,P+1300];
+  g.font=`600 30px ${F}`;g.fillStyle='#5d6b78';
+  ['ช่อง','เซลล์ที่นับ','AI ตรวจพบ','เพิ่มเอง','ลบออก'].forEach((h,i)=>g.fillText(h,cols[i],y));
+  g.fillStyle='#d9dfe5';g.fillRect(P,y+46,W-2*P,2);y+=62;
+  for(const R of S.recs){g.font=`400 30px ${F}`;g.fillStyle='#16202b';g.fillText(R.name,cols[0],y);g.font=`400 30px ${M}`;
+    const v=R.s?[R.s.n,R.s.ai,R.s.added,R.s.removed]:['–','–','–','–'];v.forEach((t,i)=>g.fillText(String(t),cols[i+1],y));y+=46;}
+  g.fillStyle='#d9dfe5';g.fillRect(P,y+4,W-2*P,2);y+=24;
+  g.font=`600 34px ${F}`;g.fillStyle='#16202b';
+  g.fillText(`Mean ± SD: ${isFinite(S.mean)?S.mean.toFixed(1):'–'} ± ${isFinite(S.sd)?S.sd.toFixed(1):'–'} เซลล์/ช่อง   ·   CV ${isFinite(S.cv)?S.cv.toFixed(1)+'%':'–'}   ·   n = ${S.n}/${S.total}`,P,y,W-2*P);y+=56;
+  if(eight){g.font=`400 30px ${F}`;g.fillText(`Chamber A ${isFinite(S.chambers.A)?S.chambers.A.toFixed(1):'–'} · Chamber B ${isFinite(S.chambers.B)?S.chambers.B.toFixed(1):'–'} เซลล์/ช่อง`+(isFinite(S.chambers.A)&&isFinite(S.chambers.B)?`  (ต่างกัน ${(Math.abs(S.chambers.A-S.chambers.B)/((S.chambers.A+S.chambers.B)/2)*100).toFixed(1)}%)`:''),P,y,W-2*P);y+=50;}
+  g.font=`700 44px ${F}`;g.fillText(`${expTxt(S.perMl)} cells/mL`,P,y);y+=70;
+  g.font=`400 26px ${F}`;g.fillStyle='#5d6b78';
+  g.fillText(`นับ ${eight?'8 large squares มุม (2 chambers × 4)':'4 large squares มุม'} (ช่องละ 0.1 µL)`+' · นับเซลล์ที่ทับเส้นบน/ซ้าย ไม่นับเส้นล่าง/ขวา · cells/mL = ค่าเฉลี่ยทุกช่อง × DF ÷ ปริมาตรต่อช่อง',P,y,W-2*P);y+=38;
+  g.fillText('วงเขียว = ตรวจพบอัตโนมัติ · วงส้ม = เพิ่มด้วยมือ · กรอบเหลือง = ขอบ large square'+(S.done.some(r=>r.s.sample)?' · มีภาพจำลอง ไม่ใช่ข้อมูลจริง':''),P,y,W-2*P);
+  const out=document.createElement('canvas'); out.width=W; out.height=Math.min(H,Math.ceil(y+38+P));
+  out.getContext('2d').drawImage(c,0,0); return out;
+}
+function runMeta(){
+  const S=stats(), at=new Date().toISOString();
+  return {name:($('runName').value||'').trim(),at,n:S.n,mean:S.mean,sd:S.sd,cv:S.cv,df:S.df,vol:S.vol,cells_per_ml:S.perMl,
+    counter:[...new Set(S.done.map(r=>r.s.counter))].join(' / '),layout:S.total,chambers:S.chambers,
+    squares:Object.fromEntries(S.recs.map(r=>[r.k,r.s?{n:r.s.n,ai:r.s.ai,added:r.s.added,removed:r.s.removed,cell_diameter_px:r.s.diam,counted_at:r.s.at}:null]))};
+}
+const SQ8=LAYOUTS[8].map(([k])=>k);
+const CSV_HEAD=['name','date','operator','squares_planned',...SQ8.map(k=>'A-'+k).map(k=>k.replace('A-b-','B-')),'n_squares','mean','sd','cv_percent','chamber_A_mean','chamber_B_mean','dilution_factor','ml_per_square','cells_per_ml','counter'];
+const f2=v=>isFinite(v)?(+v).toFixed(2):'';
+const csvRow=m=>[m.name,stamp(new Date(m.at)),m.operator||'',m.layout||4,...SQ8.map(k=>m.squares[k]?.n??''),m.n,
+  f2(m.mean),f2(m.sd),isFinite(m.cv)?m.cv.toFixed(1):'',f2(m.chambers?.A),f2(m.chambers?.B),m.df,m.vol,isFinite(m.cells_per_ml)?m.cells_per_ml.toExponential(3):'',m.counter]
+  .map(v=>{v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',');
+const fileBase=m=>`${stamp(new Date(m.at)).replace(/[: ]/g,'').replace(/-/g,'')}_${(m.name||'cellcount').replace(/[^\p{L}\p{N}\p{M} ()_.,-]+/gu,'-').replace(/-+/g,'-').slice(0,60)}`;
+
+// history: on the Mac it lives on the server; in the artifact, per browser (numbers only, images stay in the PNG)
+const HKEY='cellcounter.runs.v1';
+const localRuns=()=>{try{return JSON.parse(localStorage.getItem(HKEY)||'[]');}catch(e){return [];}};
+async function loadHistory(){
+  let runs=[];
+  if(MODE==='mac'){try{const r=await fetch('api/runs',{credentials:'same-origin'});if(r.ok)runs=(await r.json()).runs;}catch(e){}}
+  else runs=localRuns();
+  const box=$('history');
+  if(!runs.length){box.innerHTML='<p class="note">ยังไม่มีรอบที่บันทึก</p>';return runs;}
+  box.innerHTML='';
+  for(const m of runs.slice(0,50)){const d=document.createElement('div');d.className='h';
+    const nm=document.createElement('b');nm.textContent=m.name||'ไม่ได้ตั้งชื่อ';
+    const v=document.createElement('span');v.className='n';v.textContent=expTxt(m.cells_per_ml);
+    const sub=document.createElement('span');sub.textContent=`${stamp(new Date(m.at))} · ${m.n}/${m.layout||4} ช่อง${m.operator?' · '+m.operator:''}`;
+    d.append(nm,v,sub);
+    if(m.report_url){const a=document.createElement('a');a.href=m.report_url;a.target='_blank';a.rel='noopener';a.textContent='ดูรายงาน';d.append(a);}
+    box.append(d);}
+  return runs;
+}
+async function saveFile(name,data,type){
+  if(MODE==='mac'){const b=data instanceof Blob?data:new Blob([data],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);return true;}
+  const dl=await (window.claude?.use?.('downloads')??Promise.resolve(null));
+  if(!dl){setStatus('หน้านี้บันทึกไฟล์ไม่ได้ในมุมมองนี้','err');return false;}
+  try{await dl.save({filename:name,data});return true;}catch(e){setStatus(e?.code==='declined'||e?.code==='cancelled'?'ยกเลิกการบันทึก':'บันทึกไฟล์ไม่สำเร็จ','err');return false;}
+}
+$('reportBtn').onclick=guard(async()=>{
+  const S=stats(); if(!S.n){setStatus('ยังไม่ได้บันทึกช่องไหนเลย','err');return;}
+  if(!$('runName').value.trim()){$('runName').focus();setStatus('ตั้งชื่อรอบก่อนบันทึกรายงาน','err');return;}
+  setStatus('กำลังสร้างรายงาน…');
+  const meta=runMeta(), canvas=await buildReport(meta), png=await new Promise(r=>canvas.toBlob(r,'image/png'));
+  if(MODE==='mac'){
+    const body={meta,csv_head:CSV_HEAD,csv_row:csvRow(meta),report_png:canvas.toDataURL('image/png'),images:Object.fromEntries(SLOTS.map(([k])=>[k,slots[k]?.thumb||null]))};
+    try{const r=await fetch('api/runs',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(!r.ok)throw new Error(r.status);const j=await r.json();
+      setStatus(`เก็บรายงานบน Mac แล้ว (${j.folder}) · กำลังดาวน์โหลดสำเนา…`);}
+    catch(e){setStatus('ส่งรายงานไป Mac ไม่สำเร็จ จะดาวน์โหลดลงเครื่องนี้แทน','err');}
+    await saveFile(fileBase(meta)+'.png',png,'image/png');
+  }else{
+    if(!await saveFile(fileBase(meta)+'.png',png,'image/png')) return;
+    try{const h=localRuns();h.unshift(meta);localStorage.setItem(HKEY,JSON.stringify(h.slice(0,200)));}catch(e){}
+    setStatus(`บันทึกรายงาน "${meta.name}" แล้ว`);
+  }
+  loadHistory();
+});
+$('csvBtn').onclick=guard(async()=>{
+  if(MODE==='mac'){location.href='reports/runs.csv';return;}
+  const runs=localRuns(); if(!runs.length){setStatus('ยังไม่มีรอบที่บันทึก','err');return;}
+  const csv='﻿'+[CSV_HEAD.join(','),...runs.slice().reverse().map(csvRow)].join('\n');
+  if(await saveFile(`cellcounts_${stamp(new Date()).slice(0,10)}.csv`,csv,'text/csv')) setStatus(`ส่งออก CSV ${runs.length} รอบแล้ว`);
+});
+$('newRun').onclick=()=>{for(const [k] of SLOTS) delete slots[k]; slotIdx=0; $('runName').value=''; updateCounts(); setStatus('เริ่มรอบใหม่แล้ว ตั้งชื่อรอบ แล้วถ่ายช่องบนซ้าย');};
+loadHistory();
+$('layout').onchange=()=>{const n=+$('layout').value;
+  const lost=Object.keys(slots).filter(k=>!LAYOUTS[n].some(([q])=>q===k));
+  if(lost.length&&!$('layout').dataset.confirm){$('layout').value=SLOTS.length;$('layout').dataset.confirm='1';
+    setStatus(`เปลี่ยนเป็น ${n} ช่องจะลบช่อง chamber B ที่บันทึกไว้ ${lost.length} ช่อง เลือกอีกครั้งเพื่อยืนยัน`,'err');return;}
+  delete $('layout').dataset.confirm; lost.forEach(k=>delete slots[k]);
+  SLOTS=LAYOUTS[n]; slotIdx=Math.max(0,SLOTS.findIndex(([k])=>!slots[k])); updateCounts();};
+const sup=e=>String(e).split('').map(ch=>ch==='-'?'⁻':'⁰¹²³⁴⁵⁶⁷⁸⁹'[+ch]).join('');
+const fmt=n=>{if(!isFinite(n))return '–';if(n===0)return '0';const e=Math.floor(Math.log10(n));return `${(n/10**e).toFixed(2)} × 10${sup(e)}`;};
+function truthCheck(){
+  const box=$('truthBox'); if(!truth||!cells.length){box.hidden=true;return;}
+  const rad=diam()*.6, used=new Set(); let tp=0, fp=0, tlOk=0, brBad=0;
+  for(const p of cells){let bj=-1,bd=rad;truth.forEach((t,j)=>{if(used.has(j))return;const d=Math.hypot(t.x-p.x,t.y-p.y);if(d<bd){bd=d;bj=j;}});
+    if(bj<0){fp++;continue;} used.add(bj); const t=truth[bj];
+    if(t.c){tp++; if(t.edge==='tl')tlOk++;} else {fp++; if(t.edge==='br')brBad++;}}
+  const T=truth.filter(t=>t.c).length, fn=T-tp;
+  box.hidden=false;
+  box.innerHTML=`<span class="label">เทียบเฉลย</span><b>นับได้ ${cells.length} / ${T} (คลาด ${((cells.length-T)/T*100).toFixed(1)}%)</b>
+    <span>ถูก ${tp} · พลาด ${fn} · เกิน ${fp}</span><span>เส้นบน/ซ้าย นับถูก ${tlOk}/8 · เส้นล่าง/ขวา ตัดถูก ${8-brBad}/8</span>`;
+}
+function updateCounts(){
+  $('nCells').textContent=cells.length; drawSlots(); truthCheck();
+  const saved=SLOTS.map(([k])=>slots[k]?.n).filter(v=>v!=null), set=saved.length?saved:[cells.length];
+  const n=set.length,sum=set.reduce((a,b)=>a+b,0), df=parseFloat($('df').value)||1, vol=parseFloat($('vol').value)||1e-4;
+  const avg=sum/n, total=avg*df/vol;
+  $('rAvg').textContent=avg.toFixed(1); $('rTotal').textContent=fmt(total);
+  $('formula').textContent=`(${sum} ÷ ${n}) × ${df} ÷ ${vol} mL = ${fmt(total)} cells/mL`;
+  $('basis').textContent=saved.length?`คิดจาก ${saved.length} ช่องที่บันทึกแล้ว${saved.length<SLOTS.length?` (ยังไม่ครบ ${SLOTS.length})`:''}`:'ยังไม่ได้บันทึกช่อง ผลด้านบนคิดจากภาพนี้เป็น 1 ช่อง';
+}
+$('df').oninput=updateCounts;$('vol').oninput=updateCounts;
+
+setTimeout(guard(()=>makeSample(sampleSeed)),50);
+})();
+</script>
+</body></html>

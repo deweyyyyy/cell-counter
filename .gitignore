@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Your lab data stays local
+server/reports/*
+!server/reports/.keep
+server/training_data/*
+!server/training_data/.keep
+
+# Training outputs
+training/*.keras
+training/best.json
+training/preview.png
+training/cellnet_w.json
+
+.DS_Store
