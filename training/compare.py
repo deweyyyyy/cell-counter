@@ -7,7 +7,7 @@ X, Y, C = dataset(600, 77_000_000)                      # seeds far from both tr
 Xn = np.stack([norm(x.astype(np.float32) / 255) for x in X])
 ok = lambda q: (q[:, 0] >= 6) & (q[:, 1] >= 6) & (q[:, 0] < P - 6) & (q[:, 1] < P - 6)
 for name in sys.argv[1:]:
-    m = tf.keras.models.load_model(name, custom_objects={"loss_fn": loss_fn})
+    m = tf.keras.models.load_model(name, compile=False)
     pv = m.predict(Xn, batch_size=32, verbose=0)[..., 0]
     print(name)
     for thr in (.6, .7, .78, .85):

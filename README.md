@@ -12,7 +12,7 @@ Count cells on a Neubauer-improved hemocytometer from a phone photo. Photograph 
 - **Reports:** a PNG with every square's image, a per-square table (found by the model / added / removed) and the method line. Every round is also appended to one `runs.csv`.
 - **Training data:** squares you have corrected can be saved as training data for a better model.
 
-> **Accuracy:** the bundled model (CellNet v0.2) was trained only on simulated hemocytometer images. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
+> **Accuracy:** the bundled model (CellNet v0.3) was trained on simulated hemocytometer images plus a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
 
 ## Run it on your computer
 

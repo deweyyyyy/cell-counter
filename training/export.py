@@ -8,10 +8,10 @@ Copy the resulting cellnet_w.json into ../server/ and restart the server.
 import os, json, base64
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import numpy as np, tensorflow as tf
-from train import loss_fn
+
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-m = tf.keras.models.load_model(os.environ.get("MODEL", os.path.join(HERE, "cellnet.keras")), custom_objects={"loss_fn": loss_fn})
+m = tf.keras.models.load_model(os.environ.get("MODEL", os.path.join(HERE, "cellnet.keras")), compile=False)
 convs = [l for l in m.layers if isinstance(l, tf.keras.layers.Conv2D)]
 assert len(convs) == 11, "unexpected architecture"
 buf, layers = [], []
