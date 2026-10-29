@@ -12,6 +12,9 @@ Endpoints
   POST /api/runs      a named counting round: report PNG + each square's image; saved under reports/
   GET  /api/runs      saved rounds, newest first
   GET  /reports/...   saved report files, and reports/runs.csv (all rounds, opens in Excel)
+  GET  /api/lab       the lab log: every count, passage, treatment, harvest, culture and compound
+  POST /api/lab/event add one lab-log event (idempotent by its "id", so offline phones can resend safely)
+  GET  /sw.js, /manifest.webmanifest   let the page open and record entries without internet
 """
 import argparse, base64, csv, io, json, os, platform, re, sys, threading, time
 from datetime import datetime
@@ -27,6 +30,34 @@ DATA = os.path.join(HERE, "training_data"); os.makedirs(DATA, exist_ok=True)
 REPORTS = os.path.join(HERE, "reports"); os.makedirs(REPORTS, exist_ok=True)
 CSV_PATH = os.path.join(REPORTS, "runs.csv")
 FILE_LOCK = threading.Lock()
+LAB = os.path.join(HERE, "lab"); os.makedirs(LAB, exist_ok=True)
+LAB_LOG = os.path.join(LAB, "events.jsonl")
+LAB_LOCK = threading.Lock()
+EVENT_TYPES = {"count", "passage", "treat", "harvest", "culture", "compound", "note", "discard", "delete"}
+
+def lab_events():
+    if not os.path.exists(LAB_LOG): return []
+    out = []
+    for line in open(LAB_LOG, encoding="utf-8"):
+        line = line.strip()
+        if line:
+            try: out.append(json.loads(line))
+            except Exception: pass
+    return out
+
+def lab_add(ev, who):
+    """Append one event; an event whose id is already stored is ignored (safe to resend)."""
+    if not isinstance(ev, dict) or ev.get("type") not in EVENT_TYPES: raise ValueError("unknown event type")
+    eid = str(ev.get("id", ""))
+    if not re.fullmatch(r"[A-Za-z0-9_-]{6,64}", eid): raise ValueError("bad event id")
+    raw = json.dumps(ev, ensure_ascii=False)
+    if len(raw) > 200_000: raise ValueError("event too large")
+    with LAB_LOCK:
+        if any(e.get("id") == eid for e in lab_events()): return False
+        ev = dict(ev, by=who, received=datetime.now().isoformat(timespec="seconds"))
+        os.makedirs(LAB, exist_ok=True)
+        with open(LAB_LOG, "a", encoding="utf-8") as f: f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+    return True
 def _page(name):
     """Pages are read on each request, so replacing a file needs no restart."""
     return open(os.path.join(HERE, name), "rb").read()
@@ -88,6 +119,9 @@ class H(BaseHTTPRequestHandler):
     def do_GET(self):
         p = _strip_old(self.path.split("?")[0])
         if p in ("/", "/index.html"): return self.send(200, _page("app.html"), "text/html; charset=utf-8")
+        if p == "/sw.js": return self.send(200, _page("sw.js"), "text/javascript; charset=utf-8")
+        if p == "/manifest.webmanifest": return self.send(200, _page("manifest.webmanifest"), "application/manifest+json")
+        if p == "/api/lab": return self.send(200, {"events": lab_events(), "now": datetime.now().astimezone().isoformat(timespec="seconds")})
         if p in ("/old", "/old/", "/old/index.html"):
             classic = "classic.html" if os.path.exists(os.path.join(HERE, "classic.html")) else "index.html"
             return self.send(200, _page(classic), "text/html; charset=utf-8")
@@ -110,6 +144,10 @@ class H(BaseHTTPRequestHandler):
             if p == "/api/count": return self.count(args)
             if p == "/api/training": return self.training(args)
             if p == "/api/runs": return self.save_run()
+            if p == "/api/lab/event":
+                ev = json.loads(self.body()); new = lab_add(ev, self.who())
+                if new: log(f"lab    {self.who():30s} {ev.get('type'):8s} {str(ev.get('title') or ev.get('name') or '')[:50]}")
+                return self.send(200, {"ok": True, "new": new})
             self.send(404, {"error": "not found"})
         except ValueError as e:
             self.send(400, {"error": str(e)})
@@ -214,7 +252,8 @@ if __name__ == "__main__":
     host = "0.0.0.0" if a.lan else "127.0.0.1"
     srv = ThreadingHTTPServer((host, a.port), H)
     log("checking the fastest way to run CellNet on this machine…")
-    log("engine:", pick_backend())
+    try: log("engine:", pick_backend())
+    except Exception as e: log("engine check failed, using CPU:", repr(e)); NET.mx = None; NET.backend = "NumPy (CPU)"
     log(f"CellNet {NET.version} ready on http://{host}:{a.port}  (Ctrl+C to stop)")
     if a.lan:
         log("LAN mode: anyone on this network can open it without logging in")

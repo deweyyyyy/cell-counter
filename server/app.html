@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#F4F6FA">
 <title>Cell Counter</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 30 30%22%3E%3Crect width=%2230%22 height=%2230%22 rx=%228%22 fill=%22%232E4FB3%22/%3E%3Cpath d=%22M8 8h14v14H8z M15 8v14 M8 15h14%22 stroke=%22white%22 stroke-width=%221.6%22 fill=%22none%22/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -159,6 +160,87 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(92vw,460px);background:var(--ink);color:#fff;font-size:14px;padding:10px 16px;border-radius:12px;z-index:20;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 .toast.err{background:var(--bad)}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* lab module */
+.home-main{display:flex;flex-direction:column;gap:16px;padding:6px 16px 28px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin:0 4px}
+.sec-h h2{margin:0;font-size:13px;font-weight:600;color:var(--ink2)}
+.sec-h a,.sec-h button{font-size:13px;font-weight:600;color:var(--trypan);background:none;border:0;text-decoration:none;padding:6px 0}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.action{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;min-height:96px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-align:left}
+.action.primary{background:var(--trypan);border-color:var(--trypan);color:#fff}
+.action b{font-size:15px}.action span{font-size:12px;color:var(--muted)}.action.primary span{color:#DCE4FA}
+.due{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.due.soon{background:var(--warn-bg);border-color:#F2D7A8}.due.late{background:var(--bad-bg);border-color:#F3C4B6}
+.due .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.due .tx b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.due .tx span{font-size:12px;color:var(--muted)}
+.due.soon .tx span{color:var(--warn)}.due.late .tx span{color:var(--bad)}
+.due button{min-height:40px;border-radius:10px;border:1.5px solid var(--line2);background:var(--surface);font-size:13px;font-weight:600;padding:0 12px;white-space:nowrap}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:11px 14px;border:0;border-top:1px solid #EDF0F5;background:transparent;text-align:left;width:100%;color:var(--ink)}
+.item:first-child{border-top:0}
+.item .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.item .tx b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .tx span{font-size:12px;color:var(--muted)}
+.pnum{font-family:var(--m);font-size:13px;font-weight:600;color:var(--trypan);background:var(--trypan-tint);padding:4px 8px;border-radius:8px;white-space:nowrap}
+.side{font-size:12px;color:var(--muted);white-space:nowrap}
+.mini{min-height:34px;border-radius:9px;border:1px solid var(--line2);background:var(--surface);font-size:12px;font-weight:600;padding:0 10px;color:var(--ink2)}
+.mini.danger{color:var(--bad)}
+.form{display:flex;flex-direction:column;gap:14px;padding:4px 16px 24px}
+.field select,.field textarea{font:inherit;font-size:16px;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);width:100%;min-width:0;color:var(--ink)}
+.field textarea{min-height:72px;resize:vertical}
+.field select:focus,.field textarea:focus{border-color:var(--trypan);outline:none;box-shadow:0 0 0 3px var(--trypan-tint)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;background:#E8ECF3;padding:4px;border-radius:12px}
+.seg button{min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--ink2);font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(16,24,43,.12)}
+.sqgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sqgrid .field input{font-family:var(--m);font-size:20px;text-align:center}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.box.tight{gap:8px}
+.vrow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.9fr);gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--ground)}
+.vrow .field label{font-size:12px}
+.vrow .field input,.vrow .field select{font-size:15px;padding:9px 10px}
+.vrow .wide{grid-column:1/-1}
+.vrow .foot-row{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.calc{background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.calc .eb{font-size:12px;font-weight:600;color:#A9B2C6;letter-spacing:.04em}
+.calc table{width:100%;border-collapse:collapse;font-size:13px}
+.calc th{font-size:11px;font-weight:500;color:#A9B2C6;text-align:right;padding:2px 0}
+.calc th:first-child,.calc td:first-child{text-align:left}
+.calc td{padding:4px 0;text-align:right;font-family:var(--m);font-variant-numeric:tabular-nums}
+.calc td:first-child{font-family:var(--f)}
+.calc .note{font-size:12px;color:#A9B2C6}
+.calc .warn{color:#FFC27A}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:12px}
+.chip b{font-weight:600}.chip span{color:var(--muted)}
+.chip button{border:0;background:none;color:var(--muted);font-size:14px;padding:0 0 0 2px;min-height:auto}
+.dot12{width:12px;height:12px;border-radius:50%;flex:none}
+.grp{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.grp-h{display:flex;align-items:center;gap:8px}
+.grp-h input{flex:1;min-width:0;font:inherit;font-size:15px;font-weight:600;border:0;border-bottom:1.5px dashed var(--line2);padding:4px 2px;background:transparent}
+.grp-row{display:grid;grid-template-columns:minmax(0,1fr) 86px 34px;gap:6px;align-items:center}
+.grp-row select,.grp-row input{font:inherit;font-size:14px;padding:8px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);min-width:0;width:100%}
+.grp-row .u{font-size:12px;color:var(--muted)}
+.grp-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.grp-meta label{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--muted)}
+.grp-meta input{font:inherit;font-size:14px;padding:8px;border:1.5px solid var(--line);border-radius:10px;min-width:0;width:100%}
+.platemap{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.plate{display:grid;gap:3px;background:var(--ground);padding:6px;border-radius:8px}
+.form input,.form select,.form textarea,.form button,.box input,.box button{scroll-margin-bottom:110px}
+.well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
+.well.empty{border:1.5px dashed var(--line2)}
+.logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.ev{display:grid;grid-template-columns:36px minmax(0,1fr);gap:2px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.ev .ic{grid-row:span 3;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.ev .hd{display:flex;justify-content:space-between;gap:8px}.ev .hd b{font-size:14px}
+.ev .hd .tm{font-family:var(--m);font-size:12px;color:var(--muted)}
+.ev .sb{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.ev .acts{display:flex;gap:8px;margin-top:4px}
+.ev.pending{border-style:dashed}
+.filters{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 8px}
+.filters button{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-size:13px}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
 .lang button{border:0;background:transparent;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);min-height:32px}
 .lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
@@ -168,16 +250,44 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 <div class="app">
 
 <!-- ================= 1 · START ================= -->
-<section class="screen" id="sStart" aria-labelledby="hStart">
+<section class="screen" id="sHome" aria-labelledby="hHome">
   <header class="top" style="padding-left:20px;padding-right:20px;justify-content:space-between;flex-wrap:wrap;row-gap:8px">
     <div style="display:flex;align-items:center;gap:10px">
       <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="#2E4FB3"/><path d="M8 8h14v14H8z M15 8v14 M8 15h14" stroke="#fff" stroke-width="1.6" fill="none"/></svg>
-      <div style="display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">Cell Counter</span><span style="font-size:12px;color:var(--muted)">Neubauer improved</span></div>
+      <div style="display:flex;flex-direction:column"><span id="hHome" style="font-size:17px;font-weight:700">Cell Lab</span><span style="font-size:12px;color:var(--muted)" id="homeDate"></span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
       <div class="lang" role="group" aria-label="Language / ภาษา"><button type="button" data-lang="th" aria-pressed="true">TH</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
       <span class="pill off" id="macPill" role="status"><span class="dot"></span><span id="macText"></span></span>
     </div>
+  </header>
+  <div class="home-main">
+    <div class="notice warn" id="syncNote" hidden style="margin:0"><span id="syncText"></span><button type="button" id="syncBtn" data-i18n="syncNow"></button></div>
+    <section id="dueSec" hidden style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hDue">
+      <div class="sec-h"><h2 id="hDue" data-i18n="dueTitle"></h2></div>
+      <div id="dueList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </section>
+    <div class="actions">
+      <button type="button" class="action primary" id="goCamera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actCamera"></b><span data-i18n="actCameraSub"></span></span></button>
+      <button type="button" class="action" id="goManual"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actManual"></b><span data-i18n="actManualSub"></span></span></button>
+      <button type="button" class="action" id="goPassage"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span style="display:flex;flex-direction:column"><b>Passage</b><span data-i18n="actPassageSub"></span></span></button>
+      <button type="button" class="action" id="goTreat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/></svg><span style="display:flex;flex-direction:column"><b>Treat</b><span data-i18n="actTreatSub"></span></span></button>
+    </div>
+    <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
+      <div class="sec-h"><h2 id="hCult" data-i18n="culturesTitle"></h2><button type="button" id="goAddCulture" data-i18n="addCulture"></button></div>
+      <div class="list" id="cultList"></div>
+    </section>
+    <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hRecentLab">
+      <div class="sec-h"><h2 id="hRecentLab" data-i18n="recentLog"></h2><button type="button" id="goLog" data-i18n="allLog"></button></div>
+      <div class="list" id="homeLog"></div>
+    </section>
+  </div>
+</section>
+
+<section class="screen" id="sStart" aria-labelledby="hStart" hidden>
+  <header class="top">
+    <button type="button" class="icon-btn" id="startBack" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b data-i18n="actCamera"></b><span>Neubauer improved · CellNet</span></div>
   </header>
   <div class="start-main">
     <h1 id="hStart" data-i18n="startTitle"></h1>
@@ -309,12 +419,108 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <span class="formula" id="sFormula"></span>
     </section>
     <section class="thumbs" id="sThumbs" data-i18n-aria="squareImages"></section>
+    <button type="button" class="btn" id="sumPassage" data-i18n="useForPassage"></button>
     <div class="small-actions"><button type="button" id="sendTrain" data-i18n="sendTraining"></button></div>
   </div>
   <footer class="foot">
     <button type="button" class="btn primary" id="reportBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg><span id="reportLab"></span></button>
     <div class="row2"><a class="btn" href="reports/runs.csv" data-i18n="exportCsv"></a><button type="button" class="btn" id="nextRun" data-i18n="nextRound"></button></div>
   </footer>
+</section>
+
+<!-- ================= MANUAL COUNT ================= -->
+<section class="screen" id="sManual" hidden aria-labelledby="hManual">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hManual" data-i18n="actManual"></b><span data-i18n="manualSub"></span></div></header>
+  <div class="form">
+    <div class="field"><label for="mName" data-i18n="sampleName"></label><input id="mName" type="text" maxlength="120" autocomplete="off" data-i18n-ph="sampleNamePh"></div>
+    <div class="field"><label for="mCulture" data-i18n="fromCulture"></label><select id="mCulture"></select></div>
+    <div><div class="legend" style="margin-bottom:8px" data-i18n="squaresCounted"></div>
+      <div class="seg" role="group" data-i18n-aria="squaresCounted"><button type="button" data-mlayout="4" aria-pressed="true" data-i18n="four"></button><button type="button" data-mlayout="8" aria-pressed="false" data-i18n="eight"></button></div></div>
+    <div class="sqgrid" id="mSquares"></div>
+    <div class="field"><label for="mDf">Dilution factor</label><input id="mDf" class="mono" type="text" inputmode="decimal" value="2"></div>
+    <section class="card" data-i18n-aria="results">
+      <div style="display:flex;flex-direction:column;gap:2px"><span class="eyebrow">CELLS / mL</span><span class="big" id="mPerMl">–</span></div>
+      <div class="res"><div class="stat"><span data-i18n="meanPerSquare"></span><b id="mMean">–</b></div><div class="stat"><span>SD</span><b id="mSd">–</b></div><div class="stat" id="mCvBox"><span id="mCvLab">CV</span><b id="mCv">–</b></div></div>
+      <span class="formula" id="mFormula"></span>
+    </section>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="mSave" data-i18n="saveCount"></button>
+    <button type="button" class="btn" id="mSavePassage" data-i18n="saveThenPassage"></button></footer>
+</section>
+
+<!-- ================= PASSAGE ================= -->
+<section class="screen" id="sPassage" hidden aria-labelledby="hPassage">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hPassage">Sub passage</b><span data-i18n="passageSub"></span></div><span class="pill blue mono" id="pPill"></span></header>
+  <div class="form">
+    <div class="field"><label for="pSource" data-i18n="sourceCulture"></label><select id="pSource"></select></div>
+    <div class="row2"><div class="field"><label for="pLine" data-i18n="cellLine"></label><input id="pLine" type="text" maxlength="60" value="Hep-55.1C"></div>
+      <div class="field"><label for="pTo" data-i18n="newPassage"></label><input id="pTo" class="mono" type="text" inputmode="numeric" placeholder="14"></div></div>
+    <div class="field"><label for="pCount" data-i18n="useCount"></label><select id="pCount"></select></div>
+    <div class="field" id="pCpmWrap" hidden><label for="pCpm" data-i18n="cellsPerMl"></label><input id="pCpm" class="mono" type="text" inputmode="decimal" placeholder="4.57e6"><span class="hint" data-i18n="sciHint"></span></div>
+    <div><div class="sec-h" style="margin-bottom:8px"><h2 data-i18n="newVessels"></h2></div><div id="pOut" style="display:flex;flex-direction:column;gap:8px"></div>
+      <button type="button" class="btn" id="pAddOut" style="margin-top:8px;width:100%" data-i18n="addVessel"></button></div>
+    <section class="calc" id="pCalc" aria-live="polite"></section>
+    <div class="field"><label for="pNotes" data-i18n="notes"></label><textarea id="pNotes" maxlength="1000"></textarea></div>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="pSave" data-i18n="savePassage"></button></footer>
+</section>
+
+<!-- ================= TREAT ================= -->
+<section class="screen" id="sTreat" hidden aria-labelledby="hTreat">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hTreat">Treat cells</b><span data-i18n="treatSub"></span></div><span class="pill blue" id="tPill"></span></header>
+  <div class="form">
+    <div class="field"><label for="tName" data-i18n="expName"></label><input id="tName" type="text" maxlength="120" autocomplete="off" data-i18n-ph="expNamePh"></div>
+    <div class="field"><label for="tCulture" data-i18n="whichCells"></label><select id="tCulture"></select></div>
+    <div class="row2"><div class="field"><label for="tVessel" data-i18n="plateType"></label><select id="tVessel"></select></div>
+      <div class="field"><label for="tPlates" data-i18n="howMany"></label><input id="tPlates" class="mono" type="text" inputmode="numeric" value="2"></div></div>
+    <div class="row2"><div class="field"><label for="tVol" data-i18n="mediumPerWell"></label><input id="tVol" class="mono" type="text" inputmode="decimal" value="2"></div>
+      <div class="field"><label for="tExtra" data-i18n="extraPct"></label><input id="tExtra" class="mono" type="text" inputmode="decimal" value="10"></div></div>
+    <div class="box tight"><div class="sec-h"><h2 data-i18n="compounds"></h2></div><div class="chips" id="tLib"></div>
+      <details id="tAddCmp"><summary style="font-size:13px;font-weight:600;color:var(--trypan);cursor:pointer;padding:6px 0" data-i18n="addCompound"></summary>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">
+          <div class="field"><label for="cmpName" data-i18n="cmpName"></label><input id="cmpName" type="text" maxlength="60" data-i18n-ph="cmpNamePh"></div>
+          <div class="row2"><div class="field"><label for="cStock" data-i18n="stockConc"></label><input id="cStock" class="mono" type="text" inputmode="decimal" placeholder="100"></div>
+            <div class="field"><label for="cUnit" data-i18n="unit"></label><select id="cUnit"><option value="mM">mM</option><option value="uM">µM</option></select></div></div>
+          <div class="field"><label for="cSolvent" data-i18n="solvent"></label><select id="cSolvent"><option value="DMSO">DMSO</option><option value="water" data-i18n="water"></option><option value="EtOH">EtOH</option><option value="medium" data-i18n="mediumSolvent"></option></select></div>
+          <button type="button" class="btn" id="cAdd" data-i18n="addToList"></button></div></details></div>
+    <div><div class="sec-h" style="margin-bottom:8px"><h2 id="tGroupsH"></h2></div><div id="tGroups" style="display:flex;flex-direction:column;gap:8px"></div>
+      <button type="button" class="btn" id="tAddGroup" style="margin-top:8px;width:100%" data-i18n="addGroup"></button></div>
+    <div><div class="sec-h" style="margin-bottom:8px"><h2 data-i18n="plateMap"></h2></div><div class="platemap" id="tMap"></div></div>
+    <section class="calc" id="tCalc" aria-live="polite"></section>
+    <div><div class="legend" style="margin-bottom:8px" data-i18n="duration"></div>
+      <div class="seg" role="group" data-i18n-aria="duration" id="tDurSeg"></div></div>
+    <div class="row2"><div class="field"><label for="tDur" data-i18n="hours"></label><input id="tDur" class="mono" type="text" inputmode="decimal" value="24"></div>
+      <div class="field"><label for="tStart" data-i18n="startAt"></label><input id="tStart" type="datetime-local"></div></div>
+    <p class="hint" id="tHarvest" style="margin:-6px 4px 0;font-size:13px;color:var(--ink2)"></p>
+    <div class="field"><label for="tNotes" data-i18n="notes"></label><textarea id="tNotes" maxlength="1000"></textarea></div>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="tSave" data-i18n="startTreat"></button></footer>
+</section>
+
+<!-- ================= LOG ================= -->
+<section class="screen" id="sLog" hidden aria-labelledby="hLog">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hLog" data-i18n="logTitle"></b><span id="logSub"></span></div></header>
+  <div class="filters" role="group" id="logFilters"></div>
+  <div class="form" id="logList" style="gap:8px"></div>
+  <footer class="foot"><div class="row2"><button type="button" class="btn" id="logCsv" data-i18n="exportCsv"></button><button type="button" class="btn" id="logNote" data-i18n="addNote"></button></div></footer>
+</section>
+
+<!-- ================= ADD CULTURE ================= -->
+<section class="screen" id="sCulture" hidden aria-labelledby="hCulture">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hCulture" data-i18n="addCulture"></b><span data-i18n="addCultureSub"></span></div></header>
+  <div class="form">
+    <div class="row2"><div class="field"><label for="kLine" data-i18n="cellLine"></label><input id="kLine" type="text" maxlength="60" value="Hep-55.1C"></div>
+      <div class="field"><label for="kPassage">Passage (P)</label><input id="kPassage" class="mono" type="text" inputmode="numeric" placeholder="12"></div></div>
+    <div class="row2"><div class="field"><label for="kVessel" data-i18n="vessel"></label><select id="kVessel"></select></div>
+      <div class="field"><label for="kQty" data-i18n="howMany"></label><input id="kQty" class="mono" type="text" inputmode="numeric" value="1"></div></div>
+    <div class="field"><label for="kNotes" data-i18n="notes"></label><textarea id="kNotes" maxlength="500" data-i18n-ph="cultureNotesPh"></textarea></div>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="kSave" data-i18n="saveCulture"></button></footer>
 </section>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -429,10 +635,11 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-function show(id){for(const s of ['sStart','sCount','sReview','sSummary']) $(s).hidden=s!==id; window.scrollTo(0,0);
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture'];
+function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
-  paintPill(); loadRecent(); checkResume();
+  paintPill(); loadRecent(); checkResume(); labRefreshLang();
   if(R&&!$('sCount').hidden){$('cMeta').textContent=t('perSquare',R.df);paintCount();}
   if(!$('sReview').hidden){$('rTitle').textContent=t('reviewOf',curName());setTool(tool);drawReview();}
   if(R&&!$('sSummary').hidden) paintSummary();
@@ -494,7 +701,7 @@ $('startBtn').onclick=()=>{
 };
 
 /* ---------------- count ---------------- */
-function enterCount(){$('cName').textContent=R.name;$('cMeta').textContent=t('perSquare',R.df);paintCount();show('sCount');}
+function enterCount(){$('cmpName').textContent=R.name;$('cMeta').textContent=t('perSquare',R.df);paintCount();show('sCount');}
 function nextEmpty(from){const s=slots();for(let i=1;i<=s.length;i++){const j=(from+i)%s.length;if(!R.slots[s[j][0]])return j;}return -1;}
 function paintNav(){
   const nav=$('slotNav');nav.innerHTML='';
@@ -791,7 +998,9 @@ $('reportBtn').onclick=async()=>{
     const meta=runMeta(),cv=await buildReport(meta);
     const body={meta,csv_head:CSV_HEAD,csv_row:csvRow(meta),report_png:cv.toDataURL('image/png'),images:Object.fromEntries(slots().map(([k])=>[k,R.slots[k]?.thumb||null]))};
     let onServer=false;
-    try{const r=await api('api/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});onServer=r.ok;}catch(e){}
+    let folder=null;
+    try{const r=await api('api/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});onServer=r.ok;if(r.ok)folder=(await r.json()).folder;}catch(e){}
+    recordCameraCount(meta,folder);
     const blob=await new Promise(r=>cv.toBlob(r,'image/png'));const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase(meta)+'.png';
     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
     reportSaved=true;$('reportLab').textContent=onServer?t('savedAgain'):t('downloadedOnly',host());
@@ -813,11 +1022,489 @@ $('nextRun').onclick=()=>{
   $('runName').value=m?`${m[1]}${m[2]}${+m[3]+1}`:R.name;
   layoutPick=R.layout;paintLayout();
   R=null;shot=null;reportSaved=false;lastRoiFrac=null;for(const k in training)delete training[k];store.del(KEY);checkResume();show('sStart');$('runName').focus();
+  cameraCountId=null;
 };
 window.addEventListener('beforeunload',saveRound);
 
+/* ================= LAB MODULE: home, manual count, passage, treat, log ================= */
+Object.assign(I18N.th,{
+  backHome:'กลับหน้าแรก',syncNow:'ส่งตอนนี้',dueTitle:'ต้องทำ',actCamera:'นับด้วยกล้อง',actCameraSub:'ถ่ายรูป · CellNet',actManual:'กรอกผลนับมือ',actManualSub:'ใช้ได้แม้ไม่มีเน็ต',
+  actPassageSub:'แบ่งเซลล์ลงภาชนะ',actTreatSub:'ใส่สาร · จับเวลา',treatSub:'ใส่สาร คำนวณ stock และจับเวลาเก็บเซลล์',culturesTitle:'เซลล์ที่เลี้ยงอยู่',addCulture:'+ เพิ่มขวด',recentLog:'บันทึกล่าสุด',allLog:'ดูทั้งหมด',
+  manualSub:'จำนวนเซลล์ที่นับเองในแต่ละช่อง',fromCulture:'นับจากขวด (ไม่บังคับ)',noneCulture:'— ไม่ระบุ —',saveCount:'บันทึกผลนับ',saveThenPassage:'บันทึก แล้วไป Passage ต่อ',
+  passageSub:'แบ่งเซลล์ลงภาชนะใหม่',sourceCulture:'ขวดต้นทาง',newSource:'— ขวดที่ไม่ได้บันทึกไว้ —',cellLine:'เซลล์',newPassage:'Passage ใหม่ (P)',useCount:'ใช้ผลนับ',
+  typeCpm:'— กรอก cells/mL เอง —',cellsPerMl:'cells/mL',sciHint:'พิมพ์ได้ทั้ง 4570000, 4.57e6 หรือ 4.57x10^6',newVessels:'ภาชนะใหม่',addVessel:'+ เพิ่มภาชนะ',notes:'หมายเหตุ',savePassage:'บันทึก passage',
+  vessel:'ภาชนะ',qty:'จำนวน',cellsPerUnit:u=>`เซลล์ต่อ${u}`,mediumPerUnit:u=>`medium ต่อ${u} (mL)`,purpose:'ใช้ทำ',purposeKeep:'เลี้ยงต่อ',purposeTreat:'treat',purposeOther:'อื่น ๆ',remove:'ลบ',
+  unitWell:'หลุม',unitDish:'จาน',unitFlask:'ขวด',plates:'เพลต',dishes:'จาน',flasks:'ขวด',
+  pipette:'ปิเปตเท่าไร',colSusp:'cell susp.',colMedium:'medium',perUnit:(v,u)=>`${v} · ต่อ${u}`,totalSusp:(ml,cells)=>`ใช้ cell suspension รวม ${ml} mL · ต้องการเซลล์ ${cells}`,
+  needCpm:'เลือกผลนับ หรือกรอก cells/mL ก่อน',suspTooMuch:'cell suspension มากกว่า medium ที่ใส่ได้ ลดจำนวนเซลล์ต่อหลุมลง',
+  expName:'ชื่อการทดลอง',expNamePh:'เช่น Pino + OGTi 24 h exp 4',whichCells:'เซลล์ที่ใช้',plateType:'ภาชนะ',howMany:'จำนวน',mediumPerWell:'medium ต่อหลุม (mL)',extraPct:'ทำเผื่อ (%)',
+  compounds:'สารที่ใช้',addCompound:'+ เพิ่มสาร',cmpName:'ชื่อสาร',cmpNamePh:'เช่น OSMI-1',stockConc:'ความเข้มข้น stock',unit:'หน่วย',solvent:'ตัวทำละลาย',water:'น้ำ',mediumSolvent:'medium',addToList:'เพิ่มลงรายการ',
+  groupsH:(n,w)=>`${n} กลุ่ม · ${w} หลุม`,addGroup:'+ เพิ่มกลุ่ม',groupName:'ชื่อกลุ่ม',glucose:'glucose (mM)',wellsN:'จำนวนหลุม',addCmpToGroup:'+ ใส่สาร',pickCompound:'เลือกสาร',
+  plateMap:'ผังเพลต',duration:'ระยะเวลา',hours:'ชั่วโมง',startAt:'เริ่ม',harvestAt:d=>`เก็บเซลล์ ${d}`,startTreat:'เริ่ม treat · จับเวลา',
+  calcTreat:'เตรียม medium ต่อกลุ่ม',colGroup:'กลุ่ม',colMed:'medium',vehicle:'vehicle',finalSolvent:(s,p)=>`${s} สุดท้าย ${p}% เท่ากันทุกกลุ่ม`,wellsOver:(a,b)=>`ใช้ ${a} หลุม แต่มี ${b} หลุม เพิ่มเพลตหรือลดหลุม`,
+  noStock:n=>`${n}: ใส่ความเข้มข้น stock ก่อน`,
+  logTitle:'บันทึก',addNote:'+ บันทึกเพิ่ม',fAll:'ทั้งหมด',fCount:'นับ',fPassage:'Passage',fTreat:'Treat',fOther:'อื่น ๆ',
+  addCultureSub:'ขวดที่ละลายใหม่ หรือที่ยังไม่ได้บันทึก',cultureNotesPh:'เช่น ละลายจาก cryovial 12 ต.ค.',saveCulture:'บันทึกขวด',
+  useForPassage:'ใช้ผลนี้ทำ Passage ต่อ',resumeGo:'นับต่อ',
+  evCount:'นับ',evPassage:'Passage',evTreat:'Treat',evHarvest:'เก็บเซลล์',evCulture:'เพิ่มขวด',evNote:'บันทึก',evDiscard:'นำขวดออก',evCompound:'เพิ่มสาร',
+  manual:'นับมือ',camera:'กล้อง',viewReport:'ดูรายงาน',harvested:'เก็บแล้ว',markHarvested:'เก็บแล้ว',discard:'นำออก',confirmTap:'แตะอีกครั้งเพื่อยืนยัน',deleteEntry:'ลบ',
+  inH:(h,m)=>h?`อีก ${h} ชม. ${m} นาที`:`อีก ${m} นาที`,lateBy:(h,m)=>h?`เลยมา ${h} ชม. ${m} นาที`:`เลยมา ${m} นาที`,due:d=>`ครบ ${d}`,
+  dayN:n=>`วันที่ ${n}`,treating:'กำลัง treat',noCultures:'ยังไม่มีขวดที่บันทึกไว้ · เพิ่มขวด หรือบันทึก passage',noLog:'ยังไม่มีบันทึก',
+  pendingN:n=>`ยังไม่ได้ส่ง ${n} รายการ (ออฟไลน์) จะส่งเองเมื่อเน็ตกลับมา`,saved:'บันทึกแล้ว',savedOffline:'บันทึกในเครื่องแล้ว จะส่งเมื่อเน็ตกลับมา',
+  needLine:'ใส่ชื่อเซลล์',needPassage:'ใส่เลข passage',needVessels:'เพิ่มภาชนะอย่างน้อย 1 อย่าง',needExp:'ตั้งชื่อการทดลอง',needGroups:'เพิ่มอย่างน้อย 1 กลุ่ม',needSquares:'กรอกจำนวนเซลล์อย่างน้อย 1 ช่อง',
+  noteText:'ข้อความบันทึก',notePrompt:'พิมพ์บันทึกแล้วกดบันทึก',saveNote:'บันทึก',cancel:'ยกเลิก',
+  today:'วันนี้',yesterday:'เมื่อวาน',passageArrow:(a,b)=>`P${a} → P${b}`,
+  cntLine:(m,cv,n,N)=>`${m} · ${n}/${N} ช่อง${cv}`,
+  vessels:{'6-well':'6-well plate','12-well':'12-well plate','24-well':'24-well plate','96-well':'96-well plate','dish-35':'จาน 35 mm','dish-60':'จาน 60 mm','dish-100':'จาน 100 mm','T25':'ขวด T25','T75':'ขวด T75','T175':'ขวด T175'}
+});
+Object.assign(I18N.en,{
+  backHome:'Back to home',syncNow:'Send now',dueTitle:'To do',actCamera:'Count with camera',actCameraSub:'Photo · CellNet',actManual:'Enter hand count',actManualSub:'Works without internet',
+  actPassageSub:'Split into new vessels',actTreatSub:'Add compounds · timer',treatSub:'Add compounds, work out stock volumes, set a harvest timer',culturesTitle:'Cultures',addCulture:'+ Add culture',recentLog:'Recent entries',allLog:'See all',
+  manualSub:'Cells you counted in each square',fromCulture:'Counted from (optional)',noneCulture:'— Not specified —',saveCount:'Save count',saveThenPassage:'Save, then passage',
+  passageSub:'Split cells into new vessels',sourceCulture:'Source culture',newSource:'— Not recorded here —',cellLine:'Cell line',newPassage:'New passage (P)',useCount:'Use count',
+  typeCpm:'— Type cells/mL —',cellsPerMl:'cells/mL',sciHint:'4570000, 4.57e6 or 4.57x10^6 all work',newVessels:'New vessels',addVessel:'+ Add vessel',notes:'Notes',savePassage:'Save passage',
+  vessel:'Vessel',qty:'How many',cellsPerUnit:u=>`Cells per ${u}`,mediumPerUnit:u=>`Medium per ${u} (mL)`,purpose:'For',purposeKeep:'Maintain',purposeTreat:'Treatment',purposeOther:'Other',remove:'Remove',
+  unitWell:'well',unitDish:'dish',unitFlask:'flask',plates:'plates',dishes:'dishes',flasks:'flasks',
+  pipette:'What to pipette',colSusp:'cell susp.',colMedium:'medium',perUnit:(v,u)=>`${v} · per ${u}`,totalSusp:(ml,cells)=>`${ml} mL of cell suspension in total · ${cells} cells needed`,
+  needCpm:'Choose a count or type cells/mL first',suspTooMuch:'More cell suspension than the vessel holds. Seed fewer cells per unit',
+  expName:'Experiment name',expNamePh:'e.g. Pino + OGTi 24 h exp 4',whichCells:'Cells used',plateType:'Vessel',howMany:'How many',mediumPerWell:'Medium per well (mL)',extraPct:'Extra (%)',
+  compounds:'Compounds',addCompound:'+ Add compound',cmpName:'Name',cmpNamePh:'e.g. OSMI-1',stockConc:'Stock concentration',unit:'Unit',solvent:'Solvent',water:'Water',mediumSolvent:'Medium',addToList:'Add to list',
+  groupsH:(n,w)=>`${n} groups · ${w} wells`,addGroup:'+ Add group',groupName:'Group name',glucose:'Glucose (mM)',wellsN:'Wells',addCmpToGroup:'+ Add compound',pickCompound:'Choose compound',
+  plateMap:'Plate map',duration:'Duration',hours:'Hours',startAt:'Start',harvestAt:d=>`Harvest ${d}`,startTreat:'Start treatment · timer',
+  calcTreat:'Medium per group',colGroup:'Group',colMed:'medium',vehicle:'vehicle',finalSolvent:(s,p)=>`Final ${s} ${p}% in every group`,wellsOver:(a,b)=>`${a} wells used but only ${b} available. Add a plate or use fewer wells`,
+  noStock:n=>`${n}: set the stock concentration first`,
+  logTitle:'Lab log',addNote:'+ Add note',fAll:'All',fCount:'Counts',fPassage:'Passage',fTreat:'Treat',fOther:'Other',
+  addCultureSub:'A newly thawed flask, or one not recorded yet',cultureNotesPh:'e.g. thawed from cryovial 12 Oct',saveCulture:'Save culture',
+  useForPassage:'Use this count for a passage',resumeGo:'Continue',
+  evCount:'Count',evPassage:'Passage',evTreat:'Treat',evHarvest:'Harvest',evCulture:'Culture added',evNote:'Note',evDiscard:'Culture removed',evCompound:'Compound added',
+  manual:'hand count',camera:'camera',viewReport:'View report',harvested:'Harvested',markHarvested:'Harvested',discard:'Remove',confirmTap:'Tap again to confirm',deleteEntry:'Delete',
+  inH:(h,m)=>h?`in ${h} h ${m} min`:`in ${m} min`,lateBy:(h,m)=>h?`${h} h ${m} min overdue`:`${m} min overdue`,due:d=>`due ${d}`,
+  dayN:n=>`day ${n}`,treating:'being treated',noCultures:'No cultures recorded yet. Add a culture or save a passage',noLog:'No entries yet',
+  pendingN:n=>`${n} entr${n>1?'ies':'y'} not sent yet (offline). They’ll be sent when you’re back online`,saved:'Saved',savedOffline:'Saved on this device. It will be sent when you’re back online',
+  needLine:'Enter the cell line',needPassage:'Enter the passage number',needVessels:'Add at least one vessel',needExp:'Name the experiment',needGroups:'Add at least one group',needSquares:'Enter the count for at least one square',
+  noteText:'Note',notePrompt:'Type a note and save',saveNote:'Save',cancel:'Cancel',
+  today:'Today',yesterday:'Yesterday',passageArrow:(a,b)=>`P${a} → P${b}`,
+  cntLine:(m,cv,n,N)=>`${m} · ${n}/${N} squares${cv}`,
+  vessels:{'6-well':'6-well plate','12-well':'12-well plate','24-well':'24-well plate','96-well':'96-well plate','dish-35':'35 mm dish','dish-60':'60 mm dish','dish-100':'100 mm dish','T25':'T25 flask','T75':'T75 flask','T175':'T175 flask'}
+});
+const VESSELS={'6-well':{wells:6,ml:2},'12-well':{wells:12,ml:1},'24-well':{wells:24,ml:.5},'96-well':{wells:96,ml:.1},'dish-35':{ml:2,kind:'dish'},'dish-60':{ml:4,kind:'dish'},'dish-100':{ml:10,kind:'dish'},'T25':{ml:5,kind:'flask'},'T75':{ml:15,kind:'flask'},'T175':{ml:30,kind:'flask'}};
+const vName=v=>(t('vessels')||{})[v]||v;
+const vUnit=v=>VESSELS[v]?.wells?t('unitWell'):VESSELS[v]?.kind==='dish'?t('unitDish'):t('unitFlask');
+const vMany=v=>VESSELS[v]?.wells?t('plates'):VESSELS[v]?.kind==='dish'?t('dishes'):t('flasks');
+const vUnits=(v,q)=>(VESSELS[v]?.wells||1)*q;
+const COLORS=['#C3CAD8','#F5B26B','#7E9BE8','#1F3A8A','#0F7A6E','#C2559B','#6B8E23','#8A5300'];
+const DARK=new Set(['#1F3A8A','#0F7A6E','#C2559B','#6B8E23','#8A5300']);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const num=s=>{if(s==null)return NaN;s=String(s).trim().replace(/,/g,'').replace(/×|x|X/,'e').replace(/\s/g,'');
+  const sup={'⁰':0,'¹':1,'²':2,'³':3,'⁴':4,'⁵':5,'⁶':6,'⁷':7,'⁸':8,'⁹':9,'⁻':'-'};s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g,m=>'^'+[...m].map(c=>sup[c]).join(''));
+  const m=s.match(/^([0-9.]+)e10\^?(-?\d+)$/i);if(m)return +m[1]*10**+m[2];if(/^[0-9.]+e\^?-?\d+$/i.test(s))return +s.replace('^','');return s===''?NaN:+s;};
+const fmtN=(v,d=2)=>!isFinite(v)?'–':Math.abs(v)>=100?Math.round(v).toString():(+v.toFixed(d)).toString();
+const fmtUl=ul=>!isFinite(ul)?'–':ul>=1000?`${(ul/1000).toFixed(2)} mL`:`${ul<10?ul.toFixed(1):Math.round(ul)} µL`;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shortDate=d=>{const n=new Date(),y=new Date(n);y.setDate(n.getDate()-1);const hm=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  return d.toDateString()===n.toDateString()?`${t('today')} ${hm}`:d.toDateString()===y.toDateString()?`${t('yesterday')} ${hm}`:niceDate(d);};
+
+/* ---------- events: server copy + offline outbox ---------- */
+const LAB={server:store.get('cc.labcache',[]),outbox:store.get('cc.outbox',[]),online:null};
+function allEvents(){const m=new Map();for(const e of LAB.server)m.set(e.id,e);for(const e of LAB.outbox)if(!m.has(e.id))m.set(e.id,{...e,pending:true});
+  const del=new Set([...m.values()].filter(e=>e.type==='delete').map(e=>e.target));
+  return [...m.values()].filter(e=>e.type!=='delete'&&!del.has(e.id)).sort((a,b)=>new Date(a.at)-new Date(b.at));}
+async function flushOutbox(){
+  let sent=0;
+  for(const ev of [...LAB.outbox]){
+    try{const r=await api('api/lab/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ev)});
+      if(!r.ok&&r.status!==400)throw 0; LAB.outbox=LAB.outbox.filter(e=>e.id!==ev.id); sent++;}
+    catch(e){LAB.online=false;break;}}
+  store.set('cc.outbox',LAB.outbox); return sent;
+}
+async function syncLab(){
+  await flushOutbox();
+  try{const r=await api('api/lab');if(!r.ok)throw 0;const j=await r.json();LAB.server=j.events||[];LAB.online=true;store.set('cc.labcache',LAB.server);}
+  catch(e){LAB.online=false;}
+  paintSync(); if(!$('sHome').hidden)paintHome(); if(!$('sLog').hidden)paintLog();
+}
+function addEvent(ev){
+  ev={id:uid(),at:new Date().toISOString(),...ev};
+  LAB.outbox=LAB.outbox.filter(e=>e.id!==ev.id);LAB.outbox.push(ev);store.set('cc.outbox',LAB.outbox);
+  flushOutbox().then(n=>{toast(LAB.outbox.some(e=>e.id===ev.id)?t('savedOffline'):t('saved'),false);syncLab();});
+  return ev;
+}
+function paintSync(){const n=LAB.outbox.length;$('syncNote').hidden=!n;if(n)$('syncText').textContent=t('pendingN',n);}
+$('syncBtn').onclick=()=>syncLab();
+window.addEventListener('online',()=>syncLab());
+
+/* ---------- derived state ---------- */
+function cultures(){
+  const c=new Map();
+  for(const e of allEvents()){
+    if(e.type==='culture'&&e.culture) c.set(e.culture.cid,{...e.culture,created:e.at,status:'active',src:e.id});
+    if(e.type==='passage'){ if(e.source_cid&&c.has(e.source_cid)) c.get(e.source_cid).status='passaged';
+      (e.outputs||[]).forEach(o=>c.set(o.cid,{cid:o.cid,line:e.line,passage:e.to_passage,vessel:o.vessel,qty:o.qty,purpose:o.purpose,created:e.at,status:'active',src:e.id}));}
+    if(e.type==='treat') (e.cids||[]).forEach(id=>{if(c.has(id)){c.get(id).status='treating';c.get(id).treat=e.id;}});
+    if(e.type==='harvest'){for(const x of c.values()) if(x.treat===e.treat_id) x.status='harvested';}
+    if(e.type==='discard'&&c.has(e.cid)) c.get(e.cid).status='discarded';
+  }
+  return [...c.values()];
+}
+const activeCultures=()=>cultures().filter(c=>c.status==='active'||c.status==='treating').sort((a,b)=>new Date(b.created)-new Date(a.created));
+const cultLabel=c=>`${c.line} · P${c.passage} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
+const openTreats=()=>{const ev=allEvents(),done=new Set(ev.filter(e=>e.type==='harvest').map(e=>e.treat_id));return ev.filter(e=>e.type==='treat'&&!done.has(e.id));};
+const counts=()=>allEvents().filter(e=>e.type==='count').reverse();
+const compoundsLib=()=>{const m=new Map([['Pinocembrin',{name:'Pinocembrin',stock:100,unit:'mM',solvent:'DMSO'}]]);
+  for(const e of allEvents()) if(e.type==='compound'&&e.compound) m.set(e.compound.name,e.compound);
+  for(const c of store.get('cc.localcmp',[])) if(!m.has(c.name)) m.set(c.name,c);
+  return [...m.values()];};
+const stockUM=c=>c?(c.unit==='uM'?+c.stock:+c.stock*1000):NaN;
+
+/* ---------- confirm-by-second-tap helper ---------- */
+const armed={};
+function confirmTwice(key){if(armed[key]&&Date.now()-armed[key]<4000){delete armed[key];return true;}armed[key]=Date.now();toast(t('confirmTap'),true);return false;}
+
+/* ---------- home ---------- */
+function durText(ms){const late=ms<0;ms=Math.abs(ms);const h=Math.floor(ms/3.6e6),m=Math.floor(ms%3.6e6/6e4);return late?t('lateBy',h,m):t('inH',h,m);}
+function paintHome(){
+  $('homeDate').textContent=niceDate(new Date()).split(' · ')[0];
+  paintSync();
+  // to do
+  const now=Date.now(),open=openTreats().sort((a,b)=>new Date(a.harvest_at)-new Date(b.harvest_at));
+  $('dueSec').hidden=!open.length; const dl=$('dueList'); dl.innerHTML='';
+  const rs=store.get(KEY,null);
+  if(rs&&rs.R&&Object.keys(rs.R.slots||{}).length&&!R){$('dueSec').hidden=false;const row=document.createElement('div');row.className='due soon';
+    row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg><span class="tx"><b></b></span><button type="button"></button>`;
+    row.querySelector('b').textContent=t('resumeText',rs.R.name,Object.keys(rs.R.slots).length,rs.R.layout);
+    const b=row.querySelector('button');b.id='homeResume';b.textContent=t('resumeGo');b.onclick=()=>{checkResume();show('sStart');$('resumeBtn').click();};dl.append(row);}
+  for(const e of open){const left=new Date(e.harvest_at)-now;const row=document.createElement('div');
+    row.className='due'+(left<0?' late':left<3*3.6e6?' soon':'');
+    row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span class="tx"><b></b><span></span></span><button type="button"></button>`;
+    row.querySelector('b').textContent=`${t('evHarvest')} · ${e.title}`;
+    row.querySelector('.tx span').textContent=`${t('due',shortDate(new Date(e.harvest_at)))} · ${durText(left)}`;
+    const b=row.querySelector('button');b.textContent=t('markHarvested');b.onclick=()=>{if(!confirmTwice('h'+e.id))return;addEvent({type:'harvest',treat_id:e.id,title:e.title});};
+    dl.append(row);}
+  // cultures
+  const cl=$('cultList');cl.innerHTML='';const list=activeCultures();
+  if(!list.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noCultures');cl.append(p);}
+  for(const c of list.slice(0,12)){const it=document.createElement('div');it.className='item';
+    const days=Math.floor((now-new Date(c.created))/864e5)+1;
+    it.innerHTML=`<span class="pnum"></span><span class="tx"><b></b><span></span></span><span class="side"></span><button type="button" class="mini"></button>`;
+    it.querySelector('.pnum').textContent='P'+c.passage;
+    it.querySelector('b').textContent=`${c.line} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
+    it.querySelector('.tx span').textContent=c.status==='treating'?t('treating'):`${c.purpose==='treat'?t('purposeTreat')+' · ':''}${shortDate(new Date(c.created))}`;
+    it.querySelector('.side').textContent=t('dayN',days);
+    const go=it.querySelector('.mini');
+    if(c.status==='treating'){go.textContent=t('logTitle');go.onclick=()=>openLog();}
+    else if(c.purpose==='treat'){go.textContent='Treat';go.onclick=()=>openTreat(c.cid);}
+    else{go.textContent='Passage';go.onclick=()=>openPassage({source:c.cid});}
+    cl.append(it);}
+  // recent log
+  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>e.type!=='compound').reverse().slice(0,4);
+  if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');hl.append(p);}
+  for(const e of ev){const d=describe(e);const it=document.createElement('button');it.type='button';it.className='item';
+    it.innerHTML=`<span class="tx"><b></b><span></span></span><span class="side"></span>`;it.querySelector('b').textContent=d.title;it.querySelector('.tx span').textContent=d.sub;
+    it.querySelector('.side').textContent=shortDate(new Date(e.at));it.onclick=()=>openLog();hl.append(it);}
+}
+$('goCamera').onclick=()=>{checkResume();show('sStart');};
+$('startBack').onclick=()=>show('sHome');
+$('goManual').onclick=()=>openManual();
+$('goPassage').onclick=()=>openPassage({});
+$('goTreat').onclick=()=>openTreat();
+$('goLog').onclick=()=>openLog();
+$('goAddCulture').onclick=()=>openCulture();
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>show(b.dataset.back));
+setInterval(()=>{if(!$('sHome').hidden)paintHome();},30000);
+
+function fillCultureSelect(sel,{none,filter,value}){
+  sel.innerHTML='';const o=document.createElement('option');o.value='';o.textContent=none;sel.append(o);
+  for(const c of activeCultures().filter(filter||(()=>true))){const x=document.createElement('option');x.value=c.cid;x.textContent=cultLabel(c);sel.append(x);}
+  sel.value=value||'';
+}
+function fillVesselSelect(sel,value,only){sel.innerHTML='';for(const v of Object.keys(VESSELS)){if(only&&!only(v))continue;const o=document.createElement('option');o.value=v;o.textContent=vName(v);sel.append(o);}sel.value=value;}
+
+/* ---------- manual count ---------- */
+let mLayout=4;const mVals={};
+function openManual(prefill){
+  fillCultureSelect($('mCulture'),{none:t('noneCulture'),value:prefill?.cid});
+  if(prefill?.cid){const c=activeCultures().find(x=>x.cid===prefill.cid);if(c&&!$('mName').value)$('mName').value=`${c.line} P${c.passage}`;}
+  paintManual();show('sManual');
+}
+document.querySelectorAll('[data-mlayout]').forEach(b=>b.onclick=()=>{mLayout=+b.dataset.mlayout;paintManual();});
+function paintManual(){
+  document.querySelectorAll('[data-mlayout]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mlayout===mLayout));
+  const box=$('mSquares');const keep={};box.querySelectorAll('input').forEach(i=>keep[i.dataset.k]=i.value);box.innerHTML='';
+  for(const [k] of LAYOUTS[mLayout]){const f=document.createElement('div');f.className='field';
+    const id='mq_'+k.replace('-','_');f.innerHTML=`<label for="${id}"></label><input id="${id}" type="text" inputmode="numeric" autocomplete="off">`;
+    f.querySelector('label').textContent=slotLabel(k,mLayout);const inp=f.querySelector('input');inp.dataset.k=k;inp.value=keep[k]??mVals[k]??'';inp.oninput=()=>{mVals[k]=inp.value;calcManual();};box.append(f);}
+  calcManual();
+}
+function manualStats(){
+  const v=LAYOUTS[mLayout].map(([k])=>num(mVals[k])).filter(x=>isFinite(x)&&x>=0),n=v.length,df=num($('mDf').value)||1;
+  const mean=n?v.reduce((a,b)=>a+b,0)/n:NaN,sd=n>1?Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/(n-1)):NaN;
+  return {n,total:mLayout,sum:v.reduce((a,b)=>a+b,0),mean,sd,cv:sd/mean*100,df,perMl:mean*df/1e-4,
+    squares:Object.fromEntries(LAYOUTS[mLayout].map(([k])=>[k,isFinite(num(mVals[k]))?num(mVals[k]):null]))};
+}
+function calcManual(){const S=manualStats();
+  $('mPerMl').textContent=sci(S.perMl);$('mMean').textContent=isFinite(S.mean)?S.mean.toFixed(1):'–';$('mSd').textContent=isFinite(S.sd)?'±'+S.sd.toFixed(1):'–';
+  const [cls,lab]=cvTag(S.cv);$('mCvBox').className='stat '+cls;$('mCvLab').textContent=lab;$('mCv').textContent=isFinite(S.cv)?S.cv.toFixed(1)+'%':'–';
+  $('mFormula').textContent=S.n?`(${S.sum} ÷ ${S.n}) × ${S.df} ÷ 0.0001 mL`:'';}
+$('mDf').oninput=calcManual;
+function saveManual(){const S=manualStats();if(!S.n){toast(t('needSquares'),true);return null;}
+  const ev=addEvent({type:'count',method:'manual',title:$('mName').value.trim()||t('actManual'),cid:$('mCulture').value||null,layout:mLayout,
+    squares:S.squares,n:S.n,mean:S.mean,sd:S.sd,cv:S.cv,df:S.df,cells_per_ml:S.perMl});
+  for(const k in mVals)delete mVals[k];$('mSquares').querySelectorAll('input').forEach(i=>i.value='');$('mName').value='';calcManual();return ev;}
+$('mSave').onclick=()=>{if(saveManual())show('sHome');};
+$('mSavePassage').onclick=()=>{const ev=saveManual();if(ev)openPassage({count:ev.id,source:ev.cid});};
+
+/* ---------- camera count -> log ---------- */
+let cameraCountId=null;
+function recordCameraCount(meta,folder){
+  cameraCountId=cameraCountId||uid();
+  addEvent({id:cameraCountId,type:'count',method:'camera',title:meta.name,layout:meta.layout,
+    squares:Object.fromEntries(Object.entries(meta.squares).map(([k,v])=>[k,v?v.n:null])),n:meta.n,mean:meta.mean,sd:meta.sd,cv:meta.cv,df:meta.df,
+    cells_per_ml:meta.cells_per_ml,report:folder?`reports/${folder}/report.png`:null,counter:meta.counter});
+}
+$('sumPassage').onclick=()=>{const S=stats();if(!S.n)return;
+  if(!cameraCountId) recordCameraCount(runMeta(),null);
+  openPassage({count:cameraCountId});};
+
+/* ---------- passage ---------- */
+let pRows=[];
+function openPassage({source,count}={}){
+  fillCultureSelect($('pSource'),{none:t('newSource'),value:source,filter:c=>c.status==='active'});
+  const sel=$('pCount');sel.innerHTML='';
+  for(const c of counts().slice(0,12)){const o=document.createElement('option');o.value=c.id;o.textContent=`${sciShort(c.cells_per_ml)} · ${c.title} · ${shortDate(new Date(c.at))}`;sel.append(o);}
+  const o=document.createElement('option');o.value='__type';o.textContent=t('typeCpm');sel.append(o);
+  sel.value=count||(counts()[0]&&Date.now()-new Date(counts()[0].at)<12*3.6e6?counts()[0].id:'__type');
+  if(!pRows.length) pRows=store.get('cc.lastOutputs',null)||[{vessel:'6-well',qty:2,cells:'3e5',ml:2,purpose:'treat'},{vessel:'dish-100',qty:1,cells:'1e6',ml:10,purpose:'keep'}];
+  sourceChanged();paintPassage();show('sPassage');
+}
+function sourceChanged(){const c=activeCultures().find(x=>x.cid===$('pSource').value);
+  if(c){$('pLine').value=c.line;$('pTo').value=+c.passage+1;}
+  else{const last=allEvents().filter(e=>e.type==='passage').pop();if(last){$('pLine').value=last.line;if(!$('pTo').value)$('pTo').value=+last.to_passage+1;}}
+  paintPassage();}
+$('pSource').onchange=sourceChanged;
+$('pCount').onchange=()=>paintPassage();
+['pCpm','pTo','pLine'].forEach(id=>$(id).oninput=()=>paintPassage());
+$('pAddOut').onclick=()=>{pRows.push({vessel:'dish-60',qty:1,cells:'5e5',ml:4,purpose:'keep'});paintPassage();};
+function pCpm(){const v=$('pCount').value;$('pCpmWrap').hidden=v!=='__type';if(v==='__type')return num($('pCpm').value);return counts().find(c=>c.id===v)?.cells_per_ml;}
+function paintPassage(){
+  const from=activeCultures().find(x=>x.cid===$('pSource').value);
+  $('pPill').textContent=from?t('passageArrow',from.passage,$('pTo').value||'?'):($('pTo').value?'P'+$('pTo').value:'');
+  const box=$('pOut');box.innerHTML='';
+  pRows.forEach((r,i)=>{const d=document.createElement('div');d.className='vrow';const u=vUnit(r.vessel);
+    d.innerHTML=`<div class="field"><label for="pv${i}"></label><select id="pv${i}"></select></div>
+      <div class="field"><label for="pq${i}"></label><input id="pq${i}" class="mono" type="text" inputmode="numeric"></div>
+      <div class="field"><label for="pc${i}"></label><input id="pc${i}" class="mono" type="text" inputmode="decimal"></div>
+      <div class="field"><label for="pm${i}"></label><input id="pm${i}" class="mono" type="text" inputmode="decimal"></div>
+      <div class="foot-row"><span><label for="pp${i}"></label> <select id="pp${i}" class="mini"></select></span><button type="button" class="mini danger"></button></div>`;
+    d.querySelector(`[for=pv${i}]`).textContent=t('vessel');d.querySelector(`[for=pq${i}]`).textContent=`${t('qty')} (${vMany(r.vessel)})`;
+    d.querySelector(`[for=pc${i}]`).textContent=t('cellsPerUnit',u);d.querySelector(`[for=pm${i}]`).textContent=t('mediumPerUnit',u);d.querySelector(`[for=pp${i}]`).textContent=t('purpose');
+    const vs=d.querySelector('select');fillVesselSelect(vs,r.vessel);vs.onchange=()=>{r.vessel=vs.value;r.ml=VESSELS[r.vessel].ml;paintPassage();};
+    const q=d.querySelector(`#pq${i}`);q.value=r.qty;q.oninput=()=>{r.qty=q.value;paintPCalc();};
+    const c=d.querySelector(`#pc${i}`);c.value=r.cells;c.oninput=()=>{r.cells=c.value;paintPCalc();};
+    const m=d.querySelector(`#pm${i}`);m.value=r.ml;m.oninput=()=>{r.ml=m.value;paintPCalc();};
+    const pp=d.querySelector(`#pp${i}`);[['keep','purposeKeep'],['treat','purposeTreat'],['other','purposeOther']].forEach(([v,k])=>{const o=document.createElement('option');o.value=v;o.textContent=t(k);pp.append(o);});
+    pp.value=r.purpose;pp.onchange=()=>r.purpose=pp.value;
+    const rm=d.querySelector('.danger');rm.textContent=t('remove');rm.onclick=()=>{pRows.splice(i,1);paintPassage();};
+    box.append(d);});
+  paintPCalc();
+}
+function passageCalc(){const cpm=pCpm();return pRows.map(r=>{const cells=num(r.cells),ml=num(r.ml),qty=num(r.qty),units=vUnits(r.vessel,qty);
+  const ul=cells/cpm*1000;return {...r,units,cells,ml,qty,ul,medium:ml-ul/1000,total_cells:cells*units};});}
+function paintPCalc(){
+  const cpm=pCpm(),c=$('pCalc');c.innerHTML='';
+  const eb=document.createElement('span');eb.className='eb';eb.textContent=t('pipette');c.append(eb);
+  if(!(cpm>0)){const n=document.createElement('span');n.className='note warn';n.textContent=t('needCpm');c.append(n);return;}
+  const rows=passageCalc();let html=`<table><thead><tr><th></th><th>${esc(t('colSusp'))}</th><th>${esc(t('colMedium'))}</th></tr></thead><tbody>`;let tot=0,cells=0,bad=false;
+  for(const r of rows){if(!isFinite(r.ul))continue;tot+=r.ul*r.units;cells+=r.total_cells;if(r.medium<0)bad=true;
+    html+=`<tr><td>${esc(t('perUnit',vName(r.vessel),vUnit(r.vessel)))}</td><td>${fmtUl(r.ul)}</td><td>${r.medium<0?'–':fmtN(r.medium)+' mL'}</td></tr>`;}
+  html+='</tbody></table>';c.insertAdjacentHTML('beforeend',html);
+  const n=document.createElement('span');n.className='note';n.textContent=`${sciShort(cpm)} cells/mL · `+t('totalSusp',fmtN(tot/1000),sciShort(cells));c.append(n);
+  if(bad){const w=document.createElement('span');w.className='note warn';w.textContent=t('suspTooMuch');c.append(w);}
+}
+$('pSave').onclick=()=>{
+  const line=$('pLine').value.trim(),to=parseInt($('pTo').value,10),cpm=pCpm();
+  if(!line){toast(t('needLine'),true);$('pLine').focus();return;}
+  if(!(to>=0)){toast(t('needPassage'),true);$('pTo').focus();return;}
+  const rows=passageCalc().filter(r=>r.qty>0);if(!rows.length){toast(t('needVessels'),true);return;}
+  if(!(cpm>0)){toast(t('needCpm'),true);return;}
+  const id=uid(),src=activeCultures().find(x=>x.cid===$('pSource').value);
+  store.set('cc.lastOutputs',pRows);
+  addEvent({id,type:'passage',title:`${line} P${to}`,line,from_passage:src?src.passage:to-1,to_passage:to,source_cid:src?.cid||null,
+    count_id:$('pCount').value==='__type'?null:$('pCount').value,cells_per_ml:cpm,
+    outputs:rows.map((r,i)=>({cid:`${id}-${i}`,vessel:r.vessel,qty:r.qty,units:r.units,cells_per_unit:r.cells,medium_ml:r.ml,susp_ul:+r.ul.toFixed(1),purpose:r.purpose})),
+    notes:$('pNotes').value.trim()});
+  $('pNotes').value='';show('sHome');
+};
+
+/* ---------- treat ---------- */
+let tGroups=null,tDurPreset=24;
+function defaultGroups(){return [{name:'NG',glucose:5.5,cmps:[],wells:3},{name:'HG',glucose:25,cmps:[],wells:3},{name:'HG + Pino 50',glucose:25,cmps:[{name:'Pinocembrin',uM:50}],wells:3},{name:'HG + Pino 100',glucose:25,cmps:[{name:'Pinocembrin',uM:100}],wells:3}];}
+function openTreat(cid){
+  fillCultureSelect($('tCulture'),{none:t('noneCulture'),value:cid,filter:c=>c.status==='active'});
+  fillVesselSelect($('tVessel'),$('tVessel').value||'6-well',v=>!!VESSELS[v].wells||VESSELS[v].kind==='dish');
+  const c=activeCultures().find(x=>x.cid===cid);
+  if(c){$('tVessel').value=c.vessel;$('tPlates').value=c.qty;$('tVol').value=VESSELS[c.vessel]?.ml??2;}
+  if(!tGroups){const last=allEvents().filter(e=>e.type==='treat').pop();tGroups=last?last.groups.map(g=>({name:g.name,glucose:g.glucose,cmps:g.compounds.map(x=>({...x})),wells:g.wells})):defaultGroups();}
+  const d=new Date();d.setSeconds(0,0);$('tStart').value=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  paintTreat();show('sTreat');
+}
+['tVessel','tPlates','tVol','tExtra','tDur','tStart'].forEach(id=>$(id).oninput=$(id).onchange=()=>{if(id==='tVessel')$('tVol').value=VESSELS[$('tVessel').value].ml;if(id==='tDur')tDurPreset=null;paintTreat(false);});
+$('tAddGroup').onclick=()=>{tGroups.push({name:`${t('groupName')} ${tGroups.length+1}`,glucose:'',cmps:[],wells:3});paintTreat();};
+$('cAdd').onclick=()=>{const name=$('cmpName').value.trim(),stock=num($('cStock').value);
+  if(!name||!(stock>0)){toast(t('noStock',name||t('cmpName')),true);return;}
+  const cmp={name,stock,unit:$('cUnit').value,solvent:$('cSolvent').value};
+  const loc=store.get('cc.localcmp',[]).filter(c=>c.name!==name);loc.push(cmp);store.set('cc.localcmp',loc);
+  addEvent({type:'compound',title:name,compound:cmp});$('cmpName').value='';$('cStock').value='';$('tAddCmp').open=false;paintTreat();};
+function treatCalc(){
+  const lib=Object.fromEntries(compoundsLib().map(c=>[c.name,c])),vol=num($('tVol').value),extra=(num($('tExtra').value)||0)/100;
+  const rows=tGroups.map(g=>{const med=(num(g.wells)||0)*vol*(1+extra);let solv={};
+    const stocks=g.cmps.filter(c=>c.name).map(c=>{const s=lib[c.name];const ul=num(c.uM)*med*1000/stockUM(s);if(s&&isFinite(ul))solv[s.solvent]=(solv[s.solvent]||0)+ul;return {name:c.name,uM:num(c.uM),ul,solvent:s?.solvent,missing:!s||!(stockUM(s)>0)};});
+    return {g,med,stocks,solv};});
+  // match organic solvents (DMSO/EtOH) across groups to the highest fraction
+  const solvents=new Set(rows.flatMap(r=>Object.keys(r.solv)).filter(s=>s==='DMSO'||s==='EtOH'));const target={};
+  for(const s of solvents)target[s]=Math.max(...rows.map(r=>r.med>0?(r.solv[s]||0)/(r.med*1000):0));
+  for(const r of rows){r.vehicle={};for(const s of solvents){const need=target[s]*r.med*1000-(r.solv[s]||0);if(need>0.05)r.vehicle[s]=need;}}
+  return {rows,target,vol,extra};
+}
+function paintTreat(full=true){
+  const v=$('tVessel').value,plates=num($('tPlates').value)||0,per=VESSELS[v]?.wells||1,cap=plates*per;
+  $('tPill').textContent=`${vName(v)} × ${plates||0}`;
+  const used=tGroups.reduce((a,g)=>a+(num(g.wells)||0),0);
+  $('tGroupsH').textContent=t('groupsH',tGroups.length,used);
+  // library
+  const lib=$('tLib');lib.innerHTML='';
+  for(const c of compoundsLib()){const ch=document.createElement('span');ch.className='chip';ch.innerHTML='<b></b><span></span>';ch.querySelector('b').textContent=c.name;
+    ch.querySelector('span').textContent=`${c.stock} ${c.unit==='uM'?'µM':'mM'} · ${c.solvent==='water'?t('water'):c.solvent==='medium'?t('mediumSolvent'):c.solvent}`;lib.append(ch);}
+  if(full){const gb=$('tGroups');gb.innerHTML='';
+    tGroups.forEach((g,i)=>{const col=COLORS[i%COLORS.length];const d=document.createElement('div');d.className='grp';
+      d.innerHTML=`<div class="grp-h"><span class="dot12" style="background:${col}"></span><input type="text" maxlength="40"><button type="button" class="mini danger"></button></div>
+        <div class="grp-meta"><label><span></span><input type="text" inputmode="decimal" class="mono"></label><label><span></span><input type="text" inputmode="numeric" class="mono"></label></div>
+        <div class="cmps" style="display:flex;flex-direction:column;gap:6px"></div><button type="button" class="mini" style="align-self:flex-start"></button>`;
+      const nm=d.querySelector('.grp-h input');nm.value=g.name;nm.setAttribute('aria-label',t('groupName'));nm.oninput=()=>{g.name=nm.value;paintTreat(false);};
+      const rm=d.querySelector('.grp-h .danger');rm.textContent=t('remove');rm.onclick=()=>{tGroups.splice(i,1);paintTreat();};
+      const [gl,wl]=d.querySelectorAll('.grp-meta label');gl.querySelector('span').textContent=t('glucose');wl.querySelector('span').textContent=t('wellsN');
+      const gi=gl.querySelector('input');gi.value=g.glucose??'';gi.oninput=()=>{g.glucose=gi.value;};
+      const wi=wl.querySelector('input');wi.value=g.wells;wi.oninput=()=>{g.wells=wi.value;paintTreat(false);};
+      const cb=d.querySelector('.cmps');
+      g.cmps.forEach((c,j)=>{const r=document.createElement('div');r.className='grp-row';r.innerHTML=`<select></select><input type="text" inputmode="decimal" class="mono"><button type="button" class="mini danger" aria-label="${esc(t('remove'))}">×</button>`;
+        const s=r.querySelector('select');const o0=document.createElement('option');o0.value='';o0.textContent=t('pickCompound');s.append(o0);
+        for(const x of compoundsLib()){const o=document.createElement('option');o.value=x.name;o.textContent=x.name;s.append(o);}s.value=c.name;s.onchange=()=>{c.name=s.value;paintTreat(false);};
+        const u=r.querySelector('input');u.value=c.uM;u.placeholder='µM';u.setAttribute('aria-label',`${c.name||t('pickCompound')} µM`);u.oninput=()=>{c.uM=u.value;paintTreat(false);};
+        r.querySelector('button').onclick=()=>{g.cmps.splice(j,1);paintTreat();};cb.append(r);});
+      const add=d.querySelector(':scope > .mini');add.textContent=t('addCmpToGroup');add.onclick=()=>{g.cmps.push({name:compoundsLib()[0]?.name||'',uM:''});paintTreat();};
+      gb.append(d);});}
+  // plate map
+  const map=$('tMap');map.innerHTML='';const wells=[];tGroups.forEach((g,i)=>{for(let k=0;k<(num(g.wells)||0);k++)wells.push(i);});
+  const cols=per===6?3:per===12?4:per===24?6:per===96?12:1;
+  for(let p=0;p<Math.max(plates,1);p++){const pl=document.createElement('div');pl.className='plate';pl.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
+    if(per>24)pl.style.gridColumn='1/-1';
+    for(let w=0;w<per;w++){const gi=wells[p*per+w];const el=document.createElement('span');el.className='well'+(gi==null?' empty':'');
+      if(gi!=null){const col=COLORS[gi%COLORS.length];el.style.background=col;el.style.color=DARK.has(col)?'#fff':'#10182B';el.title=tGroups[gi].name;el.textContent=per<=12?(tGroups[gi].name||'').replace(/\s+/g,'').slice(0,6):'';}
+      pl.append(el);}
+    map.append(pl);}
+  // calc
+  const C=treatCalc(),c=$('tCalc');c.innerHTML='';const eb=document.createElement('span');eb.className='eb';eb.textContent=t('calcTreat');c.append(eb);
+  let html=`<table><thead><tr><th>${esc(t('colGroup'))}</th><th>${esc(t('colMed'))}</th><th></th></tr></thead><tbody>`;const warns=[];
+  for(const r of C.rows){const parts=r.stocks.map(s=>{if(s.missing){warns.push(t('noStock',s.name||t('pickCompound')));return '';}return `${esc(s.name)} ${fmtUl(s.ul)}`;}).filter(Boolean);
+    for(const [s,ul] of Object.entries(r.vehicle))parts.push(`${esc(s)} ${fmtUl(ul)}`);
+    html+=`<tr><td>${esc(r.g.name)}</td><td>${fmtN(r.med)} mL</td><td>${parts.join('<br>')||'–'}</td></tr>`;}
+  html+='</tbody></table>';c.insertAdjacentHTML('beforeend',html);
+  for(const [s,f] of Object.entries(C.target)){const n=document.createElement('span');n.className='note';n.textContent=t('finalSolvent',s,(f*100).toFixed(2).replace(/\.?0+$/,''));c.append(n);}
+  if(used>cap)warns.push(t('wellsOver',used,cap));
+  for(const w of [...new Set(warns)]){const n=document.createElement('span');n.className='note warn';n.textContent=w;c.append(n);}
+  // duration
+  const seg=$('tDurSeg');seg.innerHTML='';for(const h of [6,12,24,48,72]){const b=document.createElement('button');b.type='button';b.textContent=h+' h';b.setAttribute('aria-pressed',+$('tDur').value===h);
+    b.onclick=()=>{$('tDur').value=h;paintTreat(false);};seg.append(b);}
+  const st=new Date($('tStart').value),hrs=num($('tDur').value);
+  $('tHarvest').textContent=isFinite(st)&&hrs>0?t('harvestAt',niceDate(new Date(st.getTime()+hrs*3.6e6))):'';
+}
+$('tSave').onclick=()=>{
+  const name=$('tName').value.trim();if(!name){toast(t('needExp'),true);$('tName').focus();return;}
+  const gs=tGroups.filter(g=>(num(g.wells)||0)>0);if(!gs.length){toast(t('needGroups'),true);return;}
+  const C=treatCalc();const missing=C.rows.flatMap(r=>r.stocks.filter(s=>s.missing));if(missing.length){toast(t('noStock',missing[0].name||t('pickCompound')),true);return;}
+  const st=new Date($('tStart').value),hrs=num($('tDur').value);const start=isFinite(st)?st:new Date();
+  const cul=activeCultures().find(x=>x.cid===$('tCulture').value);
+  addEvent({type:'treat',title:name,at:start.toISOString(),cids:cul?[cul.cid]:[],line:cul?.line||null,passage:cul?.passage||null,
+    vessel:$('tVessel').value,plates:num($('tPlates').value),well_ml:num($('tVol').value),extra_pct:num($('tExtra').value),
+    groups:C.rows.map(r=>({name:r.g.name,glucose:num(r.g.glucose),wells:num(r.g.wells)||0,compounds:r.stocks.map(s=>({name:s.name,uM:s.uM,stock_ul:+s.ul.toFixed(2)})),
+      medium_ml:+r.med.toFixed(2),vehicle_ul:Object.fromEntries(Object.entries(r.vehicle).map(([k,v])=>[k,+v.toFixed(2)]))})),
+    solvent_pct:Object.fromEntries(Object.entries(C.target).map(([k,v])=>[k,+(v*100).toFixed(3)])),
+    duration_h:hrs,harvest_at:new Date(start.getTime()+hrs*3.6e6).toISOString(),notes:$('tNotes').value.trim()});
+  $('tName').value='';$('tNotes').value='';show('sHome');
+};
+
+/* ---------- add culture ---------- */
+function openCulture(){fillVesselSelect($('kVessel'),$('kVessel').value||'T75');show('sCulture');}
+$('kSave').onclick=()=>{const line=$('kLine').value.trim(),p=parseInt($('kPassage').value,10);
+  if(!line){toast(t('needLine'),true);return;}if(!(p>=0)){toast(t('needPassage'),true);$('kPassage').focus();return;}
+  const id=uid();addEvent({id,type:'culture',title:`${line} P${p}`,culture:{cid:id+'-0',line,passage:p,vessel:$('kVessel').value,qty:num($('kQty').value)||1,purpose:'keep',notes:$('kNotes').value.trim()}});
+  $('kPassage').value='';$('kNotes').value='';show('sHome');};
+
+/* ---------- log ---------- */
+let logFilter='all';
+const ICON={count:['#E3F5EE','#0B6B4E','<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/>'],passage:['#E7ECFA','#2E4FB3','<path d="M4 7h11l-3-3M20 17H9l3 3"/>'],
+  treat:['#FFF1DC','#8A5300','<path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/>'],harvest:['#EEF1F4','#5B6478','<path d="M5 12l5 5L20 7"/>'],
+  culture:['#E7ECFA','#2E4FB3','<path d="M8 3h8M9 3v5L4 19a1.5 1.5 0 0 0 1.4 2h13.2a1.5 1.5 0 0 0 1.4-2L15 8V3"/>'],note:['#EEF1F4','#5B6478','<path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/>'],
+  discard:['#FDE8E2','#A3361B','<path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'],compound:['#F0F8F6','#0F7A6E','<circle cx="12" cy="12" r="7"/>']};
+function describe(e){
+  const cv=isFinite(e.cv)?` · CV ${(+e.cv).toFixed(1)}%`:'';
+  switch(e.type){
+    case 'count':return {title:`${t('evCount')} · ${sci(e.cells_per_ml)} cells/mL`,sub:`${e.title} · ${e.method==='manual'?t('manual'):t('camera')} · ${e.n}/${e.layout}${cv}`};
+    case 'passage':return {title:`${t('evPassage')} ${e.line} ${t('passageArrow',e.from_passage,e.to_passage)}`,sub:(e.outputs||[]).map(o=>`${vName(o.vessel)} × ${o.qty} (${sciShort(o.cells_per_unit)}/${vUnit(o.vessel)})`).join(' · ')};
+    case 'treat':return {title:`${t('evTreat')} · ${e.title}`,sub:`${e.line?e.line+' P'+e.passage+' · ':''}${vName(e.vessel)} × ${e.plates} · ${(e.groups||[]).map(g=>g.name).join(' / ')} · ${e.duration_h} h`};
+    case 'harvest':return {title:`${t('evHarvest')} · ${e.title||''}`,sub:e.notes||''};
+    case 'culture':return {title:`${t('evCulture')} · ${e.culture.line} P${e.culture.passage}`,sub:`${vName(e.culture.vessel)} × ${e.culture.qty}${e.culture.notes?' · '+e.culture.notes:''}`};
+    case 'discard':return {title:t('evDiscard'),sub:e.title||''};
+    case 'compound':return {title:`${t('evCompound')} · ${e.compound?.name}`,sub:`${e.compound?.stock} ${e.compound?.unit==='uM'?'µM':'mM'} · ${e.compound?.solvent}`};
+    default:return {title:t('evNote'),sub:e.text||''};}
+}
+function openLog(){paintLog();show('sLog');}
+function paintLog(){
+  const f=$('logFilters');f.innerHTML='';
+  for(const [k,l] of [['all','fAll'],['count','fCount'],['passage','fPassage'],['treat','fTreat'],['other','fOther']]){const b=document.createElement('button');b.type='button';b.textContent=t(l);b.setAttribute('aria-pressed',logFilter===k);b.onclick=()=>{logFilter=k;paintLog();};f.append(b);}
+  const ev=allEvents().reverse().filter(e=>logFilter==='all'||e.type===logFilter||(logFilter==='treat'&&e.type==='harvest')||(logFilter==='other'&&!['count','passage','treat','harvest'].includes(e.type)));
+  const lines=[...new Set(cultures().map(c=>c.line))];$('logSub').textContent=lines.join(' · ');
+  const box=$('logList');box.innerHTML='';
+  if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');box.append(p);return;}
+  let day='';
+  for(const e of ev){const d=new Date(e.at),k=d.toDateString();
+    if(k!==day){day=k;const h=document.createElement('h2');h.className='logday';h.textContent=niceDate(d).split(' · ')[0];box.append(h);}
+    const [bg,fg,path]=ICON[e.type]||ICON.note,ds=describe(e);
+    const a=document.createElement('article');a.className='ev'+(e.pending?' pending':'');
+    a.innerHTML=`<span class="ic" style="background:${bg}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" aria-hidden="true">${path}</svg></span>
+      <div class="hd"><b></b><span class="tm"></span></div><span class="sb"></span><div class="acts"></div>`;
+    a.querySelector('b').textContent=ds.title;a.querySelector('.tm').textContent=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    a.querySelector('.sb').textContent=ds.sub+(e.notes?` · ${e.notes}`:'')+(e.by&&e.by!=='local'?` · ${e.by}`:'')+(e.pending?' · ⏳':'');
+    const acts=a.querySelector('.acts');
+    if(e.report){const l=document.createElement('a');l.href=e.report;l.target='_blank';l.rel='noopener';l.className='mini';l.style.cssText='display:inline-flex;align-items:center;text-decoration:none';l.textContent=t('viewReport');acts.append(l);}
+    if(e.type==='treat'&&openTreats().some(x=>x.id===e.id)){const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=t('markHarvested');b.onclick=()=>{if(confirmTwice('h'+e.id))addEvent({type:'harvest',treat_id:e.id,title:e.title});};acts.append(b);}
+    const del=document.createElement('button');del.type='button';del.className='mini danger';del.textContent=t('deleteEntry');del.onclick=()=>{if(confirmTwice('d'+e.id))addEvent({type:'delete',target:e.id});};acts.append(del);
+    box.append(a);}
+}
+$('logNote').onclick=()=>{
+  const box=$('logList');if(box.querySelector('#noteText'))return;
+  const f=document.createElement('div');f.className='box';f.innerHTML=`<div class="field"><label for="noteText"></label><textarea id="noteText" maxlength="1000"></textarea></div><div class="row2"><button type="button" class="btn"></button><button type="button" class="btn primary" style="min-height:48px;font-size:15px"></button></div>`;
+  f.querySelector('label').textContent=t('noteText');const [c,s]=f.querySelectorAll('button');c.textContent=t('cancel');s.textContent=t('saveNote');
+  c.onclick=()=>f.remove();s.onclick=()=>{const tx=f.querySelector('textarea').value.trim();if(!tx)return;addEvent({type:'note',text:tx,title:tx.slice(0,40)});f.remove();};
+  box.prepend(f);f.querySelector('textarea').focus();};
+$('logCsv').onclick=()=>{
+  const head=['date','time','type','title','cell_line','passage','details','notes','by'];
+  const rows=allEvents().map(e=>{const d=new Date(e.at),ds=describe(e);return [stamp(d).slice(0,10),stamp(d).slice(11),e.type,e.title||'',e.line||e.culture?.line||'',e.to_passage??e.passage??e.culture?.passage??'',ds.sub,e.notes||e.text||'',e.by||''];});
+  const csv='﻿'+[head,...rows].map(r=>r.map(v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`cell-lab-log_${stamp(new Date()).slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();
+};
+
+function labRefreshLang(){
+  if(!$('sHome').hidden)paintHome();if(!$('sLog').hidden)paintLog();if(!$('sManual').hidden)paintManual();
+  if(!$('sPassage').hidden){const v=$('pCount').value;openPassage({source:$('pSource').value,count:v});}
+  if(!$('sTreat').hidden)paintTreat();
+}
+function labBoot(){
+  if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+  show('sHome');syncLab();setInterval(syncLab,60000);
+}
+
 /* ---------------- boot ---------------- */
-applyLang(); paintLayout(); paintPill(); ping(); setInterval(ping,60000); loadRecent(); checkResume(); setTool('add');
+applyLang(); paintLayout(); paintPill(); ping(); setInterval(ping,60000); loadRecent(); checkResume(); setTool('add'); labBoot();
 })();
 </script>
 </body>

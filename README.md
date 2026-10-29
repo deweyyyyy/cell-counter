@@ -11,6 +11,7 @@ Count cells on a Neubauer-improved hemocytometer from a phone photo. Photograph 
 - **4 or 8 squares per round** (1 or 2 chambers), with mean ± SD, CV, per-chamber means and cells/mL.
 - **Reports:** a PNG with every square's image, a per-square table (found by the model / added / removed) and the method line. Every round is also appended to one `runs.csv`.
 - **Training data:** squares you have corrected can be saved as training data for a better model.
+- **Lab log:** record hand counts (works offline), sub-passages with pipetting volumes, and treatments with stock-volume calculations, a plate map and a harvest timer. See [Lab log](#lab-log).
 
 > **Accuracy:** the bundled model (CellNet v0.3) was trained on simulated hemocytometer images plus a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
 
@@ -28,6 +29,15 @@ start.bat             # Windows
 When you see `ready on http://127.0.0.1:8000`, open **http://localhost:8000** in a browser on the same computer.
 
 On startup the server times the CPU and GPU paths and keeps the faster one; the line starting with `engine:` shows the choice.
+
+### Keep it running on a Mac (optional)
+
+```bash
+./install-service.sh            # start at login, restart if it stops, keep the Mac awake while serving
+./install-service.sh --remove   # undo
+```
+
+Output goes to `server/server.log`.
 
 ### Use it from your phone
 
@@ -64,6 +74,17 @@ Concentration is calculated as `cells/mL = mean cells per square × dilution fac
 
 The classic single-page version of the app is still available at `/old`. It includes a simulated sample image with known answers, which is handy for checking the model.
 
+## Lab log
+
+The home screen also keeps a simple culture log:
+
+- **Hand count:** type the cells you counted in each square from the lab counter. The app gives mean ± SD, CV and cells/mL. It works with no internet; entries are kept on the phone and sent when the connection comes back.
+- **Passage:** pick a count (camera or hand), then list the new vessels (6/12/24/96-well plates, 35/60/100 mm dishes, T25/T75/T175 flasks) with the cells and medium you want in each well, dish or flask. The app shows how many µL of cell suspension and mL of medium to pipette into each one.
+- **Treat:** keep a list of compounds with their stock concentration and solvent (add your own). Build groups (glucose, one or more compounds at µM), and the app works out the stock volume per group, adds vehicle so every group ends at the same DMSO/EtOH %, draws the plate map and sets a harvest timer that shows on the home screen.
+- **Log:** everything by date, with filters, notes, delete, and CSV export.
+
+The log is stored on the server in `lab/events.jsonl`, one JSON entry per line.
+
 ## Where your data goes
 
 Everything stays inside `server/`:
@@ -73,6 +94,7 @@ Everything stays inside `server/`:
 | `reports/<date>_<name>/` | `report.png`, each square's annotated image (`tl.jpg`, …) and `run.json` |
 | `reports/runs.csv` | one row per round: every square's count, mean, SD, CV, chamber means, cells/mL |
 | `training_data/` | corrected squares sent with **Send as CellNet training data** |
+| `lab/events.jsonl` | the lab log: counts, passages, treatments, notes |
 
 These folders are ignored by git.
 

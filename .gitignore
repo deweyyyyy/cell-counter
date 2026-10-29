@@ -16,3 +16,7 @@ training/preview.png
 training/cellnet_w.json
 
 .DS_Store
+
+# Lab log and service log stay local
+server/lab/
+server/server.log

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.0 — 2026-10-29
+
+- **Lab log** on a new home screen: hand-entered counts, sub-passage with pipetting volumes per well/dish/flask, treatments (compound library, multi-compound groups, stock µL per group, matched vehicle %, plate map, harvest timer), culture list, full log with filters and CSV export.
+- **Works offline:** the app is cached on the phone, and log entries made without internet are sent when it's back.
+- Camera counts are added to the log automatically, with a link to their report; the round summary has a "use this count for a passage" button.
+- An unfinished camera round shows on the home screen with a Continue button.
+- `install-service.sh` runs the server as a macOS background service with a log file.
+
 ## v0.3.0 — 2026-10-27
 
 - **CellNet v0.3:** far fewer false marks on grainy empty background. v0.2 was fine-tuned on simulated patches, simulated full squares with known answers, and hand-corrected squares (only the area inside the drawn square border counts in the loss).
