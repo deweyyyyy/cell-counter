@@ -13,6 +13,7 @@ Endpoints
   GET  /api/runs      saved rounds, newest first
   GET  /reports/...   saved report files, and reports/runs.csv (all rounds, opens in Excel)
   GET  /api/lab       the lab log: every count, passage, treatment, harvest, culture and compound
+  POST /api/lab/photo?id=... store a photo for a note (GET /lab/photos/<id>.jpg)
   POST /api/lab/event add one lab-log event (idempotent by its "id", so offline phones can resend safely)
   GET  /sw.js, /manifest.webmanifest   let the page open and record entries without internet
 """
@@ -33,7 +34,23 @@ FILE_LOCK = threading.Lock()
 LAB = os.path.join(HERE, "lab"); os.makedirs(LAB, exist_ok=True)
 LAB_LOG = os.path.join(LAB, "events.jsonl")
 LAB_LOCK = threading.Lock()
-EVENT_TYPES = {"count", "passage", "treat", "harvest", "culture", "compound", "note", "discard", "delete"}
+EVENT_TYPES = {"count", "passage", "treat", "harvest", "culture", "compound", "note", "discard", "delete", "protein", "bca"}
+PHOTOS = os.path.join(LAB, "photos")
+PHOTO_ID = re.compile(r"[A-Za-z0-9_-]{6,64}")
+
+def photo_add(pid, raw):
+    """Store one photo as lab/photos/<id>.jpg. Re-sending the same id is harmless."""
+    if not PHOTO_ID.fullmatch(pid or ""): raise ValueError("bad photo id")
+    path = os.path.join(PHOTOS, pid + ".jpg")
+    try:
+        im = Image.open(io.BytesIO(raw)); fmt = im.format; im.load()
+    except Exception: raise ValueError("not an image")
+    with LAB_LOCK:
+        if os.path.exists(path): return False
+        os.makedirs(PHOTOS, exist_ok=True)
+        if fmt == "JPEG": open(path, "wb").write(raw)
+        else: im.convert("RGB").save(path, "JPEG", quality=88)
+    return True
 
 def lab_events():
     if not os.path.exists(LAB_LOG): return []
@@ -122,6 +139,12 @@ class H(BaseHTTPRequestHandler):
         if p == "/sw.js": return self.send(200, _page("sw.js"), "text/javascript; charset=utf-8")
         if p == "/manifest.webmanifest": return self.send(200, _page("manifest.webmanifest"), "application/manifest+json")
         if p == "/api/lab": return self.send(200, {"events": lab_events(), "now": datetime.now().astimezone().isoformat(timespec="seconds")})
+        if p.startswith("/lab/photos/"):
+            name = p[len("/lab/photos/"):]
+            path = os.path.join(PHOTOS, name)
+            if name.endswith(".jpg") and PHOTO_ID.fullmatch(name[:-4]) and os.path.isfile(path):
+                return self.send(200, open(path, "rb").read(), "image/jpeg")
+            return self.send(404, {"error": "not found"})
         if p in ("/old", "/old/", "/old/index.html"):
             classic = "classic.html" if os.path.exists(os.path.join(HERE, "classic.html")) else "index.html"
             return self.send(200, _page(classic), "text/html; charset=utf-8")
@@ -144,6 +167,10 @@ class H(BaseHTTPRequestHandler):
             if p == "/api/count": return self.count(args)
             if p == "/api/training": return self.training(args)
             if p == "/api/runs": return self.save_run()
+            if p == "/api/lab/photo":
+                new = photo_add(args.get("id", ""), self.body())
+                if new: log(f"photo  {self.who():30s} {args.get('id')}.jpg")
+                return self.send(200, {"ok": True, "new": new})
             if p == "/api/lab/event":
                 ev = json.loads(self.body()); new = lab_add(ev, self.who())
                 if new: log(f"lab    {self.who():30s} {ev.get('type'):8s} {str(ev.get('title') or ev.get('name') or '')[:50]}")

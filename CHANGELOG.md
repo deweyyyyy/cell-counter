@@ -7,6 +7,9 @@
 - Camera counts are added to the log automatically, with a link to their report; the round summary has a "use this count for a passage" button.
 - An unfinished camera round shows on the home screen with a Continue button.
 - `install-service.sh` runs the server as a macOS background service with a log file.
+- **Protein harvest:** tubes per group or per well, lysis buffer, volume, storage and box; BCA values can be added later.
+- **Notes with photos:** attach photos from the camera or gallery, link a note to an experiment or culture; works offline.
+- Date and time fields on passage, hand count and culture forms, for logging past work.
 
 ## v0.3.0 — 2026-10-27
 

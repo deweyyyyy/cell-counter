@@ -227,6 +227,18 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .platemap{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .plate{display:grid;gap:3px;background:var(--ground);padding:6px;border-radius:8px}
 .form input,.form select,.form textarea,.form button,.box input,.box button{scroll-margin-bottom:110px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.ev .thumbs{grid-column:2;margin-top:6px}
+.thumbs img{width:76px;height:76px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block;background:#E8ECF3}
+.thumb-edit{position:relative}.thumb-edit img{width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block}
+.thumb-edit button{position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#10182B;color:#fff;font-size:16px;line-height:1;cursor:pointer}
+.tube-row{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:6px;align-items:center}.tube-row input{min-width:0}
+.tube-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px;gap:6px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:12px;background:#FAFBFD}
+.tube-card input{font:inherit;font-size:15px;min-height:40px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);box-sizing:border-box;width:100%}
+.tube-card .tl{grid-column:1/3;min-width:0}.tube-card button{grid-column:3;grid-row:1}
+.tube-card label{display:flex;align-items:center;gap:6px;min-width:0}.tube-card label span{font-size:12px;color:var(--muted);flex:none}.tube-card label input{min-width:0;flex:1}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;min-height:44px}.check input{width:20px;height:20px;accent-color:var(--trypan)}
+.lbl{font-size:12px}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -272,6 +284,8 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <button type="button" class="action" id="goManual"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actManual"></b><span data-i18n="actManualSub"></span></span></button>
       <button type="button" class="action" id="goPassage"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span style="display:flex;flex-direction:column"><b>Passage</b><span data-i18n="actPassageSub"></span></span></button>
       <button type="button" class="action" id="goTreat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/></svg><span style="display:flex;flex-direction:column"><b>Treat</b><span data-i18n="actTreatSub"></span></span></button>
+      <button type="button" class="action" id="goProtein"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A3E9D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3h8M9 3v14a3 3 0 0 0 6 0V3M9 11h6"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actProtein"></b><span data-i18n="actProteinSub"></span></span></button>
+      <button type="button" class="action" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actNote"></b><span data-i18n="actNoteSub"></span></span></button>
     </div>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
       <div class="sec-h"><h2 id="hCult" data-i18n="culturesTitle"></h2><button type="button" id="goAddCulture" data-i18n="addCulture"></button></div>
@@ -526,6 +540,39 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
   <footer class="foot"><button type="button" class="btn primary" id="kSave" data-i18n="saveCulture"></button></footer>
 </section>
 
+<section class="screen" id="sProtein" hidden aria-labelledby="hProtein">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hProtein" data-i18n="actProtein"></b><span data-i18n="proteinSub"></span></div></header>
+  <div class="form">
+    <div class="field"><label for="prTreat" data-i18n="fromTreat"></label><select id="prTreat"></select></div>
+    <label class="check" id="prHarvWrap" hidden><input type="checkbox" id="prHarv" checked><span data-i18n="alsoHarvest"></span></label>
+    <div class="row2"><div class="field"><label for="prBuf" data-i18n="buffer"></label><input id="prBuf" type="text" maxlength="80" value="RIPA + protease inhibitor"></div>
+      <div class="field"><label for="prVol" data-i18n="volPerWell"></label><input id="prVol" class="mono" type="text" inputmode="decimal" value="100"></div></div>
+    <div class="field"><span class="lbl" data-i18n="tubeMode"></span><div class="seg" role="group"><button type="button" data-prmode="group" data-i18n="perGroup"></button><button type="button" data-prmode="well" data-i18n="perWell"></button></div></div>
+    <div class="box"><span class="lbl" style="font-weight:600" data-i18n="tubesTitle"></span><div id="prTubes" style="display:flex;flex-direction:column;gap:6px"></div>
+      <button type="button" class="mini" id="prAddTube" style="align-self:flex-start" data-i18n="addTube"></button></div>
+    <div class="row2"><div class="field"><label for="prStore" data-i18n="storage"></label><input id="prStore" type="text" maxlength="60" value="−80 °C"></div>
+      <div class="field"><label for="prBox" data-i18n="boxPos"></label><input id="prBox" type="text" maxlength="80" data-i18n-ph="boxPh"></div></div>
+    <div class="field"><label for="prWhen" data-i18n="whenDone"></label><input id="prWhen" type="datetime-local"></div>
+    <div class="field"><label for="prNotes" data-i18n="notes"></label><textarea id="prNotes" maxlength="1000"></textarea></div>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="prSave" data-i18n="saveProtein"></button></footer>
+</section>
+
+<section class="screen" id="sNote" hidden aria-labelledby="hNote">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hNote" data-i18n="actNote"></b><span data-i18n="noteSub"></span></div></header>
+  <div class="form">
+    <div class="field"><label for="nText" data-i18n="noteText"></label><textarea id="nText" maxlength="4000" rows="5" data-i18n-ph="noteTextPh"></textarea></div>
+    <div class="field"><span class="lbl" data-i18n="photos"></span><div class="thumbs" id="nThumbs" hidden></div>
+      <label class="btn" for="nFile" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg><span data-i18n="addPhotos"></span></label>
+      <input id="nFile" type="file" accept="image/*" multiple hidden></div>
+    <div class="field"><label for="nAbout" data-i18n="about"></label><select id="nAbout"></select></div>
+    <div class="field"><label for="nWhen" data-i18n="whenDone"></label><input id="nWhen" type="datetime-local"></div>
+  </div>
+  <footer class="foot"><button type="button" class="btn primary" id="nSave" data-i18n="saveNote"></button></footer>
+</section>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </div>
 
@@ -638,7 +685,7 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture'];
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote'];
 function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
@@ -1117,8 +1164,8 @@ function allEvents(){const m=new Map();for(const e of LAB.server)m.set(e.id,e);f
 async function flushOutbox(){
   let sent=0;
   for(const ev of [...LAB.outbox]){
-    try{const r=await api('api/lab/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ev)});
-      if(!r.ok&&r.status!==400)throw 0; LAB.outbox=LAB.outbox.filter(e=>e.id!==ev.id); sent++;}
+    try{if(ev.photos&&ev.photos.length)await uploadPhotos(ev.photos);const r=await api('api/lab/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ev)});
+      if(r.status===400)continue; if(!r.ok)throw 0; LAB.outbox=LAB.outbox.filter(e=>e.id!==ev.id); sent++;}
     catch(e){LAB.online=false;break;}}
   store.set('cc.outbox',LAB.outbox); return sent;
 }
@@ -1201,7 +1248,7 @@ function paintHome(){
     else{go.textContent='Passage';go.onclick=()=>openPassage({source:c.cid});}
     cl.append(it);}
   // recent log
-  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>e.type!=='compound').reverse().slice(0,4);
+  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>e.type!=='compound'&&e.type!=='bca').reverse().slice(0,4);
   if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');hl.append(p);}
   for(const e of ev){const d=describe(e);const it=document.createElement('button');it.type='button';it.className='item';
     it.innerHTML=`<span class="tx"><b></b><span></span></span><span class="side"></span>`;it.querySelector('b').textContent=d.title;it.querySelector('.tx span').textContent=d.sub;
@@ -1462,13 +1509,18 @@ function describe(e){
     case 'culture':return {title:`${t('evCulture')} · ${e.culture.line} P${e.culture.passage}`,sub:`${vName(e.culture.vessel)} × ${e.culture.qty}${e.culture.notes?' · '+e.culture.notes:''}`};
     case 'discard':return {title:t('evDiscard'),sub:e.title||''};
     case 'compound':return {title:`${t('evCompound')} · ${e.compound?.name}`,sub:`${e.compound?.stock} ${e.compound?.unit==='uM'?'µM':'mM'} · ${e.compound?.solvent}`};
-    default:return {title:t('evNote'),sub:e.text||''};}
+    case 'protein':{const cc=proteinConc(e.id),tb=e.tubes||[];
+      return {title:`${t('evProtein')} · ${e.title}`,sub:[t('tubesN',tb.length),[e.buffer,e.vol_per_well?e.vol_per_well+' µL/'+t('unitWell'):''].filter(Boolean).join(' '),[e.storage,e.box].filter(Boolean).join(' '),
+        tb.map(x=>x.label+(cc[x.label]!=null?` ${cc[x.label]} mg/mL`:'')).join(', ')].filter(Boolean).join(' · ')};}
+    case 'bca':return {title:`${t('evBca')} · ${e.title||''}`,sub:Object.entries(e.conc||{}).map(([k,v])=>`${k} ${v} mg/mL`).join(' · ')};
+    default:{const tr=e.treat_id&&allEvents().find(x=>x.id===e.treat_id),cu=e.cid&&cultures().find(x=>x.cid===e.cid);
+      return {title:e.photos&&e.photos.length&&!e.text?`${t('evNote')} · ${t('photoN',e.photos.length)}`:t('evNote'),sub:[e.text||'',tr?tr.title:'',cu?cultLabel(cu):''].filter(Boolean).join(' · ')};}}
 }
 function openLog(){paintLog();show('sLog');}
 function paintLog(){
   const f=$('logFilters');f.innerHTML='';
-  for(const [k,l] of [['all','fAll'],['count','fCount'],['passage','fPassage'],['treat','fTreat'],['other','fOther']]){const b=document.createElement('button');b.type='button';b.textContent=t(l);b.setAttribute('aria-pressed',logFilter===k);b.onclick=()=>{logFilter=k;paintLog();};f.append(b);}
-  const ev=allEvents().reverse().filter(e=>logFilter==='all'||e.type===logFilter||(logFilter==='treat'&&e.type==='harvest')||(logFilter==='other'&&!['count','passage','treat','harvest'].includes(e.type)));
+  for(const [k,l] of [['all','fAll'],['count','fCount'],['passage','fPassage'],['treat','fTreat'],['protein','fProtein'],['note','fNote'],['other','fOther']]){const b=document.createElement('button');b.type='button';b.textContent=t(l);b.setAttribute('aria-pressed',logFilter===k);b.onclick=()=>{logFilter=k;paintLog();};f.append(b);}
+  const ev=allEvents().reverse().filter(e=>logFilter==='all'||e.type===logFilter||(logFilter==='treat'&&e.type==='harvest')||(logFilter==='protein'&&e.type==='bca')||(logFilter==='other'&&!['count','passage','treat','harvest','protein','bca','note'].includes(e.type)));
   const lines=[...new Set(cultures().map(c=>c.line))];$('logSub').textContent=lines.join(' · ');
   const box=$('logList');box.innerHTML='';
   if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');box.append(p);return;}
@@ -1482,17 +1534,14 @@ function paintLog(){
     a.querySelector('b').textContent=ds.title;a.querySelector('.tm').textContent=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
     a.querySelector('.sb').textContent=ds.sub+(e.notes?` · ${e.notes}`:'')+(e.by&&e.by!=='local'?` · ${e.by}`:'')+(e.pending?' · ⏳':'');
     const acts=a.querySelector('.acts');
+    if(e.photos&&e.photos.length)a.insertBefore(thumbs(e.photos),acts);
+    if(e.type==='treat'){const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=t('harvestProtein');b.onclick=()=>openProtein(e.id);acts.append(b);}
+    if(e.type==='protein'&&(e.tubes||[]).length){const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=Object.keys(proteinConc(e.id)).length?t('editConc'):t('addConc');b.onclick=()=>openBca(e,a);acts.append(b);}
     if(e.report){const l=document.createElement('a');l.href=e.report;l.target='_blank';l.rel='noopener';l.className='mini';l.style.cssText='display:inline-flex;align-items:center;text-decoration:none';l.textContent=t('viewReport');acts.append(l);}
     if(e.type==='treat'&&openTreats().some(x=>x.id===e.id)){const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=t('markHarvested');b.onclick=()=>{if(confirmTwice('h'+e.id))addEvent({type:'harvest',treat_id:e.id,title:e.title});};acts.append(b);}
     const del=document.createElement('button');del.type='button';del.className='mini danger';del.textContent=t('deleteEntry');del.onclick=()=>{if(confirmTwice('d'+e.id))addEvent({type:'delete',target:e.id});};acts.append(del);
     box.append(a);}
 }
-$('logNote').onclick=()=>{
-  const box=$('logList');if(box.querySelector('#noteText'))return;
-  const f=document.createElement('div');f.className='box';f.innerHTML=`<div class="field"><label for="noteText"></label><textarea id="noteText" maxlength="1000"></textarea></div><div class="row2"><button type="button" class="btn"></button><button type="button" class="btn primary" style="min-height:48px;font-size:15px"></button></div>`;
-  f.querySelector('label').textContent=t('noteText');const [c,s]=f.querySelectorAll('button');c.textContent=t('cancel');s.textContent=t('saveNote');
-  c.onclick=()=>f.remove();s.onclick=()=>{const tx=f.querySelector('textarea').value.trim();if(!tx)return;addEvent({type:'note',text:tx,title:tx.slice(0,40)});f.remove();};
-  box.prepend(f);f.querySelector('textarea').focus();};
 $('logCsv').onclick=()=>{
   const head=['date','time','type','title','cell_line','passage','details','notes','by'];
   const rows=allEvents().map(e=>{const d=new Date(e.at),ds=describe(e);return [stamp(d).slice(0,10),stamp(d).slice(11),e.type,e.title||'',e.line||e.culture?.line||'',e.to_passage??e.passage??e.culture?.passage??'',ds.sub,e.notes||e.text||'',e.by||''];});
@@ -1505,6 +1554,132 @@ function labRefreshLang(){
   if(!$('sPassage').hidden){const v=$('pCount').value;openPassage({source:$('pSource').value,count:v});}
   if(!$('sTreat').hidden)paintTreat();
 }
+/* ================= LAB MORE: protein harvest, notes with photos ================= */
+Object.assign(I18N.th,{
+  actProtein:'เก็บโปรตีน',actProteinSub:'lysate · ที่เก็บ',actNote:'โน้ต / ภาพ',actNoteSub:'จดเรื่องสำคัญ แนบรูปได้',
+  proteinSub:'บันทึก lysate และที่เก็บ',fromTreat:'จากการทดลอง',noneTreat:'— ไม่ผูกกับการทดลอง —',buffer:'Lysis buffer',
+  volPerWell:'ปริมาตรต่อหลุม (µL)',tubeMode:'แบ่งหลอด',perGroup:'รวมต่อกลุ่ม',perWell:'หลอดละหลุม',tubesTitle:'หลอดที่เก็บ',
+  tubeLabel:'ชื่อหลอด',wellsLbl:'หลุม',volLbl:'µL',addTube:'+ เพิ่มหลอด',storage:'เก็บที่',boxPos:'กล่อง / ตำแหน่ง',boxPh:'เช่น กล่อง 2 · A1–A6',
+  alsoHarvest:'ทำเครื่องหมายว่าการทดลองนี้เก็บเซลล์แล้ว',saveProtein:'บันทึกการเก็บโปรตีน',needTubes:'ใส่ชื่อหลอดอย่างน้อย 1 หลอด',
+  evProtein:'เก็บโปรตีน',evBca:'ค่าโปรตีน',tubesN:n=>`${n} หลอด`,addConc:'ใส่ค่าโปรตีน (BCA)',editConc:'แก้ค่าโปรตีน',saveConc:'บันทึกค่า',
+  harvestProtein:'เก็บโปรตีน',noteSub:'จดเรื่องสำคัญ แนบรูปได้',about:'เกี่ยวกับ',aboutNone:'— ทั่วไป —',
+  noteTextPh:'เช่น หลุม 3A เซลล์ลอยเยอะ, เปลี่ยน medium แล้ว',photos:'รูป',addPhotos:'ถ่ายรูป / เลือกรูป',
+  needNoteOrPhoto:'พิมพ์ข้อความหรือแนบรูปก่อน',photoFail:'อ่านรูปนี้ไม่ได้',photoWord:'รูป',photoN:n=>`📷 ${n}`,
+  fProtein:'โปรตีน',fNote:'โน้ต/ภาพ',openPhoto:'เปิดรูป',removePhoto:'เอารูปนี้ออก',expPrefix:'การทดลอง',culturePrefix:'ขวด'
+});
+Object.assign(I18N.en,{
+  actProtein:'Protein harvest',actProteinSub:'Lysate · storage',actNote:'Note / photo',actNoteSub:'Save anything, attach photos',
+  proteinSub:'Record lysates and where they’re stored',fromTreat:'From experiment',noneTreat:'— Not linked —',buffer:'Lysis buffer',
+  volPerWell:'Volume per well (µL)',tubeMode:'Tubes',perGroup:'Pool each group',perWell:'One per well',tubesTitle:'Tubes',
+  tubeLabel:'Label',wellsLbl:'Wells',volLbl:'µL',addTube:'+ Add tube',storage:'Stored at',boxPos:'Box / position',boxPh:'e.g. Box 2 · A1–A6',
+  alsoHarvest:'Mark this experiment as harvested',saveProtein:'Save protein harvest',needTubes:'Label at least one tube',
+  evProtein:'Protein',evBca:'Protein conc.',tubesN:n=>`${n} tube${n>1?'s':''}`,addConc:'Add protein conc. (BCA)',editConc:'Edit protein conc.',saveConc:'Save values',
+  harvestProtein:'Harvest protein',noteSub:'Save anything, attach photos',about:'About',aboutNone:'— General —',
+  noteTextPh:'e.g. lots of floating cells in 3A; changed medium',photos:'Photos',addPhotos:'Take or choose photos',
+  needNoteOrPhoto:'Type a note or add a photo first',photoFail:'Couldn’t read this photo',photoWord:'Photo',photoN:n=>`📷 ${n}`,
+  fProtein:'Protein',fNote:'Notes',openPhoto:'Open photo',removePhoto:'Remove this photo',expPrefix:'Experiment',culturePrefix:'Culture'
+});
+ICON.protein=['#F3E8FB','#7A3E9D','<path d="M8 3h8M9 3v14a3 3 0 0 0 6 0V3M9 11h6"/>'];
+ICON.bca=['#F3E8FB','#7A3E9D','<path d="M4 20V11M10 20V5M16 20v-6M2 20h20"/>'];
+
+/* ---------- photos: kept on the phone (IndexedDB) until uploaded ---------- */
+const PDB={mem:new Map(),db:null,
+  open(){if(!this.db)this.db=new Promise((res,rej)=>{try{const r=indexedDB.open('cclab',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});return this.db;},
+  async run(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction('photos',mode),st=tx.objectStore('photos');const r=fn(st);tx.oncomplete=()=>res(r&&r.result);tx.onerror=()=>rej(tx.error);});},
+  async put(id,b){this.mem.set(id,b);try{await this.run('readwrite',s=>s.put(b,id));}catch(e){}},
+  async get(id){if(this.mem.has(id))return this.mem.get(id);try{return await this.run('readonly',s=>s.get(id));}catch(e){return null;}},
+  async del(id){this.mem.delete(id);try{await this.run('readwrite',s=>s.delete(id));}catch(e){}}};
+function shrinkPhoto(file,max=2000){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(0),'image/jpeg',.86);};
+  im.onerror=()=>{URL.revokeObjectURL(u);rej(0);};im.src=u;});}
+async function uploadPhotos(ids){for(const id of ids||[]){const b=await PDB.get(id);if(!b)continue;
+  const r=await api('api/lab/photo?id='+id,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:b});if(!r.ok)throw 0;await PDB.del(id);}}
+const photoUrl=id=>`lab/photos/${id}.jpg`;
+function thumbs(ids){const box=document.createElement('div');box.className='thumbs';
+  for(const id of ids){const a=document.createElement('a');a.href=photoUrl(id);a.target='_blank';a.rel='noopener';a.setAttribute('aria-label',t('openPhoto'));
+    const im=new Image();im.loading='lazy';im.alt='';im.src=photoUrl(id);
+    im.onerror=async()=>{im.onerror=null;const b=await PDB.get(id);if(b){const u=URL.createObjectURL(b);im.src=u;a.href=u;}};
+    a.append(im);box.append(a);}
+  return box;}
+
+/* ---------- note / photo ---------- */
+let nPhotos=[];
+function aboutOptions(sel,value){sel.innerHTML='';const o=document.createElement('option');o.value='';o.textContent=t('aboutNone');sel.append(o);
+  const tr=allEvents().filter(e=>e.type==='treat').reverse().slice(0,10);
+  if(tr.length){const g=document.createElement('optgroup');g.label=t('expPrefix');for(const e of tr){const x=document.createElement('option');x.value='t:'+e.id;x.textContent=`${e.title} · ${shortDate(new Date(e.at))}`;g.append(x);}sel.append(g);}
+  const cu=activeCultures();if(cu.length){const g=document.createElement('optgroup');g.label=t('culturePrefix');for(const c of cu){const x=document.createElement('option');x.value='c:'+c.cid;x.textContent=cultLabel(c);g.append(x);}sel.append(g);}
+  sel.value=value||'';}
+function openNote(about){$('nWhen').value=nowLocal();aboutOptions($('nAbout'),about);paintNotePhotos();show('sNote');}
+function paintNotePhotos(){const box=$('nThumbs');box.innerHTML='';box.hidden=!nPhotos.length;
+  nPhotos.forEach((p,i)=>{const d=document.createElement('div');d.className='thumb-edit';const im=new Image();im.src=p.url;im.alt='';
+    const x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label',t('removePhoto'));
+    x.onclick=()=>{PDB.del(p.id);URL.revokeObjectURL(p.url);nPhotos.splice(i,1);paintNotePhotos();};d.append(im,x);box.append(d);});}
+$('nFile').onchange=async()=>{const files=[...$('nFile').files];$('nFile').value='';
+  for(const f of files){try{const b=await shrinkPhoto(f);const id=uid();await PDB.put(id,b);nPhotos.push({id,url:URL.createObjectURL(b)});}catch(e){toast(t('photoFail'),true);}}
+  paintNotePhotos();};
+$('nSave').onclick=()=>{const tx=$('nText').value.trim();if(!tx&&!nPhotos.length){toast(t('needNoteOrPhoto'),true);$('nText').focus();return;}
+  const ab=$('nAbout').value;
+  addEvent({at:readWhen('nWhen'),type:'note',title:tx?tx.slice(0,60):`${t('photoWord')} ×${nPhotos.length}`,text:tx,photos:nPhotos.map(p=>p.id),
+    treat_id:ab.startsWith('t:')?ab.slice(2):null,cid:ab.startsWith('c:')?ab.slice(2):null});
+  nPhotos.forEach(p=>URL.revokeObjectURL(p.url));nPhotos=[];$('nText').value='';paintNotePhotos();show('sHome');};
+
+/* ---------- protein harvest ---------- */
+let prTubes=[],prMode='group',prTouched=false;
+const proteinTreats=()=>{const open=new Set(openTreats().map(e=>e.id));return allEvents().filter(e=>e.type==='treat'&&(open.has(e.id)||Date.now()-new Date(e.at)<45*864e5)).reverse();};
+function openProtein(treatId){
+  $('prWhen').value=nowLocal();
+  const sel=$('prTreat');sel.innerHTML='';const o=document.createElement('option');o.value='';o.textContent=t('noneTreat');sel.append(o);
+  for(const e of proteinTreats()){const x=document.createElement('option');x.value=e.id;x.textContent=`${e.title} · ${shortDate(new Date(e.at))}`;sel.append(x);}
+  sel.value=treatId||openTreats().sort((a,b)=>new Date(a.at)-new Date(b.at))[0]?.id||'';
+  prTouched=false;buildTubes();show('sProtein');}
+const prTreatEv=()=>allEvents().find(e=>e.id===$('prTreat').value&&e.type==='treat');
+function buildTubes(){const tr=prTreatEv(),vol=num($('prVol').value);
+  $('prHarvWrap').hidden=!(tr&&openTreats().some(x=>x.id===tr.id));$('prHarv').checked=true;
+  if(!tr){if(!prTubes.length||!prTouched)prTubes=[{label:'',wells:'',vol:isFinite(vol)?vol:''}];paintTubes();return;}
+  prTubes=[];
+  for(const g of tr.groups||[]){const n=num(g.wells)||0,pos=g.wells_pos||[];
+    if(prMode==='group')prTubes.push({label:g.name,wells:pos.join(',')||String(n),vol:isFinite(vol)?vol*n:''});
+    else for(let k=0;k<n;k++)prTubes.push({label:`${g.name} · ${pos[k]||k+1}`,wells:pos[k]||'',vol:isFinite(vol)?vol:''});}
+  paintTubes();}
+function paintTubes(){
+  document.querySelectorAll('[data-prmode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.prmode===prMode));
+  const box=$('prTubes');box.innerHTML='';
+  prTubes.forEach((r,i)=>{const d=document.createElement('div');d.className='tube-card';
+    d.innerHTML='<input type="text" maxlength="60" class="tl"><label class="tw"><span></span><input type="text" maxlength="40"></label><label class="tv"><span>µL</span><input type="text" class="mono" inputmode="decimal"></label><button type="button" class="mini danger">×</button>';
+    d.querySelector('.tw span').textContent=t('wellsLbl');d.querySelector('.tl').placeholder=t('tubeLabel');
+    const [l,w,v]=d.querySelectorAll('input');l.value=r.label;w.value=r.wells;v.value=r.vol;
+    l.setAttribute('aria-label',`${t('tubeLabel')} ${i+1}`);w.setAttribute('aria-label',`${t('wellsLbl')} ${i+1}`);v.setAttribute('aria-label',`${t('volLbl')} ${i+1}`);
+    l.oninput=()=>{r.label=l.value;prTouched=true;};w.oninput=()=>{r.wells=w.value;prTouched=true;};v.oninput=()=>{r.vol=v.value;prTouched=true;};
+    const x=d.querySelector('button');x.setAttribute('aria-label',t('remove'));x.onclick=()=>{prTubes.splice(i,1);prTouched=true;paintTubes();};box.append(d);});}
+$('prTreat').onchange=()=>{prTouched=false;buildTubes();};
+$('prVol').oninput=()=>{if(!prTouched)buildTubes();};
+document.querySelectorAll('[data-prmode]').forEach(b=>b.onclick=()=>{prMode=b.dataset.prmode;prTouched=false;buildTubes();});
+$('prAddTube').onclick=()=>{prTubes.push({label:'',wells:'',vol:$('prVol').value});prTouched=true;paintTubes();};
+$('prSave').onclick=()=>{
+  const tubes=prTubes.filter(r=>String(r.label).trim()).map(r=>({label:String(r.label).trim(),wells:String(r.wells).trim(),vol_ul:num(r.vol)||null}));
+  if(!tubes.length){toast(t('needTubes'),true);return;}
+  const tr=prTreatEv(),at=readWhen('prWhen');
+  addEvent({at,type:'protein',title:tr?tr.title:tubes[0].label,treat_id:tr?.id||null,cids:tr?.cids||[],line:tr?.line||null,passage:tr?.passage||null,
+    buffer:$('prBuf').value.trim(),vol_per_well:num($('prVol').value)||null,mode:prMode,tubes,storage:$('prStore').value.trim(),box:$('prBox').value.trim(),notes:$('prNotes').value.trim()});
+  if(tr&&!$('prHarvWrap').hidden&&$('prHarv').checked)addEvent({at,type:'harvest',treat_id:tr.id,title:tr.title,notes:t('evProtein')});
+  $('prNotes').value='';$('prBox').value='';prTubes=[];show('sHome');};
+
+function proteinConc(id){const c={};for(const e of allEvents())if(e.type==='bca'&&e.target===id)Object.assign(c,e.conc||{});return c;}
+function openBca(e,art){if(art.querySelector('.bca-box'))return;const conc=proteinConc(e.id);
+  const f=document.createElement('div');f.className='box bca-box';f.style.gridColumn='2';
+  for(const tb of e.tubes||[]){const r=document.createElement('label');r.className='tube-row';r.style.gridTemplateColumns='minmax(0,1fr) 110px';
+    r.innerHTML='<span style="font-size:13px"></span><input type="text" class="mono" inputmode="decimal" placeholder="mg/mL">';r.querySelector('span').textContent=tb.label;
+    const i=r.querySelector('input');i.dataset.label=tb.label;i.value=conc[tb.label]??'';f.append(r);}
+  const row=document.createElement('div');row.className='row2';row.innerHTML='<button type="button" class="btn"></button><button type="button" class="btn primary" style="min-height:48px;font-size:15px"></button>';
+  const [c,s]=row.querySelectorAll('button');c.textContent=t('cancel');s.textContent=t('saveConc');c.onclick=()=>f.remove();
+  s.onclick=()=>{const v={};f.querySelectorAll('input').forEach(i=>{const x=num(i.value);if(isFinite(x))v[i.dataset.label]=x;});
+    if(Object.keys(v).length)addEvent({type:'bca',target:e.id,title:e.title,conc:v});f.remove();};
+  f.append(row);art.append(f);f.querySelector('input')?.focus();}
+$('goProtein').onclick=()=>openProtein();
+$('goNote').onclick=()=>openNote();
+$('logNote').onclick=()=>openNote();
+
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
   show('sHome');syncLab();setInterval(syncLab,60000);

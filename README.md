@@ -81,9 +81,11 @@ The home screen also keeps a simple culture log:
 - **Hand count:** type the cells you counted in each square from the lab counter. The app gives mean ± SD, CV and cells/mL. It works with no internet; entries are kept on the phone and sent when the connection comes back.
 - **Passage:** pick a count (camera or hand), then list the new vessels (6/12/24/96-well plates, 35/60/100 mm dishes, T25/T75/T175 flasks) with the cells and medium you want in each well, dish or flask. The app shows how many µL of cell suspension and mL of medium to pipette into each one.
 - **Treat:** keep a list of compounds with their stock concentration and solvent (add your own). Build groups (glucose, one or more compounds at µM), and the app works out the stock volume per group, adds vehicle so every group ends at the same DMSO/EtOH %, draws the plate map and sets a harvest timer that shows on the home screen.
-- **Log:** everything by date, with filters, notes, delete, and CSV export.
+- **Protein harvest:** pick the experiment and the app lists one tube per group (or per well) with lysis buffer volume, storage temperature and box position. Add BCA concentrations to the tubes later from the log.
+- **Notes and photos:** write a note and attach photos (taken with the camera or chosen from the phone), optionally linked to an experiment or a culture. Photos are resized to 2000 px and kept on the phone until they reach the server, so this works offline too.
+- **Log:** everything by date, with filters, delete, and CSV export.
 
-The log is stored on the server in `lab/events.jsonl`, one JSON entry per line.
+The log is stored on the server in `lab/events.jsonl`, one JSON entry per line; photos go to `lab/photos/`.
 
 ## Where your data goes
 
@@ -94,7 +96,8 @@ Everything stays inside `server/`:
 | `reports/<date>_<name>/` | `report.png`, each square's annotated image (`tl.jpg`, …) and `run.json` |
 | `reports/runs.csv` | one row per round: every square's count, mean, SD, CV, chamber means, cells/mL |
 | `training_data/` | corrected squares sent with **Send as CellNet training data** |
-| `lab/events.jsonl` | the lab log: counts, passages, treatments, notes |
+| `lab/events.jsonl` | the lab log: counts, passages, treatments, protein harvests, notes |
+| `lab/photos/` | photos attached to notes |
 
 These folders are ignored by git.
 
