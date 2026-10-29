@@ -433,6 +433,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
   <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div class="title-col"><b id="hManual" data-i18n="actManual"></b><span data-i18n="manualSub"></span></div></header>
   <div class="form">
+    <div class="field"><label for="mWhen" data-i18n="whenDone"></label><input id="mWhen" type="datetime-local"></div>
     <div class="field"><label for="mName" data-i18n="sampleName"></label><input id="mName" type="text" maxlength="120" autocomplete="off" data-i18n-ph="sampleNamePh"></div>
     <div class="field"><label for="mCulture" data-i18n="fromCulture"></label><select id="mCulture"></select></div>
     <div><div class="legend" style="margin-bottom:8px" data-i18n="squaresCounted"></div>
@@ -462,6 +463,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
     <div><div class="sec-h" style="margin-bottom:8px"><h2 data-i18n="newVessels"></h2></div><div id="pOut" style="display:flex;flex-direction:column;gap:8px"></div>
       <button type="button" class="btn" id="pAddOut" style="margin-top:8px;width:100%" data-i18n="addVessel"></button></div>
     <section class="calc" id="pCalc" aria-live="polite"></section>
+    <div class="field"><label for="pWhen" data-i18n="whenDone"></label><input id="pWhen" type="datetime-local"></div>
     <div class="field"><label for="pNotes" data-i18n="notes"></label><textarea id="pNotes" maxlength="1000"></textarea></div>
   </div>
   <footer class="foot"><button type="button" class="btn primary" id="pSave" data-i18n="savePassage"></button></footer>
@@ -518,6 +520,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <div class="field"><label for="kPassage">Passage (P)</label><input id="kPassage" class="mono" type="text" inputmode="numeric" placeholder="12"></div></div>
     <div class="row2"><div class="field"><label for="kVessel" data-i18n="vessel"></label><select id="kVessel"></select></div>
       <div class="field"><label for="kQty" data-i18n="howMany"></label><input id="kQty" class="mono" type="text" inputmode="numeric" value="1"></div></div>
+    <div class="field"><label for="kWhen" data-i18n="whenDone"></label><input id="kWhen" type="datetime-local"></div>
     <div class="field"><label for="kNotes" data-i18n="notes"></label><textarea id="kNotes" maxlength="500" data-i18n-ph="cultureNotesPh"></textarea></div>
   </div>
   <footer class="foot"><button type="button" class="btn primary" id="kSave" data-i18n="saveCulture"></button></footer>
@@ -1045,7 +1048,7 @@ Object.assign(I18N.th,{
   noStock:n=>`${n}: ใส่ความเข้มข้น stock ก่อน`,
   logTitle:'บันทึก',addNote:'+ บันทึกเพิ่ม',fAll:'ทั้งหมด',fCount:'นับ',fPassage:'Passage',fTreat:'Treat',fOther:'อื่น ๆ',
   addCultureSub:'ขวดที่ละลายใหม่ หรือที่ยังไม่ได้บันทึก',cultureNotesPh:'เช่น ละลายจาก cryovial 12 ต.ค.',saveCulture:'บันทึกขวด',
-  useForPassage:'ใช้ผลนี้ทำ Passage ต่อ',resumeGo:'นับต่อ',
+  useForPassage:'ใช้ผลนี้ทำ Passage ต่อ',whenDone:'วันเวลาที่ทำ',noHarvestSet:d=>`เริ่ม ${d} · ยังไม่ได้ระบุเวลาเก็บ`,resumeGo:'นับต่อ',
   evCount:'นับ',evPassage:'Passage',evTreat:'Treat',evHarvest:'เก็บเซลล์',evCulture:'เพิ่มขวด',evNote:'บันทึก',evDiscard:'นำขวดออก',evCompound:'เพิ่มสาร',
   manual:'นับมือ',camera:'กล้อง',viewReport:'ดูรายงาน',harvested:'เก็บแล้ว',markHarvested:'เก็บแล้ว',discard:'นำออก',confirmTap:'แตะอีกครั้งเพื่อยืนยัน',deleteEntry:'ลบ',
   inH:(h,m)=>h?`อีก ${h} ชม. ${m} นาที`:`อีก ${m} นาที`,lateBy:(h,m)=>h?`เลยมา ${h} ชม. ${m} นาที`:`เลยมา ${m} นาที`,due:d=>`ครบ ${d}`,
@@ -1075,7 +1078,7 @@ Object.assign(I18N.en,{
   noStock:n=>`${n}: set the stock concentration first`,
   logTitle:'Lab log',addNote:'+ Add note',fAll:'All',fCount:'Counts',fPassage:'Passage',fTreat:'Treat',fOther:'Other',
   addCultureSub:'A newly thawed flask, or one not recorded yet',cultureNotesPh:'e.g. thawed from cryovial 12 Oct',saveCulture:'Save culture',
-  useForPassage:'Use this count for a passage',resumeGo:'Continue',
+  useForPassage:'Use this count for a passage',whenDone:'Date and time done',noHarvestSet:d=>`Started ${d} · no harvest time set`,resumeGo:'Continue',
   evCount:'Count',evPassage:'Passage',evTreat:'Treat',evHarvest:'Harvest',evCulture:'Culture added',evNote:'Note',evDiscard:'Culture removed',evCompound:'Compound added',
   manual:'hand count',camera:'camera',viewReport:'View report',harvested:'Harvested',markHarvested:'Harvested',discard:'Remove',confirmTap:'Tap again to confirm',deleteEntry:'Delete',
   inH:(h,m)=>h?`in ${h} h ${m} min`:`in ${m} min`,lateBy:(h,m)=>h?`${h} h ${m} min overdue`:`${m} min overdue`,due:d=>`due ${d}`,
@@ -1087,6 +1090,8 @@ Object.assign(I18N.en,{
   cntLine:(m,cv,n,N)=>`${m} · ${n}/${N} squares${cv}`,
   vessels:{'6-well':'6-well plate','12-well':'12-well plate','24-well':'24-well plate','96-well':'96-well plate','dish-35':'35 mm dish','dish-60':'60 mm dish','dish-100':'100 mm dish','T25':'T25 flask','T75':'T75 flask','T175':'T175 flask'}
 });
+const nowLocal=(d=new Date())=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+const readWhen=id=>{const d=new Date($(id).value);return isFinite(d)?d.toISOString():new Date().toISOString();};
 const VESSELS={'6-well':{wells:6,ml:2},'12-well':{wells:12,ml:1},'24-well':{wells:24,ml:.5},'96-well':{wells:96,ml:.1},'dish-35':{ml:2,kind:'dish'},'dish-60':{ml:4,kind:'dish'},'dish-100':{ml:10,kind:'dish'},'T25':{ml:5,kind:'flask'},'T75':{ml:15,kind:'flask'},'T175':{ml:30,kind:'flask'}};
 const vName=v=>(t('vessels')||{})[v]||v;
 const vUnit=v=>VESSELS[v]?.wells?t('unitWell'):VESSELS[v]?.kind==='dish'?t('unitDish'):t('unitFlask');
@@ -1166,18 +1171,18 @@ function paintHome(){
   $('homeDate').textContent=niceDate(new Date()).split(' · ')[0];
   paintSync();
   // to do
-  const now=Date.now(),open=openTreats().sort((a,b)=>new Date(a.harvest_at)-new Date(b.harvest_at));
+  const now=Date.now(),hv=e=>e.harvest_at?new Date(e.harvest_at).getTime():Infinity,open=openTreats().sort((a,b)=>hv(a)-hv(b));
   $('dueSec').hidden=!open.length; const dl=$('dueList'); dl.innerHTML='';
   const rs=store.get(KEY,null);
   if(rs&&rs.R&&Object.keys(rs.R.slots||{}).length&&!R){$('dueSec').hidden=false;const row=document.createElement('div');row.className='due soon';
     row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg><span class="tx"><b></b></span><button type="button"></button>`;
     row.querySelector('b').textContent=t('resumeText',rs.R.name,Object.keys(rs.R.slots).length,rs.R.layout);
     const b=row.querySelector('button');b.id='homeResume';b.textContent=t('resumeGo');b.onclick=()=>{checkResume();show('sStart');$('resumeBtn').click();};dl.append(row);}
-  for(const e of open){const left=new Date(e.harvest_at)-now;const row=document.createElement('div');
+  for(const e of open){const left=e.harvest_at?new Date(e.harvest_at)-now:NaN;const row=document.createElement('div');
     row.className='due'+(left<0?' late':left<3*3.6e6?' soon':'');
     row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span class="tx"><b></b><span></span></span><button type="button"></button>`;
     row.querySelector('b').textContent=`${t('evHarvest')} · ${e.title}`;
-    row.querySelector('.tx span').textContent=`${t('due',shortDate(new Date(e.harvest_at)))} · ${durText(left)}`;
+    row.querySelector('.tx span').textContent=e.harvest_at?`${t('due',shortDate(new Date(e.harvest_at)))} · ${durText(left)}`:t('noHarvestSet',shortDate(new Date(e.at)));
     const b=row.querySelector('button');b.textContent=t('markHarvested');b.onclick=()=>{if(!confirmTwice('h'+e.id))return;addEvent({type:'harvest',treat_id:e.id,title:e.title});};
     dl.append(row);}
   // cultures
@@ -1222,6 +1227,7 @@ function fillVesselSelect(sel,value,only){sel.innerHTML='';for(const v of Object
 /* ---------- manual count ---------- */
 let mLayout=4;const mVals={};
 function openManual(prefill){
+  $('mWhen').value=nowLocal();
   fillCultureSelect($('mCulture'),{none:t('noneCulture'),value:prefill?.cid});
   if(prefill?.cid){const c=activeCultures().find(x=>x.cid===prefill.cid);if(c&&!$('mName').value)$('mName').value=`${c.line} P${c.passage}`;}
   paintManual();show('sManual');
@@ -1247,7 +1253,7 @@ function calcManual(){const S=manualStats();
   $('mFormula').textContent=S.n?`(${S.sum} ÷ ${S.n}) × ${S.df} ÷ 0.0001 mL`:'';}
 $('mDf').oninput=calcManual;
 function saveManual(){const S=manualStats();if(!S.n){toast(t('needSquares'),true);return null;}
-  const ev=addEvent({type:'count',method:'manual',title:$('mName').value.trim()||t('actManual'),cid:$('mCulture').value||null,layout:mLayout,
+  const ev=addEvent({at:readWhen('mWhen'),type:'count',method:'manual',title:$('mName').value.trim()||t('actManual'),cid:$('mCulture').value||null,layout:mLayout,
     squares:S.squares,n:S.n,mean:S.mean,sd:S.sd,cv:S.cv,df:S.df,cells_per_ml:S.perMl});
   for(const k in mVals)delete mVals[k];$('mSquares').querySelectorAll('input').forEach(i=>i.value='');$('mName').value='';calcManual();return ev;}
 $('mSave').onclick=()=>{if(saveManual())show('sHome');};
@@ -1268,6 +1274,7 @@ $('sumPassage').onclick=()=>{const S=stats();if(!S.n)return;
 /* ---------- passage ---------- */
 let pRows=[];
 function openPassage({source,count}={}){
+  $('pWhen').value=nowLocal();
   fillCultureSelect($('pSource'),{none:t('newSource'),value:source,filter:c=>c.status==='active'});
   const sel=$('pCount');sel.innerHTML='';
   for(const c of counts().slice(0,12)){const o=document.createElement('option');o.value=c.id;o.textContent=`${sciShort(c.cells_per_ml)} · ${c.title} · ${shortDate(new Date(c.at))}`;sel.append(o);}
@@ -1328,7 +1335,7 @@ $('pSave').onclick=()=>{
   if(!(cpm>0)){toast(t('needCpm'),true);return;}
   const id=uid(),src=activeCultures().find(x=>x.cid===$('pSource').value);
   store.set('cc.lastOutputs',pRows);
-  addEvent({id,type:'passage',title:`${line} P${to}`,line,from_passage:src?src.passage:to-1,to_passage:to,source_cid:src?.cid||null,
+  addEvent({id,at:readWhen('pWhen'),type:'passage',title:`${line} P${to}`,line,from_passage:src?src.passage:to-1,to_passage:to,source_cid:src?.cid||null,
     count_id:$('pCount').value==='__type'?null:$('pCount').value,cells_per_ml:cpm,
     outputs:rows.map((r,i)=>({cid:`${id}-${i}`,vessel:r.vessel,qty:r.qty,units:r.units,cells_per_unit:r.cells,medium_ml:r.ml,susp_ul:+r.ul.toFixed(1),purpose:r.purpose})),
     notes:$('pNotes').value.trim()});
@@ -1433,10 +1440,10 @@ $('tSave').onclick=()=>{
 };
 
 /* ---------- add culture ---------- */
-function openCulture(){fillVesselSelect($('kVessel'),$('kVessel').value||'T75');show('sCulture');}
+function openCulture(){$('kWhen').value=nowLocal();fillVesselSelect($('kVessel'),$('kVessel').value||'T75');show('sCulture');}
 $('kSave').onclick=()=>{const line=$('kLine').value.trim(),p=parseInt($('kPassage').value,10);
   if(!line){toast(t('needLine'),true);return;}if(!(p>=0)){toast(t('needPassage'),true);$('kPassage').focus();return;}
-  const id=uid();addEvent({id,type:'culture',title:`${line} P${p}`,culture:{cid:id+'-0',line,passage:p,vessel:$('kVessel').value,qty:num($('kQty').value)||1,purpose:'keep',notes:$('kNotes').value.trim()}});
+  const id=uid();addEvent({id,at:readWhen('kWhen'),type:'culture',title:`${line} P${p}`,culture:{cid:id+'-0',line,passage:p,vessel:$('kVessel').value,qty:num($('kQty').value)||1,purpose:'keep',notes:$('kNotes').value.trim()}});
   $('kPassage').value='';$('kNotes').value='';show('sHome');};
 
 /* ---------- log ---------- */
@@ -1450,7 +1457,7 @@ function describe(e){
   switch(e.type){
     case 'count':return {title:`${t('evCount')} · ${sci(e.cells_per_ml)} cells/mL`,sub:`${e.title} · ${e.method==='manual'?t('manual'):t('camera')} · ${e.n}/${e.layout}${cv}`};
     case 'passage':return {title:`${t('evPassage')} ${e.line} ${t('passageArrow',e.from_passage,e.to_passage)}`,sub:(e.outputs||[]).map(o=>`${vName(o.vessel)} × ${o.qty} (${sciShort(o.cells_per_unit)}/${vUnit(o.vessel)})`).join(' · ')};
-    case 'treat':return {title:`${t('evTreat')} · ${e.title}`,sub:`${e.line?e.line+' P'+e.passage+' · ':''}${vName(e.vessel)} × ${e.plates} · ${(e.groups||[]).map(g=>g.name).join(' / ')} · ${e.duration_h} h`};
+    case 'treat':return {title:`${t('evTreat')} · ${e.title}`,sub:`${e.line?e.line+' P'+e.passage+' · ':''}${vName(e.vessel)} × ${e.plates} · ${(e.groups||[]).map(g=>g.name).join(' / ')}${e.duration_h?' · '+e.duration_h+' h':''}`};
     case 'harvest':return {title:`${t('evHarvest')} · ${e.title||''}`,sub:e.notes||''};
     case 'culture':return {title:`${t('evCulture')} · ${e.culture.line} P${e.culture.passage}`,sub:`${vName(e.culture.vessel)} × ${e.culture.qty}${e.culture.notes?' · '+e.culture.notes:''}`};
     case 'discard':return {title:t('evDiscard'),sub:e.title||''};
