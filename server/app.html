@@ -258,7 +258,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .pm-well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'IBM Plex Mono',ui-monospace,monospace}
 .pm-well.empty{background:#fff;border:1.5px dashed #C3CAD8}
 .legend{display:flex;flex-direction:column;gap:6px;font-size:13px}
-.preps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.preps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.55;white-space:pre-line}
 .steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}
 .d-text{margin:0;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
 .d-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.d-photos img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block;background:#E8ECF3}
@@ -285,6 +285,15 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .ck-row{display:flex;gap:8px;justify-content:flex-end;padding:6px 0 10px}
 .ck-edit{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}.ck-edit textarea{font:inherit;font-size:14px;line-height:1.5;padding:10px;border-radius:12px;border:1px solid var(--line);min-height:240px}
 .ck-help{font-size:12px;color:var(--muted)}
+.ev > :not(.ic){grid-column:2}
+.ev .sb{white-space:pre-line;line-height:1.55;font-size:13px;color:var(--ink2);margin-top:2px}
+.ev .nt{white-space:pre-line;line-height:1.55;font-size:12.5px;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.ev .byl{font-size:11.5px;color:var(--muted);margin-top:4px}
+.ev .acts{margin-top:8px}
+#homeLog .tx span{white-space:pre-line;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.note-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.5}
+.kv{gap:10px 14px}.kv dd{line-height:1.5}
+.dtab td{line-height:1.45}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -1539,23 +1548,28 @@ const ICON={count:['#E3F5EE','#0B6B4E','<rect x="3" y="3" width="18" height="18"
   culture:['#E7ECFA','#2E4FB3','<path d="M8 3h8M9 3v5L4 19a1.5 1.5 0 0 0 1.4 2h13.2a1.5 1.5 0 0 0 1.4-2L15 8V3"/>'],note:['#EEF1F4','#5B6478','<path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/>'],
   discard:['#FDE8E2','#A3361B','<path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'],compound:['#F0F8F6','#0F7A6E','<circle cx="12" cy="12" r="7"/>']};
 function describe(e){
-  const cv=isFinite(e.cv)?` · CV ${(+e.cv).toFixed(1)}%`:'';
+  const L=(...xs)=>xs.flat().filter(x=>x!=null&&x!=='').join('\n'),cv=isFinite(e.cv)?`CV ${(+e.cv).toFixed(1)}%`:'';
+  const wellsOf=g=>(g.wells_pos||[]).join(',')||`${g.wells} ${t('unitWell')}`;
   switch(e.type){
-    case 'count':return {title:`${t('evCount')} · ${sci(e.cells_per_ml)} cells/mL`,sub:`${e.title} · ${e.method==='manual'?t('manual'):t('camera')} · ${e.n}/${e.layout}${cv}`};
-    case 'passage':return {title:`${t('evPassage')} ${e.line} ${t('passageArrow',e.from_passage,e.to_passage)}`,sub:(e.outputs||[]).map(o=>`${vName(o.vessel)} × ${o.qty} (${sciShort(o.cells_per_unit)}/${vUnit(o.vessel)})`).join(' · ')};
-    case 'treat':return {title:`${t('evTreat')} · ${e.title}`,sub:`${e.line?e.line+' P'+e.passage+' · ':''}${vName(e.vessel)} × ${e.plates} · ${(e.groups||[]).map(g=>g.name).join(' / ')}${e.duration_h?' · '+e.duration_h+' h':''}`};
-    case 'harvest':return {title:`${t('evHarvest')} · ${e.title||''}`,sub:e.notes||''};
-    case 'culture':return {title:`${t('evCulture')} · ${e.culture.line} P${e.culture.passage}`,sub:`${vName(e.culture.vessel)} × ${e.culture.qty}${e.culture.notes?' · '+e.culture.notes:''}`};
+    case 'count':return {title:`${t('evCount')} · ${sci(e.cells_per_ml)} cells/mL`,sub:L(e.title,[e.method==='manual'?t('manual'):t('camera'),`${e.n}/${e.layout}`,cv].filter(Boolean).join(' · '))};
+    case 'passage':return {title:`${t('evPassage')} ${e.line} ${t('passageArrow',e.from_passage,e.to_passage)}`,
+      sub:L((e.outputs||[]).map(o=>`${vName(o.vessel)} × ${o.qty}`+(o.cells_per_unit?` · ${sciShort(o.cells_per_unit)}/${vUnit(o.vessel)}`:'')))};
+    case 'treat':return {title:`${t('evTreat')} · ${e.title}`,sub:L([e.line?`${e.line} P${e.passage}`:'',`${vName(e.vessel)} × ${e.plates||1}`].filter(Boolean).join(' · '),
+      (e.groups||[]).map(g=>`${wellsOf(g)} — ${g.name}`),e.duration_h?`${t('duration')} ${e.duration_h} h`:'')};
+    case 'harvest':return {title:`${t('evHarvest')} · ${e.title||''}`,sub:''};
+    case 'culture':return {title:`${t('evCulture')} · ${e.culture.line} P${e.culture.passage}`,sub:L(`${vName(e.culture.vessel)} × ${e.culture.qty}`,e.culture.notes)};
     case 'discard':return {title:t('evDiscard'),sub:e.title||''};
     case 'compound':return {title:`${t('evCompound')} · ${e.compound?.name}`,sub:`${e.compound?.stock} ${e.compound?.unit==='uM'?'µM':'mM'} · ${e.compound?.solvent}`};
     case 'protein':{const cc=proteinConc(e.id),tb=e.tubes||[];
-      return {title:`${t('evProtein')} · ${e.title}`,sub:[t('tubesN',tb.length),[e.buffer,e.vol_per_well?e.vol_per_well+' µL/'+t('unitWell'):''].filter(Boolean).join(' '),[e.storage,e.box].filter(Boolean).join(' '),
-        tb.map(x=>x.label+(cc[x.label]!=null?` ${cc[x.label]} mg/mL`:'')).join(', ')].filter(Boolean).join(' · ')};}
+      return {title:`${t('evProtein')} · ${e.title}`,sub:L([t('tubesN',tb.length),[e.storage,e.box].filter(Boolean).join(' ')].filter(Boolean).join(' · '),
+        [e.buffer,e.vol_per_well?`${e.vol_per_well} µL/${t('unitWell')}`:''].filter(Boolean).join(' · '),
+        tb.map(x=>`${x.wells?x.wells+' — ':''}${x.label}${cc[x.label]!=null?` · ${cc[x.label]} mg/mL`:''}`))};}
     case 'checklist':return {title:`${t('ckTitle')} · ${t({count:'evCount',passage:'evPassage',treat:'evTreat',protein:'evProtein'}[e.kind]||'evNote')}`,sub:String(e.text||'').split('\n').filter(l=>l.trim()&&!l.startsWith('#')).length+' ✓'};
-    case 'bca':return {title:`${t('evBca')} · ${e.title||''}`,sub:Object.entries(e.conc||{}).map(([k,v])=>`${k} ${v} mg/mL`).join(' · ')};
+    case 'bca':return {title:`${t('evBca')} · ${e.title||''}`,sub:L(Object.entries(e.conc||{}).map(([k,v])=>`${k} · ${v} mg/mL`))};
     default:{const tr=e.treat_id&&allEvents().find(x=>x.id===e.treat_id),cu=e.cid&&cultures().find(x=>x.cid===e.cid);
-      return {title:e.photos&&e.photos.length&&!e.text?`${t('evNote')} · ${t('photoN',e.photos.length)}`:t('evNote'),sub:[e.text||'',tr?tr.title:'',cu?cultLabel(cu):''].filter(Boolean).join(' · ')};}}
+      return {title:e.photos&&e.photos.length&&!e.text?`${t('evNote')} · ${t('photoN',e.photos.length)}`:t('evNote'),sub:L(e.text||'',tr?`→ ${tr.title}`:'',cu?`→ ${cultLabel(cu)}`:'')};}}
 }
+const noteLines=s=>String(s).split(/\s+·\s+/).filter(Boolean).join('\n');
 function openLog(){paintLog();show('sLog');}
 function paintLog(){
   const f=$('logFilters');f.innerHTML='';
@@ -1573,7 +1587,9 @@ function paintLog(){
     a.innerHTML=`<span class="ic" style="background:${bg}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" aria-hidden="true">${path}</svg></span>
       <div class="hd"><b></b><span class="tm"></span></div><span class="sb"></span><div class="acts"></div>`;
     a.querySelector('b').textContent=ds.title;a.querySelector('.tm').textContent=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-    a.querySelector('.sb').textContent=ds.sub+(e.notes?` · ${e.notes}`:'')+(e.by&&e.by!=='local'?` · ${e.by}`:'')+(e.pending?' · ⏳':'');
+    a.querySelector('.sb').textContent=ds.sub;if(!ds.sub)a.querySelector('.sb').remove();
+    if(e.notes){const n=document.createElement('span');n.className='nt';n.textContent=noteLines(e.notes);a.insertBefore(n,a.querySelector('.acts'));}
+    if((e.by&&e.by!=='local')||e.pending){const n=document.createElement('span');n.className='byl';n.textContent=[e.by&&e.by!=='local'?e.by:'',e.pending?'⏳':''].filter(Boolean).join(' · ');a.insertBefore(n,a.querySelector('.acts'));}
     const acts=a.querySelector('.acts');
     if(e.photos&&e.photos.length)a.insertBefore(thumbs(e.photos),acts);
     if(e.type==='treat'){const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=t('harvestProtein');b.onclick=()=>openProtein(e.id);acts.append(b);}
@@ -1585,7 +1601,7 @@ function paintLog(){
 }
 $('logCsv').onclick=()=>{
   const head=['date','time','type','title','cell_line','passage','details','notes','by'];
-  const rows=allEvents().map(e=>{const d=new Date(e.at),ds=describe(e);return [stamp(d).slice(0,10),stamp(d).slice(11),e.type,e.title||'',e.line||e.culture?.line||'',e.to_passage??e.passage??e.culture?.passage??'',ds.sub,e.notes||e.text||'',e.by||''];});
+  const rows=allEvents().map(e=>{const d=new Date(e.at),ds=describe(e);return [stamp(d).slice(0,10),stamp(d).slice(11),e.type,e.title||'',e.line||e.culture?.line||'',e.to_passage??e.passage??e.culture?.passage??'',ds.sub.replace(/\n/g,' · '),e.notes||e.text||'',e.by||''];});
   const csv='﻿'+[head,...rows].map(r=>r.map(v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`cell-lab-log_${stamp(new Date()).slice(0,10)}.csv`;document.body.append(a);a.click();a.remove();
 };
@@ -1798,7 +1814,7 @@ function paintDetail(){
     gs.append(dTable([t('dGroups'),t('dWells'),t('dConc'),'DMSO'],(e.groups||[]).map((g,i)=>[withDot(i,g.name),(g.wells_pos||[]).join(', ')||String(g.wells),
       (g.compounds||[]).filter(c=>c.name).map(c=>`${c.name} ${fmtN(num(c.uM))} µM`).join(' + ')||'0 µM',g.dmso_pct!=null?g.dmso_pct+'%':''])));
     const preps=(e.groups||[]).filter(g=>g.prep);
-    if(preps.length){const ul=dEl('ul','preps');preps.forEach(g=>{const li=dEl('li');li.append(dEl('b',null,g.name+': '),document.createTextNode(g.prep));ul.append(li);});gs.append(dEl('h3','d-h3',t('dPrep')),ul);}
+    if(preps.length){const ul=dEl('ul','preps');preps.forEach(g=>{const li=dEl('li');li.append(dEl('b',null,g.name),document.createTextNode('\n'+String(g.prep).split(/\s+·\s+/).join('\n')));ul.append(li);});gs.append(dEl('h3','d-h3',t('dPrep')),ul);}
     body.append(gs);
     if(e.protocol){const s=dSection(t('dProtocol'));s.append(dSteps(e.protocol));body.append(s);}
   } else if(e.type==='protein'){
@@ -1834,7 +1850,7 @@ function paintDetail(){
   else if(e.type==='culture'){const c=e.culture||{};body.append(dKV([[t('dCells'),`${c.line} · P${c.passage}`],[t('vessel'),`${vName(c.vessel)} × ${c.qty}`]]));}
   else if(e.type==='compound'){const c=e.compound||{};body.append(dKV([[t('dStock'),`${c.stock} ${c.unit==='uM'?'µM':'mM'}`],[t('solvent'),c.solvent]]));}
   else if(e.type==='bca'){const p=evById(e.target);body.append(dKV([[t('dFor'),p?dLink(p):'']]));body.append(dTable([t('tubeLabel'),'mg/mL'],Object.entries(e.conc||{}).map(([k,v])=>[k,String(v)])));}
-  if(e.notes){const s=dSection(t('dNotes'));s.append(dEl('p','d-text',e.notes));body.append(s);}
+  if(e.notes){const s=dSection(t('dNotes'));const ul=dEl('ul','note-list');String(e.notes).split(/\s+·\s+/).filter(Boolean).forEach(x=>ul.append(dEl('li',null,x)));s.append(ul);body.append(s);}
   if(e.photos&&e.photos.length){const s=dSection(t('dPhotos'));s.append(dPhotos(e.photos));body.append(s);}
   // related entries
   const rel=all.filter(x=>x.id!==e.id&&(x.treat_id===e.id||x.target===e.id||(e.treat_id&&x.id!==e.treat_id&&x.treat_id===e.treat_id&&x.type!=='bca')||(e.type==='passage'&&x.type==='treat'&&(x.cids||[]).some(c=>(e.outputs||[]).some(o=>o.cid===c)))||
