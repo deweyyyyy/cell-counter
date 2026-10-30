@@ -19,6 +19,8 @@
 - Growth prediction in the incubator view, with editable doubling time, lag and passage threshold; passage reminders under To do.
 - A passage can take several source vessels.
 - PDF / print for checklists, entry details and the log; count entries show their report image.
+- Protocols screen and illustrated steps (icons, highlighted numbers, cautions, tips, timers), with a full-screen step-by-step mode.
+- PDF export waits for every photo to load before printing.
 
 ## v0.3.0 — 2026-10-27
 

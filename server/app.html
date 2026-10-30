@@ -325,6 +325,63 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
   .pr-detail .d-photos{grid-template-columns:1fr 1fr}.pr-detail .d-photos img{aspect-ratio:auto;object-fit:contain}
   .pr-detail .pm{max-width:300px}.pr-log .ev{break-inside:avoid;border:1px solid #999;margin-bottom:6pt}.pr-log .thumbs img{width:60pt;height:60pt}
 }
+.action.wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;min-height:64px}
+.primary-mini{background:#0F7A6E!important;color:#fff!important;border-color:#0F7A6E!important}
+.gd-tools{display:flex;gap:6px;flex-wrap:wrap;padding:2px 0 10px}
+.gd-top{padding:0 16px 10px}.gd-top .seg{grid-auto-columns:minmax(0,1fr)}.gd-body{display:flex;flex-direction:column;gap:14px;padding:0 16px 24px}
+.gd-sec{display:flex;flex-direction:column;gap:8px}.ck .gd-sec{margin-bottom:12px}
+.gd-h{display:flex;align-items:center;gap:8px;margin:4px 0 0;font-size:14px;font-weight:700;color:#0B5A4F}
+.gd-hic{width:30px;height:30px;border-radius:9px;background:#DDF1EC;color:#0B5A4F;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.stp{display:grid;grid-template-columns:28px 44px minmax(0,1fr);gap:10px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 10px}
+.stp.done{background:#F3FAF7;border-color:#BFE3D6}.stp.done .stp-tx>b{color:var(--muted);text-decoration:line-through;text-decoration-color:#9AC9B9}
+.stp-cb{display:flex;align-items:center;justify-content:center;min-height:44px;cursor:pointer}.stp-cb input{position:absolute;opacity:0;width:1px;height:1px}
+.stp-cb .bx{width:24px;height:24px;border-radius:7px;border:2px solid #9AA4B8;background:#fff;display:inline-flex;align-items:center;justify-content:center}
+.stp-cb input:checked+.bx{background:#0F7A6E;border-color:#0F7A6E}.stp-cb input:checked+.bx::after{content:'';width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.stp-cb input:focus-visible+.bx{outline:2px solid var(--trypan);outline-offset:2px}
+.stp-ic{position:relative;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#EEF2FB;color:#2E4FB3}
+.stp-ic i{position:absolute;bottom:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:#10182B;color:#fff;font-style:normal;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.ic-centrifuge,.ic-incubator,.ic-bath,.ic-fire{background:#FFF1DC;color:#8A5300}.ic-trash{background:#FDE8E2;color:#A3361B}.ic-spray,.ic-hood,.ic-vacuum,.ic-wash{background:#E3F5EE;color:#0B6B4E}
+.ic-count,.ic-calc,.ic-micro{background:#F3E8FB;color:#7A3E9D}.ic-ice,.ic-fridge{background:#E5F3FB;color:#1F6A93}
+.stp-tx{display:flex;flex-direction:column;gap:4px;min-width:0}.stp-tx>b{font-size:15px;line-height:1.45}.stp-tx>span{font-size:13.5px;color:var(--ink2);line-height:1.55}
+mark.k{background:none;padding:0 3px;border-radius:5px;font-weight:700;white-space:nowrap;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.95em}
+mark.vol{color:#1F3A8A;background:#E7ECFA}mark.time{color:#8A5300;background:#FFF1DC}mark.temp{color:#A3361B;background:#FDE8E2}mark.rpm{color:#6B2C91;background:#F3E8FB}mark.conc{color:#0B6B4E;background:#E3F5EE}mark.cells{color:#3A4358;background:#EEF1F4}
+.stp-warn,.stp-tip{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;padding:8px 10px;border-radius:10px;margin-top:4px}
+.stp-warn{background:#FFF4E5;color:#8A3B00;border:1px solid #F5C995}.stp-tip{background:#ECF8F3;color:#0B5A4F;border:1px solid #BFE3D6}
+.stp-warn svg,.stp-tip svg{flex:none;margin-top:1px}.stp-warn.big,.stp-tip.big{font-size:16px;padding:12px 14px}
+.stp-timer{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin-top:6px;font:inherit;font-size:13px;font-weight:600;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #F5C995;background:#FFF8EC;color:#8A5300;cursor:pointer}
+.gd-photos .d-photos img{aspect-ratio:3/4}
+.timer-pill{position:fixed;right:12px;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:0;background:#10182B;color:#fff;font:inherit;box-shadow:0 6px 20px rgba(16,24,43,.3);cursor:pointer}
+.timer-pill b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:16px}.timer-pill span{font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.8}
+.sm{position:fixed;inset:0;z-index:50;background:#F4F6FA;display:flex;flex-direction:column}.sm[hidden]{display:none}
+body.sm-open{overflow:hidden}
+.sm-top{display:flex;align-items:center;gap:8px;padding:12px 12px 6px}.sm-tc{display:flex;flex-direction:column}.sm-tc b{font-size:15px}.sm-tc span{font-size:13px;color:var(--muted)}
+.sm-bar{height:6px;background:#E3E7EF;margin:0 16px;border-radius:999px;overflow:hidden}.sm-bar span{display:block;height:100%;background:#0F7A6E;transition:width .3s}
+.sm-body{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:20px 20px 12px;position:relative}
+.sm-sec{font-size:13px;font-weight:700;color:#0B5A4F;background:#DDF1EC;padding:4px 12px;border-radius:999px}
+.sm-icon{width:120px;height:120px;border-radius:32px;display:flex;align-items:center;justify-content:center;background:#EEF2FB;color:#2E4FB3;margin-top:6px}
+.sm-done{position:absolute;top:84px;right:calc(50% - 76px);width:34px;height:34px;border-radius:50%;background:#0F7A6E;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sm-body h2{margin:6px 0 0;font-size:24px;line-height:1.4;max-width:560px}.sm-body p{margin:0;font-size:17px;line-height:1.6;color:var(--ink2);max-width:560px}
+.sm-extra{display:flex;flex-direction:column;gap:8px;width:100%;max-width:560px;text-align:left}
+.sm-tbtn{display:inline-flex;align-items:center;gap:12px;font:inherit;padding:10px 20px;border-radius:18px;border:2px solid #F5C995;background:#FFF8EC;color:#8A5300;cursor:pointer;min-height:64px}
+.sm-tbtn b{font-size:18px;font-family:'IBM Plex Mono',ui-monospace,monospace}.sm-tbtn span{display:flex;flex-direction:column;align-items:flex-start}.sm-tbtn small{font-size:12px}
+.sm-tbtn.run b{font-size:26px}
+.sm-foot{display:grid;grid-template-columns:1fr 2fr;gap:10px;padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line)}
+.sm-foot .btn{min-height:56px;font-size:16px}
+@media (prefers-reduced-motion:no-preference){
+  .anim-centrifuge svg{animation:smSpin 1.2s linear infinite}.anim-shake svg{animation:smShake 1.4s ease-in-out infinite}
+  .anim-incubator svg,.anim-bath svg,.anim-timer svg{animation:smPulse 2s ease-in-out infinite}.anim-pipette svg,.anim-mix svg{animation:smDrip 1.6s ease-in-out infinite}
+  .anim-micro svg,.anim-count svg{animation:smFloat 2.4s ease-in-out infinite}.anim-scrape svg{animation:smScrape 1.2s ease-in-out infinite}
+  .anim-spray svg,.anim-wash svg{animation:smFloat 1.6s ease-in-out infinite}.anim-ice svg{animation:smSpin 6s linear infinite}
+}
+@keyframes smSpin{to{transform:rotate(360deg)}}@keyframes smShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-6px,0)}50%{transform:translate(0,-6px)}75%{transform:translate(6px,0)}}
+@keyframes smPulse{50%{transform:scale(1.08)}}@keyframes smDrip{50%{transform:translateY(6px)}}@keyframes smFloat{50%{transform:translateY(-5px)}}@keyframes smScrape{50%{transform:translateX(8px) rotate(-6deg)}}
+@media print{
+  .pr-ck .gd-sec{break-inside:auto}.pr-ck .stp{break-inside:avoid;border:1px solid #999;padding:6pt;grid-template-columns:20pt 30pt 1fr}
+  .pr-ck .stp-cb .bx{width:15pt;height:15pt;border:1.6pt solid #000}.pr-ck .stp-ic{width:28pt;height:28pt}
+  .pr-ck .stp-tx>b{font-size:13pt}.pr-ck .stp-tx>span{font-size:11pt;color:#222}#printRoot.hood .pr-ck .stp-tx>b{font-size:14.5pt}
+  .pr-ck .gd-h{font-size:13pt;break-after:avoid}.pr-ck .gd-photos{break-before:page}
+  .pr-ck .d-photos img{aspect-ratio:auto;object-fit:contain;max-height:250mm}
+}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -373,6 +430,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <button type="button" class="action" id="goTreat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/></svg><span style="display:flex;flex-direction:column"><b>Treat</b><span data-i18n="actTreatSub"></span></span></button>
       <button type="button" class="action" id="goProtein"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A3E9D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3h8M9 3v14a3 3 0 0 0 6 0V3M9 11h6"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actProtein"></b><span data-i18n="actProteinSub"></span></span></button>
       <button type="button" class="action" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actNote"></b><span data-i18n="actNoteSub"></span></span></button>
+      <button type="button" class="action wide" id="goGuide"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actGuide"></b><span data-i18n="actGuideSub"></span></span></button>
     </div>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
       <div class="sec-h"><h2 id="hCult" data-i18n="incTitle"></h2><span style="display:flex;gap:12px"><button type="button" id="goGrowth" data-i18n="grSettings"></button><button type="button" id="goAddCulture" data-i18n="addCulture"></button></span></div>
@@ -666,6 +724,23 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
   <div class="d-body" id="dBody"></div>
 </section>
 
+<section class="screen" id="sGuide" hidden aria-labelledby="hGuide">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hGuide" data-i18n="gdTitle"></b><span id="gdCount"></span></div></header>
+  <div class="gd-top"><div class="seg" id="gdSeg" role="group"></div></div>
+  <div class="gd-body" id="gdBody"></div>
+  <footer class="foot"><div class="row2"><button type="button" class="btn" id="gdPdf" data-i18n="pdf"></button><button type="button" class="btn primary" id="gdStep" style="min-height:48px;font-size:15px" data-i18n="gdStepMode"></button></div></footer>
+</section>
+<div class="sm" id="stepMode" hidden role="dialog" aria-modal="true" aria-labelledby="smTitle">
+  <div class="sm-top"><button type="button" class="icon-btn" id="smClose" data-i18n-aria="gdClose"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="sm-tc"><b id="smKind"></b><span id="smOf"></span></div></div>
+  <div class="sm-bar"><span id="smProg"></span></div>
+  <div class="sm-body"><span class="sm-sec" id="smSec"></span><div class="sm-icon" id="smIcon"></div><span class="sm-done" id="smDone" hidden>✓</span>
+    <h2 id="smTitle"></h2><p id="smDetail"></p><div id="smExtra" class="sm-extra"></div><div id="smTimer"></div></div>
+  <div class="sm-foot"><button type="button" class="btn" id="smPrev" data-i18n="gdPrev"></button><button type="button" class="btn primary" id="smNext"></button></div>
+</div>
+<button type="button" class="timer-pill" id="timerPill" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><b></b><span></span></button>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </div>
 
@@ -778,7 +853,7 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail'];
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail','sGuide'];
 function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
@@ -2136,6 +2211,173 @@ function printLog(){const c=$('logList').cloneNode(true);c.removeAttribute('id')
   printOut(t('pdfLogTitle'),f,[c]);}
 
 $('logPdf').onclick=()=>printLog();
+Object.assign(CK_DEFAULT,{"passage": "# ก่อนเข้า hood\nอุ่น trypsin และ media | ใน water bath 37 °C ประมาณ 10–15 นาที ⏱10\n! อย่าอุ่น trypsin นานเกินไป\nเตรียม PBS | แบบไม่มี Ca²⁺/Mg²⁺ ใส่ตะกร้าไว้\nตั้งเครื่องปั่นไว้ก่อน (warm) | 2,000 rpm 5 นาที 4 °C\nส่องเซลล์ด้วย inverted microscope | นำ dish ออกจาก incubator\n> ความหนาแน่นควรอยู่ที่ประมาณ 70–90% confluency\n! ดูการปนเปื้อน: media ขุ่น มีจุดลอย หรือสี media เปลี่ยนผิดปกติ\nเตรียมอุปกรณ์ | 6-well plate ใหม่, tube 15 mL, micropipette และ tip, Pasteur pipette (แท่งแก้วปลายแหลม)\nทำความสะอาดสายเครื่องดูด (vacuum) | ดูด 70% ethanol ผ่านสาย\n# เตรียม hood\nเปิดเครื่องและพัดลม (blower) | เปิด hood ทิ้งไว้อย่างน้อย 3–5 นาทีก่อนเริ่มงาน ⏱3\nเช็ดพื้นผิวภายใน hood | ด้วย 70% ethanol ระหว่างรอ\nเช็ดหรือสเปรย์ 70% ethanol ทุกชิ้นก่อนนำเข้า hood | รวมถึงขวด media, trypsin และ PBS\n! ต้องทำทุกครั้ง\nเปิดแก๊สและจุดตะเกียง | ถ้าแล็บใช้ไฟ\n# Subculture (dish 6 cm)\nดูด media เก่าออก | ลนไฟปลาย Pasteur pipette ก่อนต่อเข้ากับเครื่องดูด เอียง dish แล้วดูดจากขอบ\n! ระวังไม่ให้ปลายแตะชั้นเซลล์\nล้างด้วย PBS 2 mL | ค่อยๆ ปล่อยตามผนัง dish (ไม่ราดใส่เซลล์ตรงๆ) เอียงวนเบาๆ ให้ทั่ว แล้วดูดออก\nย่อยด้วย trypsin 1 mL | ให้ท่วมผิว dish แล้วนำเข้า incubator 37 °C 5 นาที ⏱5\nเช็กว่าเซลล์หลุด | ส่องกล้อง เซลล์ควรกลมและลอยอยู่\n> ถ้ายังไม่หลุด เคาะข้าง dish เบาๆ หรือรอต่ออีก 1–2 นาที\nหยุดฤทธิ์ trypsin ด้วย media 2 mL | serum ใน media ยับยั้ง trypsin ใช้ pipette ดูดขึ้นลงฉีดล้างผิว dish ให้เซลล์หลุดหมด\nดูด cell suspension ทั้งหมดใส่ tube 15 mL\nปั่นเหวี่ยง 2,000 rpm 5 นาที 4 °C | ใส่ tube ถ่วงที่มีปริมาตรเท่ากัน วางตรงข้ามกันในเครื่อง ⏱5\n! ต้องมี tube ถ่วงทุกครั้ง\nหลังกดปั่น: ล้าง dish เดิมด้วย PBS 2 mL | ดูดออก แล้วเติม media ใหม่ 4 mL เตรียมไว้ลงเซลล์ต่อ\nทิ้ง supernatant | ดูดน้ำส่วนบนออก\n! ระวังไม่ให้โดน cell pellet ที่ก้น tube\nResuspend ด้วย media ใหม่ 2 mL | pipette ขึ้นลงเบาๆ จน pellet กระจายเป็นเนื้อเดียว\n# นับเซลล์ (trypan blue + hemocytometer)\nผสม cell suspension 20 µL กับ trypan blue 20 µL | อัตราส่วน 1:1 ใน tube เล็ก\nหยด 10 µL ลง hemocytometer | ที่ปิด coverslip แล้ว\nนับเซลล์ใส (มีชีวิต) ใน 4 ช่องใหญ่ที่มุม | แต่ละช่องขนาด 1 mm × 1 mm เซลล์ที่ติดสีน้ำเงินคือเซลล์ตาย\n> นับเซลล์ที่แตะเส้นบนและซ้าย ไม่นับเส้นล่างและขวา · หรือถ่ายรูปให้แอปนับ (นับด้วยกล้อง)\nคำนวณ cells/mL | = เซลล์มีชีวิตรวม ÷ 4 × 2 (DF) × 10⁴\n> 10⁴ มาจาก 1 ช่อง = 1 mm × 1 mm × ลึก 0.1 mm = 10⁻⁴ mL · % viability = เซลล์มีชีวิต ÷ เซลล์ทั้งหมด × 100\n# Seed เซลล์\nคำนวณปริมาตร cell suspension | V = จำนวนเซลล์ที่ต้องการ ÷ cells/mL (หน้า Passage ในแอปคำนวณให้)\ndish เดิม (ที่ล้างแล้ว) ลง 150,000–200,000 เซลล์ | เก็บไว้เลี้ยงต่อใน media 4 mL\n6-well: ใส่ media 2 mL ทุกหลุมก่อน | แล้วค่อยใส่เซลล์ 80,000 เซลล์ต่อหลุม\nเขย่าเป็นรูปกากบาท | หน้า-หลัง ซ้าย-ขวา ให้เซลล์กระจายทั่ว\n! ไม่หมุนวน\nเขียนฉลาก | ชื่อเซลล์, passage number (+1 จากเดิม), วันที่, ชื่อผู้ทำ\nเข้า incubator 37 °C | แล้วบันทึก passage ในแอป\n# Treat (แยกคน)\nDewey: Pinocembrin 0 / 50 / 100 µM | ดูขั้นตอนในหน้า Treat\nPoohpha: OGT inhibitor 0 / 12.5 / 25 µM | ดูขั้นตอนในหน้า Treat", "treat": "# ก่อนทำ\nอุ่น DMEM HG | ใน water bath 37 °C\nเตรียม stock | Pinocembrin 30 mM ใน DMSO (Dewey) · OGT-inhibitor 20 mM ใน DMSO (Poohpha) และ DMSO สำหรับ control\nติดฉลาก tube | หลอดละความเข้มข้น เช่น 100 µM, 50 µM, 0 µM\nส่องเซลล์ใต้กล้องก่อน treat | ดูความหนาแน่นและการปนเปื้อน\n# เตรียมสาร Pinocembrin (Dewey)\nหลอด 100 µM: media 6,976.7 µL + Pinocembrin 30 mM 23.3 µL | รวม 7 mL\nหลอด 50 µM: media 2,500 µL + จากหลอด 100 µM 2,500 µL | รวม 5 mL\n> ทำหลอด 100 µM ให้เสร็จก่อน แล้วค่อยแบ่งมาทำ 50 µM\nหลอด 0 µM (control): media 6,983.5 µL + DMSO 16.5 µL | รวม 7 mL\n# ใส่ลงหลุม\nดูด medium เก่าออกจากหลุม\n! ต้องดูด media เก่าออกให้หมดก่อน\nใส่หลุมละ 2 mL ตามผัง | 1A,1B = 0 µM · 2A,2B = 50 µM · 3A,3B = 100 µM\nเข้า incubator 37 °C | แล้วบันทึก treat ในแอป (เวลาเริ่ม)\n# OGT inhibitor (Poohpha)\nผัง: 1A,1B = 0 µM · 2A,2B = 12.5 µM · 3A,3B = 25 µM | stock OGT-inhibitor 20 mM ใน DMSO\n> วิธีเตรียมแต่ละความเข้มข้นยังไม่ได้บันทึก กดแก้ไขเพื่อเพิ่มได้", "protein": "# ก่อนทำ\nตั้งเครื่องปั่นไว้ก่อน (warm) | ห้องเครื่องมือกลาง 12,000 rpm 30 นาที 4 °C\nเตรียม 1.5 mL tube | ติดฉลาก แล้ววางบนโฟม + น้ำแข็ง\nเตรียม PBS 1× เย็น | ใช้หลุมละ 2 mL × 2 รอบ\nผสม lysis buffer บนน้ำแข็ง | RIPA 1,000 µL + protease inhibitor cocktail 100× 10 µL + phosphatase inhibitor cocktail 10 µL + PUGNAc 1 mM 5 µL\n> Cat 539131 Lot 4151201 · Phosphatase inhibitor cocktail Cat P0044\nเตรียมไม้ขูดเซลล์ (scraper)\n# เก็บโปรตีน (ทำทีละหลุม)\nดูด media ออกจากหลุม\nล้างเซลล์ด้วย PBS เย็น 2 mL แล้วดูดออกให้หมด | ทำ 2 รอบ\nใส่ lysis buffer 80 µL ต่อหลุม\nใช้ไม้ขูดเซลล์ขูดโปรตีนในหลุม\nดูดใส่ 1.5 mL tube | รวมหลุม A,B ของกลุ่มเดียวกัน → 3 หลอด\n! วางหลอดบนน้ำแข็งตลอด\n# ปั่นแยก\nปั่น 12,000 rpm 30 นาที 4 °C | ใส่ tube ถ่วงตรงข้ามกัน ⏱30\nดูดส่วนใสใส่หลอดใหม่ 3 หลอด | ส่วนใสคือโปรตีน\n! เก็บส่วนใสไว้ ไม่ทิ้ง\nเก็บตู้เย็นห้อง western blot | แล้วบันทึกในแอป (เก็บโปรตีน)", "count": "# เตรียม\nเช็ด hemocytometer และ coverslip | ด้วย 70% ethanol ให้แห้ง แล้วปิด coverslip\n# นับ\nผสม cell suspension 20 µL กับ trypan blue 20 µL | 1:1 (DF = 2)\nหยด 10 µL ลง hemocytometer | ที่ปิด coverslip แล้ว\nนับเซลล์ใส (มีชีวิต) 4 ช่องใหญ่ที่มุม | ช่องละ 1 mm × 1 mm เซลล์ที่ติดสีน้ำเงินคือเซลล์ตาย\n> นับเซลล์ที่แตะเส้นบนและซ้าย ไม่นับเส้นล่างและขวา\n> หรือถ่ายรูปแต่ละช่องให้แอปนับ (นับด้วยกล้อง)\nคำนวณ cells/mL | = เซลล์รวม ÷ 4 × 2 × 10⁴\nบันทึกผลในแอป"});
+/* ================= LAB GUIDE: illustrated step-by-step protocols ================= */
+Object.assign(I18N.th,{
+  gdTitle:'ขั้นตอนการทดลอง',gdSub:'ทีละขั้น · ติ๊ก · จับเวลา · PDF',gdStepMode:'ทำทีละขั้น',gdNext:'เสร็จ · ถัดไป',gdPrev:'ก่อนหน้า',gdDone:'ครบทุกขั้นแล้ว',
+  gdStepOf:(a,b)=>`ขั้นที่ ${a} จาก ${b}`,gdTimer:m=>`จับเวลา ${m} นาที`,gdTimerDone:l=>`ครบเวลาแล้ว: ${l}`,gdStop:'หยุดจับเวลา',gdPhotos:'รูปโปรโตคอลต้นฉบับ',
+  gdWarn:'ระวัง',gdTip:'เคล็ดลับ',gdClose:'ปิด',gdOpen:'ดูขั้นตอน',gdSteps:n=>`${n} ขั้น`,actGuide:'ขั้นตอนการทดลอง',actGuideSub:'ทีละขั้น · ติ๊ก · จับเวลา',
+  ckHelp:'บรรทัดละ 1 ขั้น · # หัวข้อ · ใช้ | แยกรายละเอียด · ! คำเตือน · > เคล็ดลับ · ⏱5 = ปุ่มจับเวลา 5 นาที'
+});
+Object.assign(I18N.en,{
+  gdTitle:'Protocols',gdSub:'Step by step · tick · timers · PDF',gdStepMode:'Step-by-step mode',gdNext:'Done · next',gdPrev:'Back',gdDone:'All steps done',
+  gdStepOf:(a,b)=>`Step ${a} of ${b}`,gdTimer:m=>`${m} min timer`,gdTimerDone:l=>`Time’s up: ${l}`,gdStop:'Stop timer',gdPhotos:'Original protocol photos',
+  gdWarn:'Caution',gdTip:'Tip',gdClose:'Close',gdOpen:'Open steps',gdSteps:n=>`${n} steps`,actGuide:'Protocols',actGuideSub:'Step by step · timers',
+  ckHelp:'One step per line · # heading · | separates details · ! caution · > tip · ⏱5 = 5-minute timer button'
+});
+const IC={
+  bath:'<path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/><path d="M12 9v7"/>',
+  bottle:'<path d="M9 3h6M10 3v3l-2 3v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9l-2-3V3"/><path d="M8 13h8"/>',
+  micro:'<path d="M5 21h14M8 18h8M12 18v-3"/><path d="M10 3l5 8-3 2-5-8z"/><path d="M15 12a4 4 0 0 1-2 6"/>',
+  hood:'<rect x="3" y="3" width="18" height="15" rx="2"/><path d="M3 9h18M7 21h10M12 18v3"/>',
+  spray:'<path d="M8 9h6v12H8zM9 9V6h4v3M15 6h2M18 3l2-1M18 6h3M18 9l2 1"/>',
+  pipette:'<path d="M19.5 4.5l-.8-.8a2 2 0 0 0-2.8 0L13.5 6l4.5 4.5 2.3-2.4a2 2 0 0 0 0-2.8z"/><path d="M14 7L5.5 15.5 4 20l4.5-1.5L17 10"/>',
+  tube:'<path d="M9 2h6M10 2v15a2 2 0 0 0 4 0V2M10 9h4"/>',
+  dish:'<ellipse cx="12" cy="10" rx="9" ry="4"/><path d="M3 10v4c0 2.2 4 4 9 4s9-1.8 9-4v-4"/>',
+  plate:'<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="7" cy="9.5" r="1.8"/><circle cx="12" cy="9.5" r="1.8"/><circle cx="17" cy="9.5" r="1.8"/><circle cx="7" cy="14.5" r="1.8"/><circle cx="12" cy="14.5" r="1.8"/><circle cx="17" cy="14.5" r="1.8"/>',
+  incubator:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M6 6h3M15 13v5M13 15.5h4"/>',
+  centrifuge:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/>',
+  count:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/><circle cx="7.5" cy="7.5" r="1"/><circle cx="16" cy="16" r="1"/>',
+  calc:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 11h2M14 11h2M8 15h2M14 15h2M8 19h2M14 19h2"/>',
+  shake:'<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>',
+  tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
+  phone:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
+  ice:'<path d="M12 2v20M4 7l16 10M20 7L4 17M9 4l3 2 3-2M9 20l3-2 3 2"/>',
+  scrape:'<path d="M4 20h9M7 20l8-14 3 2-8 12"/>',
+  mix:'<path d="M8 3h8M9 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4a1.5 1.5 0 0 0 1.3-2L15 9V3M7 14h10"/>',
+  fire:'<path d="M12 22a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>',
+  vacuum:'<path d="M5 3v8a7 7 0 0 0 14 0V3M9 3v8a3 3 0 0 0 6 0V3"/>',
+  fridge:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M5 10h14M8 6v2M8 13v3"/>',
+  wash:'<path d="M12 3s-5 6-5 10a5 5 0 0 0 10 0c0-4-5-10-5-10z"/>',
+  warn:'<path d="M12 3l10 18H2zM12 10v5M12 18h.01"/>',
+  tip:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+  check:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>'
+};
+const IC_RULES=[['centrifuge',/ปั่น|centrifug|rpm/],['trash',/ทิ้ง|supernatant/],['bath',/water bath|อุ่น/],['micro',/ส่อง|microscope|กล้อง/],['incubator',/incubator/],
+  ['hood',/hood|blower|พัดลม/],['vacuum',/เครื่องดูด|vacuum/],['spray',/ethanol|เช็ด|สเปรย์/],['fire',/ตะเกียง|แก๊ส|ลนไฟ/],['count',/hemocytometer|นับ/],['calc',/คำนวณ|cells\/ml|ปริมาตร cell/],
+  ['shake',/เขย่า/],['tag',/ฉลาก/],['fridge',/ตู้เย็น|−80|-80|เก็บที่/],['scrape',/ขูด|scraper/],['wash',/ล้าง/],['ice',/น้ำแข็ง|เย็น/],['phone',/แอป|บันทึก/],
+  ['plate',/6-well|หลุม|well|ผัง/],['dish',/dish|จาน/],['mix',/ผสม|lysis|buffer|trypan|หลอด \d|µm:/],['tube',/tube|หลอด/],['pipette',/ดูด|pipette|ใส่|resuspend|หยด/],['bottle',/trypsin|pbs|media|medium|dmso|stock/]];
+const icOne=s=>{s=String(s).toLowerCase();for(const [k,re] of IC_RULES)if(re.test(s))return k;return null;};
+const icFor=(title,detail='')=>icOne(title)||icOne(detail)||'check';
+const svgIc=(k,size=22)=>`<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||IC.check}</svg>`;
+const HL=new RegExp(['(?<temp>[-−]?\\d+(?:\\.\\d+)?\\s?°C)','(?<rpm>\\d[\\d,]*\\s?rpm)','(?<time>\\d+(?:\\s?[–-]\\s?\\d+)?\\s?(?:นาที|ชม\\.|ชั่วโมง|วินาที|min\\b))',
+  '(?<vol>\\d[\\d,]*(?:\\.\\d+)?\\s?(?:µL|uL|mL))','(?<conc>\\d[\\d,]*(?:\\.\\d+)?\\s?(?:µM|mM))','(?<cells>\\d[\\d,]*(?:\\s?[–-]\\s?\\d[\\d,]*)?\\s?เซลล์)'].join('|'),'g');
+const hl=s=>esc(s).replace(HL,(m,...a)=>{const g=a[a.length-1];const k=Object.keys(g).find(x=>g[x]!==undefined);return `<mark class="k ${k}">${m}</mark>`;});
+function guideParse(text){const out=[];let sec=null,last=null;
+  for(let l of String(text).split('\n')){l=l.trim();if(!l)continue;
+    if(l.startsWith('#')){sec={h:l.replace(/^#+\s*/,''),steps:[]};out.push(sec);last=null;continue;}
+    if(!sec){sec={h:'',steps:[]};out.push(sec);}
+    if((l.startsWith('!')||l.startsWith('>'))&&last){(l[0]==='!'?last.warn:last.tip).push(l.slice(1).trim());continue;}
+    let timer=null;l=l.replace(/\s*⏱\s*(\d+(?:\.\d+)?)\s*/,(m,n)=>{timer=+n;return ' ';}).trim();
+    const [title,...rest]=l.replace(/^([-•*]|\d+[.)])\s*/,'').split(/\s+\|\s+/);
+    last={title,detail:rest.join(' · '),warn:[],tip:[],timer,key:(sec.h+'|'+title).slice(0,160)};sec.steps.push(last);}
+  return out;}
+/* ---------- timers (one at a time, shown on every screen) ---------- */
+const TMR={end:0,label:'',iv:null};
+function startTimer(min,label){TMR.end=Date.now()+min*6e4;TMR.label=label;clearInterval(TMR.iv);TMR.iv=setInterval(tickTimer,500);tickTimer();
+  try{const AC=window.AudioContext||window.webkitAudioContext;TMR.ac=TMR.ac||new AC();TMR.ac.resume();}catch(e){}}
+function stopTimer(){clearInterval(TMR.iv);TMR.end=0;$('timerPill').hidden=true;paintStepTimer();}
+function beep(){try{const ac=TMR.ac;if(!ac)return;[0,.35,.7].forEach(dt=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);
+  g.gain.setValueAtTime(.25,ac.currentTime+dt);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dt+.3);o.start(ac.currentTime+dt);o.stop(ac.currentTime+dt+.3);});}catch(e){}}
+const mmss=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(s/60)}:${pad2(s%60)}`;};
+function tickTimer(){const left=TMR.end-Date.now();const p=$('timerPill');
+  if(TMR.end&&left<=0){clearInterval(TMR.iv);TMR.end=0;p.hidden=true;beep();try{navigator.vibrate&&navigator.vibrate([400,200,400,200,400]);}catch(e){}toast(t('gdTimerDone',TMR.label),true);paintStepTimer();return;}
+  p.hidden=false;p.querySelector('b').textContent=mmss(left);p.querySelector('span').textContent=TMR.label;paintStepTimer();}
+/* ---------- rendering ---------- */
+function stepCard(st,i,kind,done,{print=false,onTick}={}){
+  const c=document.createElement('div');c.className='stp'+(done?' done':'');const ic=icFor(st.title,st.detail);
+  c.innerHTML=`<label class="stp-cb"><input type="checkbox"${done?' checked':''}${print?' disabled':''}><span class="bx"></span></label>
+    <span class="stp-ic ic-${ic}">${svgIc(ic)}<i>${i}</i></span><div class="stp-tx"><b>${hl(st.title)}</b>${st.detail?`<span>${hl(st.detail)}</span>`:''}</div>`;
+  const tx=c.querySelector('.stp-tx');
+  for(const w of st.warn){const d=document.createElement('div');d.className='stp-warn';d.innerHTML=`${svgIc('warn',16)}<span>${hl(w)}</span>`;tx.append(d);}
+  for(const w of st.tip){const d=document.createElement('div');d.className='stp-tip';d.innerHTML=`${svgIc('tip',16)}<span>${hl(w)}</span>`;tx.append(d);}
+  if(st.timer&&!print){const b=document.createElement('button');b.type='button';b.className='stp-timer';b.innerHTML=`${svgIc('timer',16)}<span>${esc(t('gdTimer',st.timer))}</span>`;
+    b.onclick=()=>startTimer(st.timer,st.title);tx.append(b);}
+  if(onTick)c.querySelector('input').onchange=e=>onTick(e.target.checked);
+  return c;}
+function guideNodes(kind,{print=false,onChange}={}){const {text}=ckText(kind),secs=guideParse(text),done=print?{}:store.get(ckKey(kind),{});const frag=[];let i=0;
+  for(const s of secs){const sec=document.createElement('section');sec.className='gd-sec';
+    if(s.h){const h=document.createElement('h3');h.className='gd-h';h.innerHTML=`<span class="gd-hic">${svgIc(icFor(s.h),18)}</span><span>${esc(s.h)}</span>`;sec.append(h);}
+    for(const st of s.steps){i++;sec.append(stepCard(st,i,kind,!!done[st.key],{print,onTick:v=>{const cur=store.get(ckKey(kind),{});if(v)cur[st.key]=1;else delete cur[st.key];store.set(ckKey(kind),cur);onChange&&onChange();}}));}
+    frag.push(sec);}
+  const ev=allEvents().filter(e=>e.type==='checklist'&&e.kind===kind).pop();
+  if(ev&&ev.photos&&ev.photos.length){const s=document.createElement('section');s.className='gd-sec gd-photos';
+    s.innerHTML=`<h3 class="gd-h"><span class="gd-hic">${svgIc('tag',18)}</span><span>${esc(t('gdPhotos'))}</span></h3>`;
+    const g=document.createElement('div');g.className='d-photos';ev.photos.forEach(id=>{const a=document.createElement('a');a.href=photoUrl(id);a.target='_blank';a.rel='noopener';
+      const im=new Image();im.src=photoUrl(id);im.alt='';a.append(im);g.append(a);});s.append(g);frag.push(s);}
+  return frag;}
+const guideCount=kind=>guideParse(ckText(kind).text).reduce((a,s)=>a+s.steps.length,0);
+/* checklist box inside the forms: same illustrated steps */
+function paintChecklist(scr){const kind=CK_SCREEN[scr],box=$('ck_'+scr);if(!box)return;
+  const {draft}=ckText(kind),done=store.get(ckKey(kind),{}),wasOpen=box.open;box.innerHTML='';
+  const steps=guideParse(ckText(kind).text).flatMap(s=>s.steps),n=steps.length,d=steps.filter(s=>done[s.key]).length;
+  const sum=document.createElement('summary');sum.innerHTML='<span class="ck-t"></span><span class="ck-n"></span>';
+  sum.querySelector('.ck-t').textContent=t('ckTitle')+(draft?` · ${t('ckDraft')}`:'');sum.querySelector('.ck-n').textContent=t('ckOf',d,n);box.append(sum);
+  box.classList.toggle('all-done',n>0&&d===n);
+  const tools=document.createElement('div');tools.className='gd-tools';
+  const mk=(label,fn,cls='mini')=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=fn;tools.append(b);};
+  mk('▶ '+t('gdStepMode'),()=>openStepMode(kind),'mini primary-mini');mk(t('pdf'),()=>printChecklist(kind));mk(t('ckEdit'),()=>editChecklist(scr));mk(t('ckClear'),()=>{store.del(ckKey(kind));paintChecklist(scr);});
+  box.append(tools);guideNodes(kind,{onChange:()=>paintChecklist(scr)}).forEach(x=>box.append(x));box.open=wasOpen;}
+/* ---------- protocols screen ---------- */
+let gdKind='passage';
+function openGuide(kind){if(kind)gdKind=kind;paintGuide();show('sGuide');}
+function paintGuide(){const seg=$('gdSeg');seg.innerHTML='';
+  for(const k of ['passage','count','treat','protein']){const b=document.createElement('button');b.type='button';b.textContent=KIND_NAME(k);b.setAttribute('aria-pressed',gdKind===k);b.onclick=()=>{gdKind=k;paintGuide();};seg.append(b);}
+  const steps=guideParse(ckText(gdKind).text).flatMap(s=>s.steps),done=store.get(ckKey(gdKind),{});
+  $('gdCount').textContent=`${t('gdSteps',steps.length)} · ${t('ckOf',steps.filter(s=>done[s.key]).length,steps.length)}`;
+  const body=$('gdBody');body.innerHTML='';guideNodes(gdKind,{onChange:paintGuide}).forEach(x=>body.append(x));}
+/* ---------- step-by-step mode ---------- */
+const SM={kind:null,i:0,steps:[],lock:null};
+async function openStepMode(kind){SM.kind=kind;SM.steps=guideParse(ckText(kind).text).flatMap(s=>s.steps.map(st=>({...st,sec:s.h})));
+  const done=store.get(ckKey(kind),{});SM.i=Math.max(0,SM.steps.findIndex(s=>!done[s.key]));if(SM.i<0)SM.i=0;
+  $('stepMode').hidden=false;document.body.classList.add('sm-open');paintStep();
+  try{SM.lock=await navigator.wakeLock?.request('screen');}catch(e){}}
+function closeStepMode(){$('stepMode').hidden=true;document.body.classList.remove('sm-open');try{SM.lock&&SM.lock.release();}catch(e){}SM.lock=null;
+  for(const scr of Object.keys(CK_SCREEN))paintChecklist(scr);if(!$('sGuide').hidden)paintGuide();}
+function paintStep(){const st=SM.steps[SM.i],n=SM.steps.length,done=store.get(ckKey(SM.kind),{});if(!st)return;
+  $('smKind').textContent=`${t('pdfCkTitle')} · ${KIND_NAME(SM.kind)}`;$('smProg').style.width=((SM.i+1)/n*100)+'%';
+  $('smOf').textContent=t('gdStepOf',SM.i+1,n);$('smSec').textContent=st.sec||'';
+  const ic=icFor(st.title,st.detail);$('smIcon').className='sm-icon ic-'+ic+' anim-'+ic;$('smIcon').innerHTML=svgIc(ic,64);
+  $('smTitle').innerHTML=hl(st.title);$('smDetail').innerHTML=st.detail?hl(st.detail):'';$('smDetail').hidden=!st.detail;
+  const ex=$('smExtra');ex.innerHTML='';
+  for(const w of st.warn){const d=document.createElement('div');d.className='stp-warn big';d.innerHTML=`${svgIc('warn',22)}<span>${hl(w)}</span>`;ex.append(d);}
+  for(const w of st.tip){const d=document.createElement('div');d.className='stp-tip big';d.innerHTML=`${svgIc('tip',22)}<span>${hl(w)}</span>`;ex.append(d);}
+  $('smDone').hidden=!done[st.key];$('smPrev').disabled=SM.i===0;
+  $('smNext').textContent=SM.i===n-1?'✓ '+t('gdDone'):'✓ '+t('gdNext');paintStepTimer();}
+function paintStepTimer(){const box=$('smTimer');if(!box||$('stepMode').hidden)return;const st=SM.steps[SM.i];box.innerHTML='';if(!st||!st.timer)return;
+  const running=TMR.end&&TMR.label===st.title;const b=document.createElement('button');b.type='button';b.className='sm-tbtn'+(running?' run':'');
+  if(running){const left=TMR.end-Date.now(),frac=Math.max(0,left/(st.timer*6e4));
+    b.innerHTML=`<svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#E8ECF3" stroke-width="6"/><circle cx="28" cy="28" r="24" fill="none" stroke="#E0803A" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(150.8*frac).toFixed(1)} 150.8" transform="rotate(-90 28 28)"/></svg><span><b>${mmss(left)}</b><small>${esc(t('gdStop'))}</small></span>`;
+    b.onclick=()=>stopTimer();}
+  else{b.innerHTML=`${svgIc('timer',28)}<span><b>${esc(t('gdTimer',st.timer))}</b></span>`;b.onclick=()=>startTimer(st.timer,st.title);}
+  box.append(b);}
+$('smClose').onclick=closeStepMode;
+$('smPrev').onclick=()=>{if(SM.i>0){SM.i--;paintStep();}};
+$('smNext').onclick=()=>{const st=SM.steps[SM.i],cur=store.get(ckKey(SM.kind),{});cur[st.key]=1;store.set(ckKey(SM.kind),cur);
+  if(SM.i<SM.steps.length-1){SM.i++;paintStep();}else closeStepMode();};
+$('timerPill').onclick=()=>{if(confirmTwice('timer'))stopTimer();};
+document.addEventListener('keydown',e=>{if($('stepMode').hidden)return;if(e.key==='ArrowRight')$('smNext').click();if(e.key==='ArrowLeft')$('smPrev').click();if(e.key==='Escape')closeStepMode();});
+$('goGuide').onclick=()=>openGuide();
+$('gdStep').onclick=()=>openStepMode(gdKind);$('gdPdf').onclick=()=>printChecklist(gdKind);
+/* ---------- printing: same illustrated steps; wait for every photo ---------- */
+function checklistNode(kind){const sec=document.createElement('section');sec.className='pr-ck';
+  sec.append(Object.assign(document.createElement('h2'),{textContent:`${t('pdfCkTitle')} · ${KIND_NAME(kind)}`}));
+  guideNodes(kind,{print:true}).forEach(x=>sec.append(x));return sec;}
+function printOut(title,sub,nodes,{hood=false}={}){
+  printRoot.innerHTML='';printRoot.className=hood?'hood':'';
+  const h=document.createElement('header');h.className='pr-head';
+  h.append(Object.assign(document.createElement('h1'),{textContent:title}));
+  h.append(Object.assign(document.createElement('p'),{textContent:[sub,me()?`${t('dOwner')}: ${me()}`:'',t('printedAt',niceDate(new Date()))].filter(Boolean).join(' · ')}));
+  printRoot.append(h);for(const n of nodes)printRoot.append(n);printRoot.hidden=false;document.title=title;toast(t('pdfHint'),false);
+  const imgs=[...printRoot.querySelectorAll('img')];
+  imgs.forEach(i=>{i.loading='eager';i.decoding='sync';const s=i.getAttribute('src');if(s){i.removeAttribute('src');i.src=s;}});
+  const ready=i=>i.complete&&i.naturalWidth>0?Promise.resolve():new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});});
+  Promise.race([Promise.all(imgs.map(i=>ready(i).then(()=>i.decode?i.decode().catch(()=>{}):0))),new Promise(r=>setTimeout(r,10000))])
+    .then(()=>setTimeout(()=>window.print(),250));
+}
+
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
   paintChecklists();paintMe();show('sHome');syncLab();setInterval(syncLab,60000);
