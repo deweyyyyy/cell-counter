@@ -118,7 +118,7 @@ def ical_feed(who=None):
         L.append("END:VEVENT")
     for e in evs:
         t = e.get("type")
-        if t in skip or e.get("id") in gone: continue
+        if t in skip or e.get("id") in gone or e.get("kind") == "reference": continue
         if who and e.get("owner") and e.get("owner") != who: continue
         try: s = _ics_time(e["at"])
         except Exception: continue

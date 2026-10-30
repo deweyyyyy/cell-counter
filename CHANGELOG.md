@@ -28,6 +28,9 @@
 - Default protocols rewritten in formal Thai.
 - Secret iCal feed (`/cal/<token>.ics`, optional `?who=`) for Google Calendar, with copyable links in the calendar screen.
 - AI assistant (OpenAI-compatible endpoint configured in `server/lab/ai.json`): answers from the log and protocols, shows calculations, drafts entries for review.
+- New home screen: lab check-in card, To do for today / tomorrow / 7 days from the calendar, quick entry, incubator cards, this week strip, recent entries; bottom tab bar and a New entry sheet on phones.
+- Desktop layout: side navigation and a multi-column home; forms stay centred.
+- Lab time: check in and out, pick what you did (pre-selected from today's entries), saved as a timed entry; weekly chart, month total and history.
 
 ## v0.3.0 — 2026-10-27
 

@@ -429,6 +429,76 @@ body.sm-open{overflow:hidden}
 .ai-in .btn{min-height:48px;width:52px;padding:0;display:flex;align-items:center;justify-content:center}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 #sAI:not([hidden]){display:flex;flex-direction:column;min-height:100vh}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.hm-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 8px}
+.hm-id{display:flex;align-items:center;gap:10px}.hm-idt{display:flex;flex-direction:column}.hm-idt span{font-size:13px;color:var(--muted)}.hm-idt b{font-size:18px}
+.hm-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hm-grid{padding-bottom:110px}.hm-col{display:flex;flex-direction:column;gap:16px}
+.card{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.card-h h2{margin:0;font-size:16px;font-weight:700}
+.card-acts{display:flex;gap:12px}.link{font:inherit;font-size:13px;font-weight:600;color:var(--trypan);background:none;border:0;padding:6px 0;cursor:pointer}
+.seg-sm{grid-auto-columns:auto}.seg-sm button{min-height:32px;font-size:13px;padding:0 12px}
+.due-list{display:flex;flex-direction:column;gap:8px}#dueSec .due{border-radius:14px}
+.ckc{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);cursor:pointer}
+.ckc.in{background:#10182B;color:#fff;border-color:#10182B}
+.ckc-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:#E3F5EE;color:#0B6B4E}.ckc.in .ckc-ic{background:#1F2A44;color:#7FE0B8}
+.ckc-tx{flex:1;display:flex;flex-direction:column;min-width:0}.ckc-tx span{font-size:12.5px;color:var(--muted)}.ckc.in .ckc-tx span{color:#A9B2C6}
+.ckc-tx b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:26px;font-weight:600}.ckc-tx b.ckc-t{font-family:inherit;font-size:15px}
+.ckc-btn{font:inherit;min-height:44px;padding:0 16px;border-radius:12px;border:0;background:#2E4FB3;color:#fff;font-size:14px;font-weight:700;cursor:pointer;flex:none}.ckc.in .ckc-btn{background:#fff;color:#10182B}
+.ag-list{display:flex;flex-direction:column;gap:8px}.ag-sub{margin:4px 2px 0;font-size:13px;font-weight:600;color:var(--muted)}.ag-day{margin:6px 2px 0;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.ag-row{font:inherit;text-align:left;display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:start;padding:12px;border-radius:14px;border:1px solid var(--line);border-left:4px solid var(--c,#C3CAD8);background:#fff;color:var(--ink);cursor:pointer}
+.ag-row.plan{border-style:dashed solid dashed solid;background:#FAFBFD}.ag-row.done{opacity:.72}
+.ag-row.treat{background:#FFF8EC;border-color:#F5DDB3;border-left-color:#C77700}
+.ag-t{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;font-weight:600;color:var(--ink2);white-space:pre-line}
+.ag-x{display:flex;flex-direction:column;gap:2px;min-width:0}.ag-x b{font-size:14px;line-height:1.4}.ag-x>span{font-size:12.5px;color:var(--muted)}
+.ag-bar{height:6px;border-radius:999px;background:#F2E3C9;overflow:hidden;margin-top:4px}.ag-bar i{display:block;height:100%;background:#C77700}
+.qa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.qa{font:inherit;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12.5px;font-weight:600;cursor:pointer;text-align:center;line-height:1.25}
+.qa svg{width:26px;height:26px}.qa.primary{background:#2E4FB3;color:#fff;border-color:#2E4FB3}.qa.primary svg{stroke:#fff}
+.qa-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.qa2{font:inherit;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 6px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:13px;cursor:pointer}.qa2 svg{width:18px;height:18px;flex:none}
+.inc-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.inc-grid .inc-card{padding:10px;gap:6px}.inc-grid .inc-top{flex-wrap:wrap;gap:6px}.inc-grid .inc-top .tx b{font-size:13px}
+.inc-grid .inc-treat{padding:8px}.inc-grid .inc-th span{font-size:11.5px}.inc-grid .inc-acts .mini{min-height:34px;font-size:12px}
+.wk-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wk-d{font:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;border-radius:12px;border:1px solid transparent;background:#F4F6FA;color:var(--ink);cursor:pointer}
+.wk-d small{font-size:11px;color:var(--muted)}.wk-d b{font-size:15px}.wk-d.span{background:#FFF1DC}.wk-d.today{background:#2E4FB3;color:#fff}.wk-d.today small{color:#DCE4FA}
+.wk-foot{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}.wk-foot b{color:var(--ink)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;padding:6px 8px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.tabbar button{font:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:50px;justify-content:center;border:0;background:none;color:var(--muted);font-size:11px;cursor:pointer}
+.tabbar button[aria-current=page]{color:#2E4FB3;font-weight:700}
+.tabbar .tb-plus{justify-self:center;width:56px;height:56px;margin-top:-24px;border-radius:18px;background:#2E4FB3;color:#fff;box-shadow:0 8px 20px rgba(46,79,179,.35)}
+.sheet{position:fixed;inset:0;z-index:70;background:rgba(16,24,43,.4);display:flex;align-items:flex-end;justify-content:center}.sheet[hidden]{display:none}
+.sheet-in{width:100%;max-width:520px;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.sheet-in h2{margin:0 4px;font-size:16px}.sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sheet-grid button{font:inherit;min-height:52px;border-radius:14px;border:1px solid var(--line);background:#F7F9FC;color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
+.ch-main{gap:14px}.ch-clock{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:44px;font-weight:600;text-align:center;letter-spacing:-1px}
+.btn.big{min-height:56px;font-size:17px}.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.chips-t{display:flex;flex-wrap:wrap;gap:6px}.chip-t{font:inherit;font-size:13px;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+.chip-t[aria-pressed=true]{background:#10182B;color:#fff;border-color:#10182B}
+.ch-bars{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;height:150px;align-items:end}
+.chb{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}.chb span{width:100%;border-radius:6px;background:#7E9BE8}.chb span.now{background:#2E4FB3}.chb span.zero{background:#DDE2EC}
+.chb em{font-style:normal;font-size:10px;color:var(--muted);white-space:nowrap}.chb small{font-size:11px;color:var(--muted)}
+.ch-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ch-stats>span{display:flex;flex-direction:column;padding:10px 12px;border-radius:12px;background:#F4F6FA;font-size:12px;color:var(--muted)}.ch-stats b{font-size:16px;color:var(--ink)}
+.ch-hist{display:flex;flex-direction:column}.chh{font:inherit;display:grid;grid-template-columns:88px minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 2px;border:0;border-bottom:1px solid #EDF0F5;background:none;text-align:left;color:var(--ink);cursor:pointer}
+.chh:last-child{border-bottom:0}.chh-d{font-size:12px;color:var(--muted)}.chh-t{font-size:13px}.chh b{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px}
+.side-nav{display:none}
+@media (min-width:1024px){
+  body{padding-left:240px}
+  .side-nav{display:flex;flex-direction:column;gap:4px;position:fixed;left:0;top:0;bottom:0;width:240px;box-sizing:border-box;padding:22px 14px;background:#fff;border-right:1px solid var(--line);z-index:30;overflow:auto}
+  .sn-id{display:flex;align-items:center;gap:10px;padding:0 8px 18px;font-size:16px}
+  .side-nav button{font:inherit;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--ink2);font-size:14px;text-align:left;cursor:pointer}
+  .side-nav button:hover{background:#F4F6FA}.side-nav button[aria-current=page]{background:#E7ECFA;color:#1F3A8A;font-weight:600}
+  .side-nav .sn-new{margin-top:12px;background:#2E4FB3;color:#fff;font-weight:600}.side-nav .sn-new:hover{background:#1F3A8A}
+  .tabbar{display:none}.hm-grid{padding-bottom:40px}
+  .hm-id>svg{display:none}
+  .app{max-width:760px}
+  body.wide .app{max-width:1320px}
+  body.wide .hm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));align-items:start;gap:20px;padding:8px 28px 40px}
+  body.wide .hm-top{padding:24px 28px 8px}.hm-idt b{font-size:24px}
+  .sheet{align-items:center}.sheet-in{border-radius:22px}
+}
+@media (min-width:700px) and (max-width:1023px){body.wide .app{max-width:900px}body.wide .hm-grid{display:grid;grid-template-columns:1fr 1fr;align-items:start}body.wide .hm-col:last-child{grid-column:1/-1}}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -449,48 +519,101 @@ body.sm-open{overflow:hidden}
 </style>
 </head>
 <body>
+<nav class="side-nav" aria-label="Cell Lab">
+  <div class="sn-id"><svg width="34" height="34" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="#2E4FB3"/><path d="M8 8h14v14H8z M15 8v14 M8 15h14" stroke="#fff" stroke-width="1.6" fill="none"/></svg><b>Cell Lab</b></div>
+  <button type="button" data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span data-i18n="navHome"></span></button>
+  <button type="button" data-nav="cal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span data-i18n="actCal"></span></button>
+  <button type="button" data-nav="log"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span data-i18n="logTitle"></span></button>
+  <button type="button" data-nav="guide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/></svg><span data-i18n="gdTitle"></span></button>
+  <button type="button" data-nav="ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg><span data-i18n="aiTitle"></span></button>
+  <button type="button" data-nav="lab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span id="snLab"></span></button>
+  <button type="button" data-nav="report"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h6"/></svg><span data-i18n="reportPdf"></span></button>
+  <button type="button" class="sn-new" data-nav="new"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="navNew"></span></button>
+</nav>
 <div class="app">
 
 <!-- ================= 1 · START ================= -->
 <section class="screen" id="sHome" aria-labelledby="hHome">
-  <header class="top" style="padding-left:20px;padding-right:20px;justify-content:space-between;flex-wrap:wrap;row-gap:8px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="#2E4FB3"/><path d="M8 8h14v14H8z M15 8v14 M8 15h14" stroke="#fff" stroke-width="1.6" fill="none"/></svg>
-      <div style="display:flex;flex-direction:column"><span id="hHome" style="font-size:17px;font-weight:700">Cell Lab</span><span style="font-size:12px;color:var(--muted)" id="homeDate"></span></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-      <div class="lang" role="group" aria-label="Language / ภาษา"><button type="button" data-lang="th" aria-pressed="true">TH</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
-      <span class="pill off" id="macPill" role="status"><span class="dot"></span><span id="macText"></span></span>
-    </div>
+  <header class="hm-top">
+    <div class="hm-id"><svg width="34" height="34" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="#2E4FB3"/><path d="M8 8h14v14H8z M15 8v14 M8 15h14" stroke="#fff" stroke-width="1.6" fill="none"/></svg><div class="hm-idt"><span id="hmHello"></span><b id="homeDate"></b><span id="hHome" class="sr-only">Cell Lab</span></div></div>
+    <div class="hm-tools"><div class="lang" role="group" aria-label="Language / ภาษา"><button type="button" data-lang="th" aria-pressed="true">TH</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div><span class="pill off" id="macPill" role="status"><span class="dot"></span><span id="macText"></span></span></div>
   </header>
-  <div class="home-main">
-    <div class="me-row" id="meRow"><span class="me-l" data-i18n="meLabel"></span><div class="seg me-seg" id="meSeg" role="group"></div><span class="me-hint" id="meHint" data-i18n="pickMe"></span></div>
-    <div class="notice warn" id="syncNote" hidden style="margin:0"><span id="syncText"></span><button type="button" id="syncBtn" data-i18n="syncNow"></button></div>
-    <section id="dueSec" hidden style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hDue">
-      <div class="sec-h"><h2 id="hDue" data-i18n="dueTitle"></h2></div>
-      <div id="dueList" style="display:flex;flex-direction:column;gap:8px"></div>
-    </section>
-    <button type="button" class="ai-bar" id="goAI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span data-i18n="aiAsk"></span></button>
-    <div class="actions">
-      <button type="button" class="action primary" id="goCamera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actCamera"></b><span data-i18n="actCameraSub"></span></span></button>
-      <button type="button" class="action" id="goManual"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actManual"></b><span data-i18n="actManualSub"></span></span></button>
-      <button type="button" class="action" id="goPassage"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span style="display:flex;flex-direction:column"><b>Passage</b><span data-i18n="actPassageSub"></span></span></button>
-      <button type="button" class="action" id="goTreat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/></svg><span style="display:flex;flex-direction:column"><b>Treat</b><span data-i18n="actTreatSub"></span></span></button>
-      <button type="button" class="action" id="goProtein"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A3E9D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3h8M9 3v14a3 3 0 0 0 6 0V3M9 11h6"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actProtein"></b><span data-i18n="actProteinSub"></span></span></button>
-      <button type="button" class="action" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actNote"></b><span data-i18n="actNoteSub"></span></span></button>
-      <button type="button" class="action" id="goGuide"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actGuide"></b><span data-i18n="actGuideSub"></span></span></button>
-      <button type="button" class="action" id="goCal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C77700" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h2M11 13h2M15 13h2M7 17h2M11 17h2"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actCal"></b><span data-i18n="actCalSub"></span></span></button>
+  <div class="home-main hm-grid">
+    <div class="hm-col">
+      <div class="me-row" id="meRow"><span class="me-l" data-i18n="meLabel"></span><div class="seg me-seg" id="meSeg" role="group"></div><span class="me-hint" id="meHint" data-i18n="pickMe"></span></div>
+      <div class="notice warn" id="syncNote" hidden style="margin:0"><span id="syncText"></span><button type="button" id="syncBtn" data-i18n="syncNow"></button></div>
+      <section class="ckc" id="ckCard" aria-label="เวลาในแล็บ"></section>
+      <button type="button" class="ai-bar" id="goAI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span data-i18n="aiAsk"></span></button>
+      <section id="dueSec" hidden class="card" aria-labelledby="dueH"><div class="card-h"><h2 id="dueH"></h2></div><div id="dueList" class="due-list"></div></section>
+      <section class="card" aria-labelledby="agH">
+        <div class="card-h"><h2 id="agH" data-i18n="agTitle"></h2><div class="seg seg-sm" id="agTabs" role="group"></div></div>
+        <div id="agList" class="ag-list"></div>
+        <h3 class="ag-sub" id="agNextH" data-i18n="agNext"></h3><div id="agNext" class="ag-list"></div>
+      </section>
     </div>
-    <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
-      <div class="sec-h"><h2 id="hCult" data-i18n="incTitle"></h2><span style="display:flex;gap:12px"><button type="button" id="goGrowth" data-i18n="grSettings"></button><button type="button" id="goAddCulture" data-i18n="addCulture"></button></span></div>
-      <div class="list" id="cultList"></div>
+    <div class="hm-col">
+      <section class="card" aria-labelledby="qaH">
+        <div class="card-h"><h2 id="qaH" data-i18n="qaTitle"></h2></div>
+        <div class="qa-grid"><button type="button" class="qa primary" id="goCamera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-i18n="actCamera"></span></button><button type="button" class="qa" id="goPassage"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span data-i18n="evPassage"></span></button><button type="button" class="qa" id="goTreat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M14 3l7 7M15.5 4.5L6 14a3 3 0 0 0 4 4l9.5-9.5M8 12l4 4"/></svg><span data-i18n="evTreat"></span></button><button type="button" class="qa" id="goProtein"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A3E9D" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3h8M9 3v14a3 3 0 0 0 6 0V3M9 11h6"/></svg><span data-i18n="actProtein"></span></button></div>
+        <div class="qa-row"><button type="button" class="qa2" id="goManual"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg><span data-i18n="actManual"></span></button><button type="button" class="qa2" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span data-i18n="actNote"></span></button><button type="button" class="qa2" id="goGuide"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/></svg><span data-i18n="actGuide"></span></button></div>
+      </section>
+      <section class="card" aria-labelledby="hCult">
+        <div class="card-h"><h2 id="hCult" data-i18n="incTitle"></h2><span class="card-acts"><button type="button" class="link" id="goGrowth" data-i18n="grSettings"></button><button type="button" class="link" id="goAddCulture" data-i18n="addCulture"></button></span></div>
+        <div class="inc-grid" id="cultList"></div>
+      </section>
+    </div>
+    <div class="hm-col">
+      <section class="card" aria-labelledby="wkH">
+        <div class="card-h"><h2 id="wkH" data-i18n="weekTitle"></h2><button type="button" class="link" id="goCal" data-i18n="openCal"></button></div>
+        <div class="wk-strip" id="weekStrip"></div>
+        <div class="wk-foot"><span data-i18n="navLab"></span><b id="weekHours"></b></div>
+      </section>
+      <section class="card" aria-labelledby="hRecentLab">
+        <div class="card-h"><h2 id="hRecentLab" data-i18n="recentLog"></h2><button type="button" class="link" id="goLog" data-i18n="allLog"></button></div>
+        <div class="list" id="homeLog"></div>
+        <button type="button" class="btn" id="homeReport" data-i18n="rpFull"></button>
+      </section>
+    </div>
+  </div>
+  <nav class="tabbar" aria-label="Menu">
+    <button type="button" data-nav="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span data-i18n="navHome"></span></button>
+    <button type="button" data-nav="cal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span data-i18n="actCal"></span></button>
+    <button type="button" class="tb-plus" data-nav="new" data-i18n-aria="navNew"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button type="button" data-nav="guide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/></svg><span data-i18n="gdTitle"></span></button>
+    <button type="button" data-nav="log"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span data-i18n="logTitle"></span></button>
+  </nav>
+</section>
+
+<section class="screen" id="sCheck" hidden aria-labelledby="hCheck">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hCheck" data-i18n="ckTitle2"></b><span id="chWho"></span></div></header>
+  <div class="form ch-main">
+    <section class="card" id="chOutBox"><button type="button" class="btn primary big" id="chIn" data-i18n="ckIn"></button><button type="button" class="btn" id="chPast" data-i18n="ckPast"></button></section>
+    <section class="card" id="chInBox">
+      <b class="ch-clock" id="chClock">0:00:00</b>
+      <div class="field"><label for="chStart" data-i18n="ckStart"></label><input id="chStart" type="datetime-local"></div>
+      <div class="field"><span class="lbl" data-i18n="ckWhat"></span><div class="chips-t" id="chChips"></div><span class="ck-help" id="chAutoHint" data-i18n="ckAuto"></span></div>
+      <div class="field"><label for="chNote" data-i18n="ckNoteL"></label><textarea id="chNote" rows="3" maxlength="2000"></textarea></div>
+      <button type="button" class="btn primary big" id="chOut"></button>
+      <button type="button" class="btn ghost" id="chCancel" data-i18n="ckCancel"></button>
     </section>
-    <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hRecentLab">
-      <div class="sec-h"><h2 id="hRecentLab" data-i18n="recentLog"></h2><button type="button" id="goLog" data-i18n="allLog"></button></div>
-      <div class="list" id="homeLog"></div>
+    <section class="card">
+      <div class="card-h"><h2 data-i18n="weekTitle"></h2><b id="chWeekTotal"></b></div>
+      <div class="ch-bars" id="chBars" role="img"></div>
+      <div class="ch-stats"><span><span data-i18n="ckMonth"></span><b id="chMonth"></b></span><span><span data-i18n="ckDays"></span><b id="chDays"></b></span></div>
     </section>
+    <section class="card"><div class="card-h"><h2 data-i18n="ckHist"></h2></div><div id="chHist" class="ch-hist"></div></section>
   </div>
 </section>
+
+<div class="sheet" id="newSheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsH"><div class="sheet-in">
+  <h2 id="nsH" data-i18n="navNew"></h2>
+  <div class="sheet-grid">
+    <button type="button" data-go="goCamera" data-i18n="actCamera"></button><button type="button" data-go="goManual" data-i18n="actManual"></button>
+    <button type="button" data-go="goPassage">Passage</button><button type="button" data-go="goTreat">Treat</button>
+    <button type="button" data-go="goProtein" data-i18n="actProtein"></button><button type="button" data-go="goNote" data-i18n="actNote"></button>
+    <button type="button" data-go="goAddCulture" data-i18n="addCulture"></button><button type="button" data-go="goAI" data-i18n="aiTitle"></button>
+  </div></div></div>
 
 <section class="screen" id="sStart" aria-labelledby="hStart" hidden>
   <header class="top">
@@ -926,8 +1049,8 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail','sGuide','sCal','sAI'];
-function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail','sGuide','sCal','sAI','sCheck'];
+function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); document.body.classList.toggle('wide',id==='sHome'||id==='sCal'); if(id==='sHome'){paintHome();paintHome2();} if(id==='sCheck')paintCheck(); if(typeof paintSideNav==='function')paintSideNav();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
   paintPill(); loadRecent(); checkResume(); labRefreshLang();
@@ -1416,7 +1539,7 @@ async function syncLab(){
   await flushOutbox();
   try{const r=await api('api/lab');if(!r.ok)throw 0;const j=await r.json();LAB.server=j.events||[];LAB.online=true;store.set('cc.labcache',LAB.server);}
   catch(e){LAB.online=false;}
-  paintSync(); if(!$('sHome').hidden)paintHome(); if(!$('sLog').hidden)paintLog(); if(!$('sDetail').hidden)paintDetail(); paintChecklists(); if(!$('sCal').hidden)paintCal();
+  paintSync(); if(!$('sHome').hidden){paintHome();paintHome2();} if(!$('sCheck').hidden)paintCheck(); if(!$('sLog').hidden)paintLog(); if(!$('sDetail').hidden)paintDetail(); paintChecklists(); if(!$('sCal').hidden)paintCal();
 }
 function addEvent(ev){
   ev={id:uid(),at:new Date().toISOString(),...(store.get('cc.me','')?{owner:store.get('cc.me','')}:{}),...ev};
@@ -1461,12 +1584,12 @@ function paintHome(){
   $('homeDate').textContent=niceDate(new Date()).split(' · ')[0];
   paintSync();
   // to do
-  const now=Date.now(),hv=e=>e.harvest_at?new Date(e.harvest_at).getTime():Infinity,open=openTreats().sort((a,b)=>hv(a)-hv(b));
+  const now=Date.now(),hv=e=>e.harvest_at?new Date(e.harvest_at).getTime():Infinity,open=openTreats().filter(e=>hv(e)-now<24*3.6e6).sort((a,b)=>hv(a)-hv(b));
   const soon=soonToPassage(),plans=allEvents().filter(e=>e.planned&&new Date(e.at)-now<36*3.6e6&&new Date(e.end_at||e.at)-now>-6*3.6e6);
   $('dueSec').hidden=!open.length&&!soon.length&&!plans.length; const dl=$('dueList'); dl.innerHTML='';
   for(const e of plans){const row=document.createElement('div');row.className='due soon';
     row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="tx"><b></b><span></span></span><button type="button"></button>`;
-    row.querySelector('b').textContent=e.heading||e.title;row.querySelector('.tx span').textContent=t('planTodo',e.all_day?shortDate(new Date(e.at)).replace(/\s*\d+:\d+$/,''):shortDate(new Date(e.at)));
+    row.querySelector('b').textContent=e.heading||e.title;row.querySelector('.tx span').textContent=t('planTodo',e.all_day?shortDate(new Date(e.at)).replace(/\s*·?\s*\d+:\d+$/,''):shortDate(new Date(e.at)));
     const b=row.querySelector('button');b.textContent=t('planView');b.onclick=()=>openDetail(e.id);dl.append(row);}
   for(const {c,p} of soon){const row=document.createElement('div');row.className='due soon';
     row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span class="tx"><b></b></span><button type="button">Passage</button>`;
@@ -1486,7 +1609,7 @@ function paintHome(){
     dl.append(row);}
   paintIncubator(now);
   // recent log
-  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>!['compound','bca','checklist'].includes(e.type)).reverse().slice(0,4);
+  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>!['compound','bca','checklist','growth'].includes(e.type)&&!e.planned&&e.kind!=='reference'&&new Date(e.at)<=new Date()).reverse().slice(0,4);
   if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');hl.append(p);}
   for(const e of ev){const d=describe(e);const it=document.createElement('button');it.type='button';it.className='item';
     it.innerHTML=`<span class="tx"><b></b><span></span></span><span class="side"></span>`;it.querySelector('b').textContent=d.title;it.querySelector('.tx span').textContent=d.sub;
@@ -1802,6 +1925,7 @@ $('logCsv').onclick=()=>{
 };
 
 function labRefreshLang(){
+  if(typeof paintHome2==='function'&&!$('sHome').hidden)paintHome2();if(typeof paintSideNav==='function')paintSideNav();
   if(!$('sHome').hidden)paintHome();if(!$('sLog').hidden)paintLog();if(!$('sManual').hidden)paintManual();
   if(!$('sPassage').hidden){const v=$('pCount').value;openPassage({source:$('pSource').value,count:v});}
   if(!$('sTreat').hidden)paintTreat();
@@ -2479,7 +2603,7 @@ const CAL_COLOR={count:'#0B6B4E',passage:'#2E4FB3',treat:'#C77700',harvest:'#5B6
 let calMonth=null,calSel=null,calWho='all';
 function calItems(){
   const who=e=>calWho==='all'||!e.owner||e.owner===calWho,items=[];
-  for(const e of allEvents()){if(['compound','checklist','growth','delete','discard'].includes(e.type)||!who(e))continue;
+  for(const e of allEvents()){if(['compound','checklist','growth','delete','discard'].includes(e.type)||e.kind==='reference'||!who(e))continue;
     items.push({day:dayKey(new Date(e.at)),at:new Date(e.at),e,color:e.planned?'#C77700':(CAL_COLOR[e.type]||'#5B6478'),planned:!!e.planned});}
   // coming up: harvest times and predicted passages
   for(const tr of openTreats()){if(!who(tr)||!tr.harvest_at)continue;const d=new Date(tr.harvest_at);items.push({day:dayKey(d),at:d,plan:t('calDue'),e:tr,color:CAL_COLOR.treat});}
@@ -2642,6 +2766,143 @@ $('aiSendBtn').onclick=()=>aiSend();
 $('aiInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();aiSend();}};
 $('aiClear').onclick=()=>{AI.hist=[];store.set('cc.ai.hist',[]);paintAI();};
 $('goAI').onclick=()=>openAI();
+
+/* ================= LAB HOME v2: agenda, check-in, responsive shell ================= */
+Object.assign(I18N.th,{
+  hello:n=>n?`สวัสดี ${n}`:'สวัสดี',agTitle:'ต้องทำ',agToday:'วันนี้',agTomorrow:'พรุ่งนี้',agWeek:'7 วัน',agNext:'ถัดไป',agEmpty:'ยังไม่มีรายการ',agAllDay:'ทั้งวัน',
+  agTreating:(h,d)=>`ชม.ที่ ${h} จาก ${d}`,agTreatNow:'กำลังให้สาร',dueNow:'ต้องทำตอนนี้',qaTitle:'บันทึกด่วน',weekTitle:'สัปดาห์นี้',openCal:'เปิดปฏิทิน',
+  ckIn:'เช็กอินเข้าแล็บ',ckOut:'เช็กเอาต์',ckSince:t=>`อยู่ในแล็บตั้งแต่ ${t}`,ckNotIn:'ยังไม่ได้เช็กอินวันนี้',ckWeekH:h=>`สัปดาห์นี้ ${h}`,ckTitle2:'เวลาในแล็บ',
+  ckStart:'เวลาเข้าแล็บ',ckWhat:'วันนี้ทำอะไรบ้าง',ckAuto:'เลือกให้จากสิ่งที่บันทึกวันนี้แล้ว แก้ได้',ckNoteL:'หมายเหตุ (ไม่บังคับ)',ckSave:d=>`เช็กเอาต์ · บันทึก ${d}`,
+  ckCancel:'ยกเลิกเช็กอิน',ckPast:'บันทึกเวลาย้อนหลัง',ckMonth:'เดือนนี้',ckDays:'เข้าแล็บ',ckDaysN:n=>`${n} วัน`,ckHist:'ประวัติ',ckNone:'ยังไม่มีประวัติเวลาในแล็บ',
+  ckDone:'บันทึกเวลาในแล็บแล้ว',ckSessionH:'ปฏิบัติงานในห้องปฏิบัติการ',navLab:'เวลาในแล็บ',navNew:'บันทึกใหม่',navHome:'หน้าแรก',reportPdf:'รายงาน PDF',
+  dayShort:['อา','จ','อ','พ','พฤ','ศ','ส'],
+  acts:{sub:'Subculture',count:'นับเซลล์',treat:'ให้สาร',protein:'เก็บโปรตีน',wb:'Western blot',gel:'เตรียมเจล',obs:'สังเกตการณ์',other:'อื่น ๆ'},
+  actsFormal:{sub:'เพาะเลี้ยงเซลล์ต่อ',count:'นับจำนวนเซลล์',treat:'ให้สารทดสอบ',protein:'เก็บโปรตีน',wb:'Western blot',gel:'เตรียมเจล',obs:'สังเกตการณ์',other:'อื่น ๆ'}
+});
+Object.assign(I18N.en,{
+  hello:n=>n?`Hi ${n}`:'Hi',agTitle:'To do',agToday:'Today',agTomorrow:'Tomorrow',agWeek:'7 days',agNext:'Next',agEmpty:'Nothing here yet',agAllDay:'All day',
+  agTreating:(h,d)=>`hour ${h} of ${d}`,agTreatNow:'Under treatment',dueNow:'Needs action',qaTitle:'Quick entry',weekTitle:'This week',openCal:'Open calendar',
+  ckIn:'Check in to the lab',ckOut:'Check out',ckSince:t=>`In the lab since ${t}`,ckNotIn:'Not checked in today',ckWeekH:h=>`This week ${h}`,ckTitle2:'Lab time',
+  ckStart:'Check-in time',ckWhat:'What did you do today',ckAuto:'Pre-selected from today’s entries; change as needed',ckNoteL:'Note (optional)',ckSave:d=>`Check out · save ${d}`,
+  ckCancel:'Cancel check-in',ckPast:'Add past lab time',ckMonth:'This month',ckDays:'Lab days',ckDaysN:n=>`${n} day${n>1?'s':''}`,ckHist:'History',ckNone:'No lab time recorded yet',
+  ckDone:'Lab time saved',ckSessionH:'Laboratory work',navLab:'Lab time',navNew:'New entry',navHome:'Home',reportPdf:'PDF report',
+  dayShort:['Su','Mo','Tu','We','Th','Fr','Sa'],
+  acts:{sub:'Subculture',count:'Cell count',treat:'Treatment',protein:'Protein harvest',wb:'Western blot',gel:'Gel prep',obs:'Observation',other:'Other'},
+  actsFormal:{sub:'Subculture',count:'Cell counting',treat:'Treatment',protein:'Protein harvest',wb:'Western blot',gel:'Gel preparation',obs:'Observation',other:'Other'}
+});
+const durStr=mins=>{mins=Math.max(0,Math.round(mins));return t('durHM',Math.floor(mins/60),mins%60);};
+const startOfDay=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+/* ---------- lab sessions (notes with an end time) ---------- */
+function sessions(who){return allEvents().filter(e=>e.type==='note'&&e.end_at&&!e.planned&&(!who||!e.owner||e.owner===who));}
+function minutesBetween(a,b){return (new Date(b)-new Date(a))/6e4;}
+function sessionMins(list,from,to){let m=0;for(const e of list){const s=new Date(e.at),en=new Date(e.end_at);if(en<=from||s>=to)continue;m+=minutesBetween(Math.max(s,from),Math.min(en,to));}return m;}
+const weekStart=d=>{const x=startOfDay(d);const k=(x.getDay()+6)%7;return addDays(x,-k);};
+/* ---------- check-in ---------- */
+const CK=()=>store.get('cc.checkin',null);
+function paintCkCard(){const c=$('ckCard');if(!c)return;const st=CK(),who=me(),wk=sessionMins(sessions(who),weekStart(new Date()),addDays(weekStart(new Date()),7));
+  c.innerHTML='';c.className='ckc'+(st?' in':'');
+  const ic=document.createElement('span');ic.className='ckc-ic';ic.innerHTML=svgIc('timer',24);
+  const tx=document.createElement('div');tx.className='ckc-tx';const btn=document.createElement('button');btn.type='button';btn.className='ckc-btn';
+  if(st){tx.append(Object.assign(document.createElement('span'),{textContent:t('ckSince',hm(new Date(st.at)))}),Object.assign(document.createElement('b'),{id:'ckClock',textContent:'0:00:00'}));
+    btn.textContent=t('ckOut');btn.onclick=()=>openCheck();}
+  else{tx.append(Object.assign(document.createElement('b'),{className:'ckc-t',textContent:t('ckNotIn')}),Object.assign(document.createElement('span'),{textContent:t('ckWeekH',durStr(wk))}));
+    btn.textContent=t('ckIn');btn.onclick=()=>{store.set('cc.checkin',{at:new Date().toISOString(),who:me()});paintCkCard();paintSideNav();};}
+  c.append(ic,tx,btn);c.onclick=e=>{if(e.target===btn)return;openCheck();};tickClock();}
+function tickClock(){const st=CK();const s=st?Math.max(0,Math.floor((Date.now()-new Date(st.at))/1000)):0;const txt=`${Math.floor(s/3600)}:${pad2(Math.floor(s%3600/60))}:${pad2(s%60)}`;
+  for(const id of ['ckClock','chClock']){const el=$(id);if(el)el.textContent=txt;}
+  const sv=$('chOut');if(sv&&st)sv.textContent=t('ckSave',durStr(s/60));}
+setInterval(()=>{if(CK()&&(!$('sHome').hidden||!$('sCheck').hidden))tickClock();},1000);
+let chActs=new Set();
+function guessActs(){const s=startOfDay(new Date()),who=me(),a=new Set();
+  for(const e of allEvents()){if(new Date(e.at)<s||(who&&e.owner&&e.owner!==who))continue;
+    if(e.type==='passage')a.add('sub');if(e.type==='count')a.add('count');if(e.type==='treat')a.add('treat');if(e.type==='protein'||e.type==='harvest')a.add('protein');}
+  return a;}
+function openCheck(){chActs=guessActs();paintCheck();show('sCheck');}
+function paintCheck(){const st=CK(),who=me();$('chWho').textContent=[who,niceDate(new Date()).split(' · ')[0]].filter(Boolean).join(' · ');
+  $('chInBox').hidden=!st;$('chOutBox').hidden=!!st;
+  if(st){const d=new Date(st.at);$('chStart').value=nowLocal(d);
+    const g=$('chChips');g.innerHTML='';for(const [k,l] of Object.entries(t('acts'))){const b=document.createElement('button');b.type='button';b.className='chip-t';b.textContent=l;b.setAttribute('aria-pressed',chActs.has(k));
+      b.onclick=()=>{chActs.has(k)?chActs.delete(k):chActs.add(k);paintCheck();};g.append(b);}
+    $('chAutoHint').hidden=!guessActs().size;tickClock();}
+  // week chart
+  const list=sessions(who),ws=weekStart(new Date()),bars=$('chBars');bars.innerHTML='';let max=60;const vals=[];
+  for(let i=0;i<7;i++){const d=addDays(ws,i);vals.push(sessionMins(list,d,addDays(d,1)));}max=Math.max(max,...vals);
+  vals.forEach((v,i)=>{const d=addDays(ws,i),col=document.createElement('div');col.className='chb';const bar=document.createElement('span');bar.style.height=Math.max(3,v/max*100)+'%';
+    if(dayKey(d)===dayKey(new Date()))bar.classList.add('now');if(!v)bar.classList.add('zero');bar.title=durStr(v);
+    col.append(Object.assign(document.createElement('em'),{textContent:v?durStr(v).replace(/ นาที| min/,'น.').replace(' ชม.','ช.'):''}),bar,Object.assign(document.createElement('small'),{textContent:t('dayShort')[d.getDay()]}));bars.append(col);});
+  $('chBars').setAttribute('aria-label',vals.map((v,i)=>`${t('dayShort')[addDays(ws,i).getDay()]} ${durStr(v)}`).join(', '));
+  const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1),me2=new Date(now.getFullYear(),now.getMonth()+1,1);
+  const monthMins=sessionMins(list,ms,me2),days=new Set(list.filter(e=>new Date(e.at)>=ms&&new Date(e.at)<me2).map(e=>dayKey(new Date(e.at)))).size;
+  $('chWeekTotal').textContent=durStr(vals.reduce((a,b)=>a+b,0));$('chMonth').textContent=durStr(monthMins);$('chDays').textContent=t('ckDaysN',days);
+  const h=$('chHist');h.innerHTML='';const recent=list.slice().reverse().slice(0,12);
+  if(!recent.length)h.append(Object.assign(document.createElement('p'),{className:'empty-note',textContent:t('ckNone')}));
+  for(const e of recent){const r=document.createElement('button');r.type='button';r.className='chh';
+    r.append(Object.assign(document.createElement('span'),{className:'chh-d',textContent:shortDate(new Date(e.at)).replace(/\s*·?\s*\d+:\d+$/,'')}),
+      Object.assign(document.createElement('span'),{className:'chh-t',textContent:(e.heading||e.title||'').replace(t('ckSessionH')+' · ','')}),
+      Object.assign(document.createElement('b'),{textContent:(()=>{const m=minutesBetween(e.at,e.end_at);return `${Math.floor(m/60)}:${pad2(Math.round(m%60))}`;})()}));
+    r.onclick=()=>openDetail(e.id);h.append(r);}}
+$('chIn').onclick=()=>{store.set('cc.checkin',{at:new Date().toISOString(),who:me()});paintCheck();paintSideNav();};
+$('chPast').onclick=()=>openNote();
+$('chCancel').onclick=()=>{if(confirmTwice('ckc')){store.del('cc.checkin');paintCheck();paintSideNav();}};
+$('chStart').onchange=()=>{const d=new Date($('chStart').value);if(isFinite(d)&&d<new Date()){const st=CK();st.at=d.toISOString();store.set('cc.checkin',st);tickClock();}};
+$('chOut').onclick=()=>{const st=CK();if(!st)return;const acts=[...chActs],F=t('actsFormal'),A=t('acts');
+  const heading=t('ckSessionH')+(acts.length?' · '+acts.map(k=>F[k]).join(', '):'');
+  addEvent({type:'note',kind:'session',heading,title:heading,text:$('chNote').value.trim(),at:st.at,end_at:new Date().toISOString(),activities:acts,owner:st.who||me()||null});
+  store.del('cc.checkin');$('chNote').value='';toast(t('ckDone'),false);paintSideNav();show('sHome');};
+/* ---------- agenda ---------- */
+let agTab='today';
+function agendaRows(){const now=new Date(),t0=startOfDay(now),items=calItems(),rows=[];
+  const inRange=(d,a,b)=>d>=a&&d<b;
+  let from=t0,to=addDays(t0,1);if(agTab==='tomorrow'){from=addDays(t0,1);to=addDays(t0,2);}if(agTab==='week'){from=t0;to=addDays(t0,8);}
+  if(agTab==='today')for(const tr of openTreats()){const s=new Date(tr.at);if(s>now)continue;const dur=tr.duration_h||null,h=Math.floor((now-s)/3.6e6);
+    rows.push({kind:'treat',at:s,tr,h,dur});}
+  for(const it of items){if(!inRange(it.at,from,to))continue;if(agTab==='week'&&!(it.plan||it.planned||it.at>now))continue;rows.push({kind:'item',at:it.at,it});}
+  rows.sort((a,b)=>(a.kind==='treat'?-1:0)-(b.kind==='treat'?-1:0)||a.at-b.at);
+  const next=agTab==='week'?[]:items.filter(it=>it.at>=to&&(it.plan||it.planned)).sort((a,b)=>a.at-b.at).slice(0,3);
+  return {rows,next};}
+function agRow(r,showDate){const d=document.createElement('button');d.type='button';d.className='ag-row';
+  const tm=document.createElement('span');tm.className='ag-t';const tx=document.createElement('span');tx.className='ag-x';
+  if(r.kind==='treat'){d.classList.add('treat');tm.textContent=t('agAllDay');
+    tx.append(Object.assign(document.createElement('b'),{textContent:`${t('agTreatNow')} · ${r.tr.title}`}),Object.assign(document.createElement('span'),{textContent:r.dur?t('agTreating',r.h,r.dur):shortDate(r.at)}));
+    if(r.dur){const bar=document.createElement('span');bar.className='ag-bar';const f=document.createElement('i');f.style.width=Math.min(100,r.h/r.dur*100)+'%';bar.append(f);tx.append(bar);}
+    if(r.tr.owner)tx.querySelector('b').append(' ',whoBadge(r.tr.owner));d.onclick=()=>openDetail(r.tr.id);}
+  else{const it=r.it,e=it.e;const allDay=e&&e.all_day;const done=!it.plan&&!it.planned&&it.at<new Date();if(done)d.classList.add('done');if(it.plan||it.planned)d.classList.add('plan');
+    tm.textContent=(showDate?t('dayShort')[it.at.getDay()]+' '+it.at.getDate()+'\n':'')+(allDay?t('agAllDay'):e&&e.end_at&&!it.plan?`${hm(it.at)}–${hm(new Date(e.end_at))}`:hm(it.at));
+    const title=it.plan?it.plan:(e.type==='note'?(e.heading||e.title):describe(e).title);
+    const sub=it.plan?(e?e.title:`${it.cult.line} P${it.cult.passage} · ${vName(it.cult.vessel)}`):(e.type==='note'?(e.text||'').split('\n')[0]:describe(e).sub.split('\n')[0]);
+    tx.append(Object.assign(document.createElement('b'),{textContent:(done?'✓ ':'')+title}));if(sub)tx.append(Object.assign(document.createElement('span'),{textContent:sub}));
+    const own=e?.owner||it.cult?.owner;if(own)tx.querySelector('b').append(' ',whoBadge(own));
+    d.style.setProperty('--c',it.color);d.onclick=()=>{if(e)openDetail(e.id);else if(it.cult)openPassage({source:it.cult.cid});};}
+  d.append(tm,tx);return d;}
+function paintAgenda(){const tabs=$('agTabs');tabs.innerHTML='';for(const [k,l] of [['today','agToday'],['tomorrow','agTomorrow'],['week','agWeek']]){const b=document.createElement('button');b.type='button';b.textContent=t(l);b.setAttribute('aria-pressed',agTab===k);b.onclick=()=>{agTab=k;paintAgenda();};tabs.append(b);}
+  const {rows,next}=agendaRows(),box=$('agList');box.innerHTML='';
+  if(!rows.length)box.append(Object.assign(document.createElement('p'),{className:'empty-note',textContent:t('agEmpty')}));
+  let lastDay='';for(const r of rows){const k=dayKey(r.at);if(agTab==='week'&&k!==lastDay){lastDay=k;box.append(Object.assign(document.createElement('h3'),{className:'ag-day',textContent:shortDate(r.at).replace(/\s*·?\s*\d+:\d+$/,'')}));}box.append(agRow(r,false));}
+  const nx=$('agNext');nx.innerHTML='';$('agNextH').hidden=!next.length;for(const it of next)nx.append(agRow({kind:'item',at:it.at,it},true));}
+/* ---------- week strip ---------- */
+function paintWeek(){const g=$('weekStrip');if(!g)return;g.innerHTML='';const ws=weekStart(new Date()),items=calItems(),spans=treatSpans(),by={};for(const it of items)(by[it.day]=by[it.day]||[]).push(it);
+  for(let i=0;i<7;i++){const d=addDays(ws,i),k=dayKey(d),its=by[k]||[];const b=document.createElement('button');b.type='button';b.className='wk-d'+(k===dayKey(new Date())?' today':'')+(spans.has(k)?' span':'');
+    b.setAttribute('aria-label',`${shortDate(d).replace(/\s*·?\s*\d+:\d+$/,'')} · ${its.length}`);
+    b.append(Object.assign(document.createElement('small'),{textContent:t('dayShort')[d.getDay()]}),Object.assign(document.createElement('b'),{textContent:d.getDate()}));
+    const dots=document.createElement('span');dots.className='cal-dots';its.slice(0,3).forEach(it=>{const s=document.createElement('i');s.style.background=it.plan||it.planned?'transparent':it.color;s.style.borderColor=it.color;dots.append(s);});b.append(dots);
+    b.onclick=()=>{calMonth=new Date(d.getFullYear(),d.getMonth(),1);calSel=k;paintCal();show('sCal');};g.append(b);}
+  const list=sessions(me());$('weekHours').textContent=durStr(sessionMins(list,ws,addDays(ws,7)));}
+/* ---------- home ---------- */
+function paintHome2(){$('hmHello').textContent=t('hello',me());paintCkCard();paintAgenda();paintWeek();
+  $('dueH').textContent=t('dueNow');}
+/* ---------- new-entry sheet and navigation ---------- */
+function openSheet(){$('newSheet').hidden=false;$('newSheet').querySelector('button').focus();}
+function closeSheet(){$('newSheet').hidden=true;}
+$('newSheet').onclick=e=>{if(e.target.id==='newSheet')closeSheet();};
+document.querySelectorAll('#newSheet [data-go]').forEach(b=>b.onclick=()=>{closeSheet();$(b.dataset.go).click();});
+const NAV={home:()=>show('sHome'),cal:()=>openCal(),log:()=>openLog(),guide:()=>openGuide(),ai:()=>openAI(),lab:()=>openCheck(),report:()=>printFullReport(),new:()=>openSheet()};
+document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>NAV[b.dataset.nav]());
+const NAV_SCREEN={sHome:'home',sCal:'cal',sLog:'log',sGuide:'guide',sAI:'ai',sCheck:'lab'};
+function paintSideNav(){const cur=NAV_SCREEN[SCREENS.find(s=>!$(s).hidden)]||'';
+  document.querySelectorAll('[data-nav]').forEach(b=>{if(b.dataset.nav===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  const st=CK(),p=$('snLab');if(p)p.textContent=st?t('ckSince',hm(new Date(st.at))):t('navLab');}
+$('homeReport').onclick=()=>printFullReport();
 
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
