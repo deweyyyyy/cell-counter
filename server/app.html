@@ -304,6 +304,27 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .gr-bar span{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#7E9BE8}.gr-bar span.hot{background:#E0803A}
 .gr-bar i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#10182B;opacity:.45}
 .gr-t{font-size:12.5px;color:var(--ink2);white-space:pre-line;line-height:1.5}
+.d-report{width:100%;border-radius:10px;border:1px solid var(--line)}
+#printRoot{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff!important}
+  body>*:not(#printRoot){display:none!important}
+  #printRoot{display:block!important;color:#000;font-family:'IBM Plex Sans Thai',system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printRoot[hidden]{display:block!important}
+  .pr-head{border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:12px}.pr-head h1{margin:0;font-size:20pt}.pr-head p{margin:4px 0 0;font-size:10pt;color:#333}
+  .pr-ck h2{font-size:15pt;margin:16px 0 4px;break-after:avoid}.pr-ck+.pr-ck{break-before:page}
+  .pr-ck h3{font-size:12pt;margin:12px 0 4px;color:#333;break-after:avoid;border-bottom:1px solid #999;padding-bottom:2px}
+  .pr-ck ol{margin:0;padding-left:0;list-style:none;counter-reset:s}
+  .pr-ck li{counter-increment:s;display:grid;grid-template-columns:22pt 22pt 1fr;align-items:start;gap:4pt;font-size:13pt;line-height:1.45;padding:5pt 0;border-bottom:1px dotted #bbb;break-inside:avoid}
+  .pr-ck .bx{width:14pt;height:14pt;border:1.6pt solid #000;border-radius:3pt;margin-top:3pt}
+  .pr-ck .n{font-weight:700;color:#555}
+  #printRoot.hood .pr-ck li{font-size:15pt;line-height:1.5}
+  .pr-photos{display:grid;grid-template-columns:1fr 1fr;gap:8pt;margin-top:10pt;break-before:page}.pr-photos img{width:100%;border:1px solid #999}
+  .pr-detail{padding:0!important;gap:10pt!important;zoom:1.3}.pr-log{zoom:1.2}.pr-detail .d-sec,.pr-detail .kv{border:1px solid #999;break-inside:avoid}
+  .pr-detail .d-photos{grid-template-columns:1fr 1fr}.pr-detail .d-photos img{aspect-ratio:auto;object-fit:contain}
+  .pr-detail .pm{max-width:300px}.pr-log .ev{break-inside:avoid;border:1px solid #999;margin-bottom:6pt}.pr-log .thumbs img{width:60pt;height:60pt}
+}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -588,7 +609,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
     <div class="title-col"><b id="hLog" data-i18n="logTitle"></b><span id="logSub"></span></div></header>
   <div class="filters" role="group" id="logFilters"></div>
   <div class="form" id="logList" style="gap:8px"></div>
-  <footer class="foot"><div class="row2"><button type="button" class="btn" id="logCsv" data-i18n="exportCsv"></button><button type="button" class="btn" id="logNote" data-i18n="addNote"></button></div></footer>
+  <footer class="foot"><div class="row2"><button type="button" class="btn" id="logCsv" data-i18n="exportCsv"></button><button type="button" class="btn" id="logNote" data-i18n="addNote"></button></div><button type="button" class="btn" id="logPdf" data-i18n="pdf"></button></footer>
 </section>
 
 <!-- ================= ADD CULTURE ================= -->
@@ -1860,6 +1881,7 @@ function paintDetail(){
   } else if(e.type==='count'){
     rows.push([t('dMethod'),e.method==='manual'?t('manual'):t('camera')],[t('cellsPerMl'),sci(e.cells_per_ml)],[t('dMean'),isFinite(e.mean)?`${(+e.mean).toFixed(1)} ± ${isFinite(e.sd)?(+e.sd).toFixed(1):'–'}`:''],
       ['CV',isFinite(e.cv)?(+e.cv).toFixed(1)+'%':''],[t('dDf'),e.df]);
+    if(e.report){const s=dSection(t('reportImg'));const im=new Image();im.src=e.report;im.alt='';im.className='d-report';s.append(im);setTimeout(()=>body.append(s),0);}
     if(e.report){const a=dEl('a',null,t('viewReport'));a.href=e.report;a.target='_blank';a.rel='noopener';rows.push([t('dReport'),a]);}
     body.append(dKV(rows));
     if(e.squares){const s=dSection(t('dSquares'));s.append(dTable([t('dSquare'),t('dCount')],Object.entries(e.squares).map(([k,v])=>[slotLabel(k,e.layout||4),v==null?'–':String(v)])));body.append(s);}
@@ -1883,6 +1905,7 @@ function paintDetail(){
   if(e.type==='treat'){const b=dEl('button','btn',t('harvestProtein'));b.type='button';b.onclick=()=>openProtein(e.id);acts.append(b);}
   if(e.type==='protein'&&(e.tubes||[]).length){const b=dEl('button','btn',Object.keys(proteinConc(e.id)).length?t('editConc'):t('addConc'));b.type='button';
     b.onclick=()=>{const host=dEl('div');body.append(host);host.style.display='grid';host.style.gridTemplateColumns='0 minmax(0,1fr)';openBca(e,host);host.querySelector('input')?.scrollIntoView({block:'center'});};acts.append(b);}
+  {const pb=dEl('button','btn',t('pdf'));pb.type='button';pb.onclick=()=>printDetail();acts.prepend(pb);}
   const del=dEl('button','btn danger-btn',t('deleteEntry'));del.type='button';del.onclick=()=>{if(confirmTwice('d'+e.id)){addEvent({type:'delete',target:e.id});show(dBack);}};acts.append(del);
   body.append(acts);
 }
@@ -2004,7 +2027,8 @@ function paintChecklist(scr){const kind=CK_SCREEN[scr],box=$('ck_'+scr);if(!box)
   const row=document.createElement('div');row.className='ck-row';
   const clr=document.createElement('button');clr.type='button';clr.className='mini';clr.textContent=t('ckClear');clr.onclick=()=>{store.del(ckKey(kind));paintChecklist(scr);};
   const ed=document.createElement('button');ed.type='button';ed.className='mini';ed.textContent=t('ckEdit');ed.onclick=()=>editChecklist(scr);
-  row.append(clr,ed);box.append(row);box.open=wasOpen;}
+  const pdfb=document.createElement('button');pdfb.type='button';pdfb.className='mini';pdfb.textContent=t('pdf');pdfb.onclick=()=>printChecklist(kind);
+  row.append(clr,ed,pdfb);box.append(row);box.open=wasOpen;}
 function editChecklist(scr){const kind=CK_SCREEN[scr],box=$('ck_'+scr);if(box.querySelector('textarea'))return;
   const f=document.createElement('div');f.className='ck-edit';const ta=document.createElement('textarea');ta.rows=12;ta.value=ckText(kind).text;ta.setAttribute('aria-label',t('ckTitle'));
   const help=Object.assign(document.createElement('span'),{className:'ck-help',textContent:t('ckHelp')});
@@ -2073,6 +2097,45 @@ function openGrowthBox(){const host=$('cultList');if(host.querySelector('.gr-box
   host.prepend(f);f.querySelector('#grD').focus();}
 
 $('goGrowth').onclick=()=>openGrowthBox();
+/* ================= LAB PRINT: checklists, entries and the log as PDF ================= */
+Object.assign(I18N.th,{pdf:'PDF / พิมพ์',pdfHint:'ในหน้าพิมพ์ เลือก "บันทึกเป็น PDF" หรือสั่งพิมพ์ได้เลย',printedAt:d=>`พิมพ์เมื่อ ${d}`,
+  pdfAllCk:'PDF เช็กลิสต์ทั้งหมด',pdfLogTitle:'บันทึกการเลี้ยงเซลล์',pdfCkTitle:'เช็กลิสต์ & ขั้นตอน',reportImg:'รายงานการนับ'});
+Object.assign(I18N.en,{pdf:'PDF / print',pdfHint:'In the print dialog, choose "Save as PDF" or print it',printedAt:d=>`Printed ${d}`,
+  pdfAllCk:'PDF of all checklists',pdfLogTitle:'Cell culture log',pdfCkTitle:'Checklist & steps',reportImg:'Count report'});
+const printRoot=(()=>{const r=document.createElement('div');r.id='printRoot';r.hidden=true;document.body.append(r);return r;})();
+function printOut(title,sub,nodes,{hood=false}={}){
+  printRoot.innerHTML='';printRoot.className=hood?'hood':'';
+  const h=document.createElement('header');h.className='pr-head';
+  h.append(Object.assign(document.createElement('h1'),{textContent:title}));
+  const meta=[sub,me()?`${t('dOwner')}: ${me()}`:'',t('printedAt',niceDate(new Date()))].filter(Boolean).join(' · ');
+  h.append(Object.assign(document.createElement('p'),{textContent:meta}));printRoot.append(h);
+  for(const n of nodes)printRoot.append(n);
+  printRoot.hidden=false;document.title=title;toast(t('pdfHint'),false);
+  const imgs=[...printRoot.querySelectorAll('img')].filter(i=>!i.complete);
+  Promise.all(imgs.map(i=>new Promise(r=>{i.onload=i.onerror=r;setTimeout(r,4000);}))).then(()=>setTimeout(()=>window.print(),150));
+}
+window.addEventListener('afterprint',()=>{printRoot.hidden=true;printRoot.innerHTML='';document.title='Cell Lab';});
+const KIND_NAME=k=>t({count:'evCount',passage:'evPassage',treat:'evTreat',protein:'evProtein'}[k]||'evNote');
+function checklistNode(kind){const {text}=ckText(kind),sec=document.createElement('section');sec.className='pr-ck';
+  sec.append(Object.assign(document.createElement('h2'),{textContent:`${t('pdfCkTitle')} · ${KIND_NAME(kind)}`}));
+  for(const s of ckParse(text)){if(s.h)sec.append(Object.assign(document.createElement('h3'),{textContent:s.h}));
+    const ol=document.createElement('ol');s.items.forEach((it,i)=>{const li=document.createElement('li');li.append(Object.assign(document.createElement('span'),{className:'bx'}),Object.assign(document.createElement('span'),{className:'n',textContent:(i+1)+'.'}),Object.assign(document.createElement('span'),{textContent:it}));ol.append(li);});sec.append(ol);}
+  const ev=allEvents().filter(e=>e.type==='checklist'&&e.kind===kind).pop();
+  if(ev&&ev.photos&&ev.photos.length){const g=document.createElement('div');g.className='pr-photos';ev.photos.forEach(id=>{const im=new Image();im.src=photoUrl(id);g.append(im);});sec.append(g);}
+  return sec;}
+function printChecklist(kind){printOut(`${t('pdfCkTitle')} · ${KIND_NAME(kind)}`,'Hep-55.1C',[checklistNode(kind)],{hood:true});}
+function printAllChecklists(){printOut(t('pdfCkTitle'),'Hep-55.1C',['count','passage','treat','protein'].map(checklistNode),{hood:true});}
+function printDetail(){const e=evById(dId);if(!e)return;const c=$('dBody').cloneNode(true);
+  c.querySelectorAll('.d-acts,button.btn,.bca-box,.gr-box').forEach(x=>x.remove());
+  c.querySelectorAll('button.d-link').forEach(b=>{const s=document.createElement('div');s.className='d-link';s.innerHTML=b.innerHTML;b.replaceWith(s);});
+  c.querySelectorAll('a').forEach(a=>{const s=document.createElement('span');s.append(...a.childNodes);a.replaceWith(s);});
+  c.className='d-body pr-detail';printOut($('dTitle').textContent,niceDate(new Date(e.at)),[c]);}
+function printLog(){const c=$('logList').cloneNode(true);c.removeAttribute('id');c.querySelectorAll('.acts,.box').forEach(x=>x.remove());
+  c.querySelectorAll('a').forEach(a=>{const s=document.createElement('span');s.append(...a.childNodes);a.replaceWith(s);});
+  c.className='pr-log';const f=[...$('logFilters').querySelectorAll('button[aria-pressed="true"]')].map(b=>b.textContent).join(' · ');
+  printOut(t('pdfLogTitle'),f,[c]);}
+
+$('logPdf').onclick=()=>printLog();
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
   paintChecklists();paintMe();show('sHome');syncLab();setInterval(syncLab,60000);

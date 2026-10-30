@@ -87,6 +87,7 @@ The home screen also keeps a simple culture log:
 - **Growth prediction:** for vessels with a known seeding number, the incubator view estimates the current cell number and the day the vessel reaches your passage threshold (exponential growth after a lag, capped at a typical confluent number for that vessel). Set the doubling time, lag and threshold for your cells; the default 24 h is a placeholder. Vessels about to reach the threshold appear under To do.
 - **Checklists and steps:** passage, treatment, protein harvest and counting each show a tick-off list of what to prepare and the steps. Ticks reset every day; edit the list in the app and the new version is saved to the log.
 - **Several people, one log:** pick your name on the home screen and new entries are recorded under it. Each vessel in a passage can belong to someone, and the log can be filtered by person. Edit the `PEOPLE` list in `app.html` for your lab.
+- **PDF / print:** print any checklist (big tick boxes for reading at the hood), any entry's detail page, or the filtered log. Choose "Save as PDF" in the print dialog.
 - **Log:** everything by date, with filters, delete, and CSV export. Tap an entry to see all its details: plate map, groups, preparation, tubes, lysis mix, steps, photos and related entries.
 
 The log is stored on the server in `lab/events.jsonl`, one JSON entry per line; photos go to `lab/photos/`.
