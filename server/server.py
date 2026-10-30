@@ -15,6 +15,7 @@ Endpoints
   GET  /api/lab       the lab log: every count, passage, treatment, harvest, culture and compound
   POST /api/lab/photo?id=... store a photo for a note (GET /lab/photos/<id>.jpg)
   GET  /cal/<secret>.ics   lab log as an iCal feed (add to Google Calendar "From URL"; ?who=<name> for one person)
+  POST /api/ai/chat   lab assistant (OpenAI-compatible endpoint set in lab/ai.json)
   POST /api/lab/event add one lab-log event (idempotent by its "id", so offline phones can resend safely)
   GET  /sw.js, /manifest.webmanifest   let the page open and record entries without internet
 """
@@ -146,6 +147,103 @@ def ical_feed(who=None):
     L.append("END:VCALENDAR")
     return "\r\n".join(L) + "\r\n"
 
+# ---------- AI assistant (OpenAI-compatible endpoint, key stays on this computer) ----------
+AI_CFG = os.path.join(LAB, "ai.json")   # {"base_url": "...", "api_key": "...", "model": "..."}
+def ai_config():
+    if not os.path.exists(AI_CFG): return None
+    try:
+        c = json.load(open(AI_CFG))
+        return c if c.get("base_url") and c.get("api_key") and c.get("model") else None
+    except Exception: return None
+
+AI_TOOLS = [{"type": "function", "function": {
+    "name": "propose_entry",
+    "description": "Propose a lab-log entry (a record of work done, or a plan). The user reviews it and taps Save; nothing is saved without them.",
+    "parameters": {"type": "object", "properties": {
+        "kind": {"type": "string", "enum": ["note", "plan"], "description": "note = work already done; plan = future work"},
+        "heading": {"type": "string", "description": "short formal Thai title"},
+        "text": {"type": "string", "description": "formal Thai description, one item per line"},
+        "start": {"type": "string", "description": "local Bangkok time YYYY-MM-DDTHH:MM"},
+        "end": {"type": "string", "description": "optional local end time YYYY-MM-DDTHH:MM"},
+        "all_day": {"type": "boolean"},
+        "owner": {"type": "string", "description": "Dewey, Poohpha, or empty when shared"}},
+        "required": ["kind", "heading", "start"]}}}]
+
+def _bkk(iso):
+    from datetime import timezone, timedelta
+    try: return datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(timezone(timedelta(hours=7))).strftime("%Y-%m-%d %H:%M")
+    except Exception: return str(iso)
+
+def ai_context(who):
+    from datetime import timezone, timedelta
+    evs = lab_events(); gone = {e.get("target") for e in evs if e.get("type") == "delete"}
+    evs = [e for e in evs if e.get("id") not in gone and e.get("type") != "delete"]
+    lines, ck = [], {}
+    for e in sorted(evs, key=lambda e: str(e.get("at"))):
+        t = e.get("type")
+        if t == "checklist": ck[e.get("kind")] = e.get("text", ""); continue
+        d = {k: v for k, v in e.items() if k not in ("id", "by", "received", "photos", "edited", "cids", "source_cid", "source_cids", "text", "protocol", "lysis_mix")}
+        d["at"] = _bkk(e.get("at"))
+        if e.get("end_at"): d["end_at"] = _bkk(e["end_at"])
+        if e.get("harvest_at"): d["harvest_at"] = _bkk(e["harvest_at"])
+        if e.get("text"): d["text"] = e["text"][:600]
+        lines.append(json.dumps(d, ensure_ascii=False)[:1500])
+    now = datetime.now(timezone(timedelta(hours=7)))
+    sysmsg = f"""คุณคือผู้ช่วยประจำห้องปฏิบัติการ "Cell Lab" ของโครงงานศึกษาเซลล์ Hep-55.1C (มะเร็งตับของหนู) ผู้ทดลองสองคน: Dewey (Pinocembrin 0/50/100 µM) และ Poohpha (OGT inhibitor 0/12.5/25 µM)
+วันเวลาปัจจุบัน (กรุงเทพฯ): {now:%Y-%m-%d %H:%M} ({['จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','อาทิตย์'][now.weekday()]})
+ผู้ใช้ที่กำลังคุยด้วย: {who or 'ไม่ระบุ'}
+
+หลักการตอบ:
+- ตอบเป็นภาษาเดียวกับผู้ใช้ กระชับ อ่านง่าย ใช้หัวข้อหรือรายการเมื่อช่วยให้อ่านง่าย
+- เรื่องที่ทำไปแล้ว ให้ตอบจากบันทึกด้านล่างเท่านั้น ถ้าไม่มีในบันทึกให้บอกตรงๆ ว่าไม่มี ห้ามเดา
+- การคำนวณ (ปริมาตร ความเข้มข้น จำนวนเซลล์ เวลา) ให้แสดงสูตรและตัวเลขทีละขั้น
+- เมื่อผู้ใช้ขอให้บันทึกงานที่ทำ หรือวางแผน ให้เรียกเครื่องมือ propose_entry (ผู้ใช้จะตรวจและกดบันทึกเอง) ใช้ภาษาทางการแบบรายงานวิทยาศาสตร์ ถ้าข้อมูลไม่ครบ (เช่น เวลา) ให้ถามก่อน
+- ห้ามแต่งผลการทดลอง ตัวเลข หรือแหล่งอ้างอิงที่ไม่มีจริง เรื่องความปลอดภัยในแล็บให้แนะนำตามหลักทั่วไปและให้ยืนยันกับอาจารย์/เจ้าหน้าที่
+
+บันทึกทั้งหมด (JSON ทีละบรรทัด เวลาเป็นเวลากรุงเทพฯ):
+""" + "\n".join(lines[-200:])
+    if ck:
+        sysmsg += "\n\nขั้นตอนการปฏิบัติงานล่าสุด (รูปแบบ: บรรทัดละขั้น, # หัวข้อ, ! คำเตือน, > เคล็ดลับ):\n" + "\n\n".join(f"[{k}]\n{v}" for k, v in ck.items())
+    return sysmsg
+
+def _ai_post(cfg, payload):
+    import urllib.request
+    req = urllib.request.Request(cfg["base_url"].rstrip("/") + "/chat/completions", data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer " + cfg["api_key"]})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        return json.loads(r.read())
+
+def ai_chat(body, who):
+    cfg = ai_config()
+    if not cfg: raise ValueError("AI is not set up (lab/ai.json)")
+    hist = [m for m in body.get("messages", []) if m.get("role") in ("user", "assistant") and isinstance(m.get("content"), str)][-16:]
+    if not hist: raise ValueError("no message")
+    who = str(body.get("who") or "")[:40] or who
+    msgs = [{"role": "system", "content": ai_context(who)}] + [{"role": m["role"], "content": m["content"][:8000]} for m in hist]
+    base = {"model": cfg["model"], "temperature": 0.3}
+    try:
+        res = _ai_post(cfg, {**base, "messages": msgs, "tools": AI_TOOLS, "tool_choice": "auto"})
+    except Exception as e:
+        log("ai     tools call failed, retrying without tools:", repr(e)[:200])
+        res = _ai_post(cfg, {**base, "messages": msgs})
+    msg = (res.get("choices") or [{}])[0].get("message") or {}
+    proposals = []
+    calls = msg.get("tool_calls") or []
+    for c in calls:
+        try:
+            if c.get("function", {}).get("name") == "propose_entry":
+                proposals.append(json.loads(c["function"].get("arguments") or "{}"))
+        except Exception: pass
+    text = msg.get("content") or ""
+    if calls and not text.strip():
+        follow = msgs + [{"role": "assistant", "content": "", "tool_calls": calls}] + [
+            {"role": "tool", "tool_call_id": c.get("id", ""), "content": "เสนอให้ผู้ใช้แล้ว รอผู้ใช้กดบันทึก"} for c in calls]
+        try:
+            r2 = _ai_post(cfg, {**base, "messages": follow})
+            text = ((r2.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+        except Exception: text = ""
+    return {"reply": text.strip(), "proposals": proposals[:5], "model": cfg["model"]}
+
 def lab_add(ev, who):
     """Append one event; an event whose id is already stored is ignored (safe to resend)."""
     if not isinstance(ev, dict) or ev.get("type") not in EVENT_TYPES: raise ValueError("unknown event type")
@@ -223,6 +321,7 @@ class H(BaseHTTPRequestHandler):
         if p == "/sw.js": return self.send(200, _page("sw.js"), "text/javascript; charset=utf-8")
         if p == "/manifest.webmanifest": return self.send(200, _page("manifest.webmanifest"), "application/manifest+json")
         if p == "/api/lab": return self.send(200, {"events": lab_events(), "now": datetime.now().astimezone().isoformat(timespec="seconds")})
+        if p == "/api/ai/status": return self.send(200, {"ready": bool(ai_config()), "model": (ai_config() or {}).get("model")})
         if p == "/api/cal-link": return self.send(200, {"path": f"cal/{cal_token()}.ics"})
         if p.startswith("/cal/") and p.endswith(".ics"):
             tok = p[len("/cal/"):-len(".ics")]
@@ -259,6 +358,13 @@ class H(BaseHTTPRequestHandler):
             if p == "/api/count": return self.count(args)
             if p == "/api/training": return self.training(args)
             if p == "/api/runs": return self.save_run()
+            if p == "/api/ai/chat":
+                try: out = ai_chat(json.loads(self.body()), self.who())
+                except ValueError: raise
+                except Exception as e:
+                    log("ai     error", repr(e)[:300]); return self.send(502, {"error": "AI service error"})
+                log(f"ai     {self.who():30s} {len(out['reply'])} chars, {len(out['proposals'])} proposals")
+                return self.send(200, out)
             if p == "/api/lab/photo":
                 new = photo_add(args.get("id", ""), self.body())
                 if new: log(f"photo  {self.who():30s} {args.get('id')}.jpg")

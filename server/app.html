@@ -409,6 +409,26 @@ body.sm-open{overflow:hidden}
 .ic-box{gap:10px}.ic-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:6px;align-items:center}.ic-l{font-size:13px;font-weight:600}
 .ic-row input{font-size:12px;min-height:40px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#FAFBFD;min-width:0}
 .ic-steps{margin:4px 0 0;font-size:13px;line-height:1.6;color:var(--ink2);white-space:pre-line}
+.ai-bar{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:0 16px;border-radius:16px;border:1px solid #CFD8F2;background:linear-gradient(#fff,#F6F8FE);color:#2E4FB3;font:inherit;font-size:15px;font-weight:600;cursor:pointer;text-align:left}
+.ai-bar span{color:#5B6478;font-weight:500}
+.ai-list{flex:1;display:flex;flex-direction:column;gap:10px;padding:8px 16px 16px;overflow:auto}
+.ai-msg{max-width:88%;padding:10px 14px;border-radius:16px;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.ai-msg.user{align-self:flex-end;background:#2E4FB3;color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
+.ai-msg.assistant{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
+.ai-msg.busy{color:var(--muted);font-style:italic}
+.ai-msg p{margin:0 0 8px}.ai-msg p:last-child{margin-bottom:0}.ai-msg ul,.ai-msg ol{margin:4px 0 8px;padding-left:20px}.ai-msg h4{margin:8px 0 4px;font-size:15px}
+.ai-msg code{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.9em;background:#EEF1F6;padding:1px 4px;border-radius:5px}.ai-msg pre{background:#10182B;color:#E8ECF3;padding:10px;border-radius:10px;overflow:auto}.ai-msg pre code{background:none;color:inherit}
+.md-tw{overflow-x:auto;margin:6px 0}.ai-msg table{border-collapse:collapse;font-size:13px}.ai-msg th,.ai-msg td{border:1px solid var(--line);padding:4px 8px;text-align:left}.ai-msg th{background:#F4F6FA}
+.ai-quick{display:flex;flex-direction:column;gap:8px;align-self:stretch}.ai-quick button{font:inherit;font-size:14px;text-align:left;padding:10px 14px;min-height:44px;border-radius:14px;border:1px solid #CFD8F2;background:#F6F8FE;color:#1F3A8A;cursor:pointer}
+.ai-prop{margin-top:10px;display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:12px;background:#FFF8EC;border:1px solid #F5DDB3}
+.ai-prop.saved{background:#ECF8F3;border-color:#BFE3D6}.ai-pl{font-size:11.5px;font-weight:700;color:#8A5300}.ai-prop.saved .ai-pl{color:#0B5A4F}
+.ai-prop b{font-size:14.5px}.ai-pw{font-size:12.5px;color:var(--muted)}.ai-prop p{margin:4px 0 6px;font-size:13.5px;white-space:pre-wrap}
+.ai-prop .btn{min-height:44px}
+.ai-foot{padding-top:10px}.ai-in{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:8px;align-items:end}
+.ai-in textarea{font:inherit;font-size:15px;line-height:1.45;padding:12px 14px;border-radius:16px;border:1px solid var(--line);resize:none;max-height:160px;min-height:48px;field-sizing:content}
+.ai-in .btn{min-height:48px;width:52px;padding:0;display:flex;align-items:center;justify-content:center}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#sAI:not([hidden]){display:flex;flex-direction:column;min-height:100vh}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -450,6 +470,7 @@ body.sm-open{overflow:hidden}
       <div class="sec-h"><h2 id="hDue" data-i18n="dueTitle"></h2></div>
       <div id="dueList" style="display:flex;flex-direction:column;gap:8px"></div>
     </section>
+    <button type="button" class="ai-bar" id="goAI"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span data-i18n="aiAsk"></span></button>
     <div class="actions">
       <button type="button" class="action primary" id="goCamera"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actCamera"></b><span data-i18n="actCameraSub"></span></span></button>
       <button type="button" class="action" id="goManual"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2E4FB3" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actManual"></b><span data-i18n="actManualSub"></span></span></button>
@@ -785,6 +806,14 @@ body.sm-open{overflow:hidden}
   </div>
 </section>
 
+<section class="screen" id="sAI" hidden aria-labelledby="hAI">
+  <header class="top"><button type="button" class="icon-btn" data-back="sHome" data-i18n-aria="backHome"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title-col"><b id="hAI" data-i18n="aiTitle"></b><span id="aiSub"></span></div><button type="button" class="mini" id="aiClear" data-i18n="aiClear"></button></header>
+  <div class="ai-list" id="aiList" aria-live="polite"></div>
+  <footer class="foot ai-foot"><div class="ai-in"><label for="aiInput" class="sr-only" data-i18n="aiTitle"></label><textarea id="aiInput" rows="1" data-i18n-ph="aiPh"></textarea>
+    <button type="button" class="btn primary" id="aiSendBtn" data-i18n-aria="aiSend"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button></div></footer>
+</section>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </div>
 
@@ -897,7 +926,7 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail','sGuide','sCal'];
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail','sGuide','sCal','sAI'];
 function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
@@ -2550,6 +2579,69 @@ async function openIcal(){const host=$('calIcal');if(!host.hidden){host.hidden=t
     row.append(inp,b);host.append(row);}
   host.append(Object.assign(document.createElement('p'),{className:'ic-steps',textContent:t('icSteps')}));}
 $('calIcalBtn').onclick=()=>openIcal();
+
+/* ================= LAB AI: assistant chat ================= */
+Object.assign(I18N.th,{aiTitle:'ผู้ช่วย AI',aiAsk:'ถามผู้ช่วย AI…',aiPh:'ถามเรื่องการทดลอง ให้คำนวณ หรือให้ช่วยบันทึก',aiSend:'ส่ง',aiThinking:'กำลังคิด…',aiClear:'เริ่มใหม่',
+  aiHello:'สวัสดี ถามเรื่องที่บันทึกไว้ ให้ช่วยคำนวณ วางแผน หรือเล่าว่าวันนี้ทำอะไร แล้วให้ช่วยเรียบเรียงเป็นบันทึกทางการได้',
+  aiQ1:'วันนี้กับพรุ่งนี้ต้องทำอะไรบ้าง',aiQ2:'สรุปสิ่งที่ทำสัปดาห์นี้แบบทางการ',aiQ3:'เตรียม OGT inhibitor 12.5 และ 25 µM ปริมาตร 7 mL จาก stock 20 mM ต้องใช้เท่าไร',aiQ4:'ช่วยบันทึกว่าวันนี้ทำอะไร',
+  aiErr:'ติดต่อผู้ช่วยไม่ได้ ลองใหม่อีกครั้ง',aiOff:'ยังไม่ได้ตั้งค่า AI บน server',aiProposal:'ร่างบันทึก · ตรวจแล้วกดบันทึก',aiSave:'บันทึก',aiSkip:'ข้าม',aiSaved:'บันทึกแล้ว',aiPlan:'แผน',aiNote:'บันทึก'});
+Object.assign(I18N.en,{aiTitle:'AI assistant',aiAsk:'Ask the AI assistant…',aiPh:'Ask about your experiments, calculations, or have it draft a log entry',aiSend:'Send',aiThinking:'Thinking…',aiClear:'New chat',
+  aiHello:'Hi. Ask about anything in the log, get help with calculations and plans, or tell me what you did today and I’ll draft a formal entry.',
+  aiQ1:'What do I need to do today and tomorrow?',aiQ2:'Summarise this week’s work formally',aiQ3:'How much 20 mM OGT inhibitor stock for 12.5 and 25 µM in 7 mL?',aiQ4:'Help me record what I did today',
+  aiErr:'Couldn’t reach the assistant. Try again',aiOff:'AI isn’t set up on the server yet',aiProposal:'Draft entry · check it, then save',aiSave:'Save',aiSkip:'Skip',aiSaved:'Saved',aiPlan:'Plan',aiNote:'Entry'});
+function md(src){const lines=String(src||'').replace(/\r/g,'').split('\n');let html='',list=null,i=0;
+  const inl=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>');
+  const close=()=>{if(list){html+=`</${list}>`;list=null;}};
+  while(i<lines.length){const l=lines[i];
+    if(/^```/.test(l)){close();let code='';i++;while(i<lines.length&&!/^```/.test(lines[i]))code+=lines[i++]+'\n';i++;html+=`<pre><code>${esc(code)}</code></pre>`;continue;}
+    if(/^\s*\|.*\|\s*$/.test(l)&&i+1<lines.length&&/^\s*\|?\s*:?-{2,}/.test(lines[i+1])){close();const row=x=>x.trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+      let t='<div class="md-tw"><table><thead><tr>'+row(l).map(c=>`<th>${inl(c)}</th>`).join('')+'</tr></thead><tbody>';i+=2;
+      while(i<lines.length&&/^\s*\|.*\|\s*$/.test(lines[i])){t+='<tr>'+row(lines[i]).map(c=>`<td>${inl(c)}</td>`).join('')+'</tr>';i++;}html+=t+'</tbody></table></div>';continue;}
+    let m;
+    if((m=l.match(/^(#{1,4})\s+(.*)/))){close();html+=`<h4>${inl(m[2])}</h4>`;}
+    else if((m=l.match(/^\s*[-*•]\s+(.*)/))){if(list!=='ul'){close();html+='<ul>';list='ul';}html+=`<li>${inl(m[1])}</li>`;}
+    else if((m=l.match(/^\s*\d+[.)]\s+(.*)/))){if(list!=='ol'){close();html+='<ol>';list='ol';}html+=`<li>${inl(m[1])}</li>`;}
+    else if(!l.trim()){close();}
+    else{close();html+=`<p>${inl(l)}</p>`;}
+    i++;}
+  close();return html;}
+const AI={hist:store.get('cc.ai.hist',[]),busy:false,ready:null,model:''};
+async function aiStatus(){try{const r=await api('api/ai/status');if(r.ok){const j=await r.json();AI.ready=j.ready;AI.model=j.model||'';}}catch(e){AI.ready=null;}
+  $('aiSub').textContent=AI.ready===false?t('aiOff'):AI.model;}
+function openAI(prefill){paintAI();show('sAI');aiStatus();if(prefill){$('aiInput').value=prefill;}setTimeout(()=>{$('aiInput').focus();const l=$('aiList');l.scrollTop=l.scrollHeight;window.scrollTo(0,document.body.scrollHeight);},50);}
+function aiBubble(m,idx){const d=document.createElement('div');d.className='ai-msg '+m.role;
+  if(m.role==='user')d.textContent=m.content;else d.innerHTML=md(m.content);
+  for(const [j,p] of (m.proposals||[]).entries()){if(p.state==='skip')continue;const c=document.createElement('div');c.className='ai-prop'+(p.state==='saved'?' saved':'');
+    const when=p.all_day?`${p.start?.slice(0,10)} · ${t('allDay')}`:`${(p.start||'').replace('T',' ')}${p.end?'–'+p.end.slice(11):''}`;
+    c.innerHTML=`<span class="ai-pl"></span><b></b><span class="ai-pw"></span><p></p><div class="row2"><button type="button" class="btn"></button><button type="button" class="btn primary"></button></div>`;
+    c.querySelector('.ai-pl').textContent=`${p.kind==='plan'?t('aiPlan'):t('aiNote')} · ${t('aiProposal')}`;c.querySelector('b').textContent=p.heading||'';
+    c.querySelector('.ai-pw').textContent=[when,p.owner||t('shared')].filter(Boolean).join(' · ');c.querySelector('p').textContent=p.text||'';
+    const [sk,sv]=c.querySelectorAll('button');sk.textContent=t('aiSkip');sv.textContent=p.state==='saved'?'✓ '+t('aiSaved'):t('aiSave');sv.disabled=p.state==='saved';sk.hidden=p.state==='saved';
+    sk.onclick=()=>{p.state='skip';store.set('cc.ai.hist',AI.hist);paintAI();};
+    sv.onclick=()=>{const st=new Date(p.all_day?(p.start||'').slice(0,10)+'T00:00':p.start);if(!isFinite(st)){toast(t('aiErr'),true);return;}
+      const en=p.end?new Date(p.end):null;
+      addEvent({type:'note',heading:p.heading,title:p.heading,text:p.text||'',at:st.toISOString(),end_at:en&&isFinite(en)?en.toISOString():null,
+        all_day:!!p.all_day,planned:p.kind==='plan',owner:p.owner||null,kind:p.kind==='plan'?'plan':'session'});
+      p.state='saved';store.set('cc.ai.hist',AI.hist);paintAI();};
+    d.append(c);}
+  return d;}
+function paintAI(){const l=$('aiList');l.innerHTML='';
+  if(!AI.hist.length){const h=document.createElement('div');h.className='ai-msg assistant';h.innerHTML=md(t('aiHello'));l.append(h);
+    const q=document.createElement('div');q.className='ai-quick';for(const k of ['aiQ1','aiQ2','aiQ3','aiQ4']){const b=document.createElement('button');b.type='button';b.textContent=t(k);b.onclick=()=>aiSend(t(k));q.append(b);}l.append(q);}
+  AI.hist.forEach((m,i)=>l.append(aiBubble(m,i)));
+  if(AI.busy){const b=document.createElement('div');b.className='ai-msg assistant busy';b.textContent=t('aiThinking');l.append(b);}
+  l.scrollTop=l.scrollHeight;}
+async function aiSend(text){text=String(text||$('aiInput').value).trim();if(!text||AI.busy)return;$('aiInput').value='';
+  AI.hist.push({role:'user',content:text});AI.busy=true;paintAI();
+  try{const r=await api('api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({who:me(),messages:AI.hist.map(m=>({role:m.role,content:m.content}))})});
+    if(!r.ok)throw new Error(r.status===400?t('aiOff'):t('aiErr'));const j=await r.json();
+    AI.hist.push({role:'assistant',content:j.reply||(j.proposals?.length?'':'…'),proposals:j.proposals||[]});}
+  catch(e){AI.hist.push({role:'assistant',content:'⚠️ '+(e.message||t('aiErr'))});}
+  AI.busy=false;AI.hist=AI.hist.slice(-40);store.set('cc.ai.hist',AI.hist);paintAI();}
+$('aiSendBtn').onclick=()=>aiSend();
+$('aiInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();aiSend();}};
+$('aiClear').onclick=()=>{AI.hist=[];store.set('cc.ai.hist',[]);paintAI();};
+$('goAI').onclick=()=>openAI();
 
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
