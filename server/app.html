@@ -499,6 +499,9 @@ body.sm-open{overflow:hidden}
   .sheet{align-items:center}.sheet-in{border-radius:22px}
 }
 @media (min-width:700px) and (max-width:1023px){body.wide .app{max-width:900px}body.wide .hm-grid{display:grid;grid-template-columns:1fr 1fr;align-items:start}body.wide .hm-col:last-child{grid-column:1/-1}}
+.ai-msg .math{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.92em}.ai-msg .math.done{font-family:inherit;font-size:1.05em}
+.ai-msg .math.disp{display:block;overflow-x:auto;overflow-y:hidden;margin:8px 0;padding:4px 0;text-align:center}
+.ai-msg .katex-display{margin:0}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -2713,7 +2716,21 @@ Object.assign(I18N.en,{aiTitle:'AI assistant',aiAsk:'Ask the AI assistant…',ai
   aiHello:'Hi. Ask about anything in the log, get help with calculations and plans, or tell me what you did today and I’ll draft a formal entry.',
   aiQ1:'What do I need to do today and tomorrow?',aiQ2:'Summarise this week’s work formally',aiQ3:'How much 20 mM OGT inhibitor stock for 12.5 and 25 µM in 7 mL?',aiQ4:'Help me record what I did today',
   aiErr:'Couldn’t reach the assistant. Try again',aiOff:'AI isn’t set up on the server yet',aiProposal:'Draft entry · check it, then save',aiSave:'Save',aiSkip:'Skip',aiSaved:'Saved',aiPlan:'Plan',aiNote:'Entry'});
-function md(src){const lines=String(src||'').replace(/\r/g,'').split('\n');let html='',list=null,i=0;
+const MATH_RE=/\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([\s\S]+?)\\\)|(?<![\\$\w])\$(?!\s)([^$\n]+?)(?<!\s)\$(?![\w$])/g;
+function mdMath(src){const math=[];const parts=String(src||'').split(/(```[\s\S]*?```)/g);
+  const out=parts.map(p=>p.startsWith('```')?p:p.replace(MATH_RE,(m,a,b,c,d)=>{const disp=a!==undefined||b!==undefined;math.push({tex:(a??b??c??d).trim(),disp});return `\u0001M${math.length-1}\u0001`;})).join('');
+  let html=md0(out);
+  html=html.replace(/\u0001M(\d+)\u0001/g,(m,i)=>{const x=math[+i];return `<span class="math${x.disp?' disp':''}" data-tex="${esc(x.tex)}">${esc(x.tex)}</span>`;});
+  return html;}
+function md(src){return mdMath(src);}
+let katexP=null;
+function loadKatex(){if(window.katex)return Promise.resolve(window.katex);if(katexP)return katexP;
+  katexP=new Promise((res,rej)=>{const l=document.createElement('link');l.rel='stylesheet';l.href='vendor/katex/katex.min.css';document.head.append(l);
+    const sc=document.createElement('script');sc.src='vendor/katex/katex.min.js';sc.onload=()=>res(window.katex);sc.onerror=()=>{katexP=null;rej();};document.head.append(sc);});
+  return katexP;}
+function renderMath(root){const els=[...root.querySelectorAll('.math:not(.done)')];if(!els.length)return;
+  loadKatex().then(k=>{for(const el of els){try{k.render(el.dataset.tex,el,{displayMode:el.classList.contains('disp'),throwOnError:false,strict:false});el.classList.add('done');}catch(e){}}}).catch(()=>{});}
+function md0(src){const lines=String(src||'').replace(/\r/g,'').split('\n');let html='',list=null,i=0;
   const inl=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>');
   const close=()=>{if(list){html+=`</${list}>`;list=null;}};
   while(i<lines.length){const l=lines[i];
@@ -2734,7 +2751,7 @@ async function aiStatus(){try{const r=await api('api/ai/status');if(r.ok){const 
   $('aiSub').textContent=AI.ready===false?t('aiOff'):AI.model;}
 function openAI(prefill){paintAI();show('sAI');aiStatus();if(prefill){$('aiInput').value=prefill;}setTimeout(()=>{$('aiInput').focus();const l=$('aiList');l.scrollTop=l.scrollHeight;window.scrollTo(0,document.body.scrollHeight);},50);}
 function aiBubble(m,idx){const d=document.createElement('div');d.className='ai-msg '+m.role;
-  if(m.role==='user')d.textContent=m.content;else d.innerHTML=md(m.content);
+  if(m.role==='user')d.textContent=m.content;else d.innerHTML=mdMath(m.content);
   for(const [j,p] of (m.proposals||[]).entries()){if(p.state==='skip')continue;const c=document.createElement('div');c.className='ai-prop'+(p.state==='saved'?' saved':'');
     const when=p.all_day?`${p.start?.slice(0,10)} · ${t('allDay')}`:`${(p.start||'').replace('T',' ')}${p.end?'–'+p.end.slice(11):''}`;
     c.innerHTML=`<span class="ai-pl"></span><b></b><span class="ai-pw"></span><p></p><div class="row2"><button type="button" class="btn"></button><button type="button" class="btn primary"></button></div>`;
@@ -2753,6 +2770,7 @@ function paintAI(){const l=$('aiList');l.innerHTML='';
   if(!AI.hist.length){const h=document.createElement('div');h.className='ai-msg assistant';h.innerHTML=md(t('aiHello'));l.append(h);
     const q=document.createElement('div');q.className='ai-quick';for(const k of ['aiQ1','aiQ2','aiQ3','aiQ4']){const b=document.createElement('button');b.type='button';b.textContent=t(k);b.onclick=()=>aiSend(t(k));q.append(b);}l.append(q);}
   AI.hist.forEach((m,i)=>l.append(aiBubble(m,i)));
+  renderMath(l);
   if(AI.busy){const b=document.createElement('div');b.className='ai-msg assistant busy';b.textContent=t('aiThinking');l.append(b);}
   l.scrollTop=l.scrollHeight;}
 async function aiSend(text){text=String(text||$('aiInput').value).trim();if(!text||AI.busy)return;$('aiInput').value='';

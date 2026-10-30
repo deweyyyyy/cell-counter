@@ -197,6 +197,7 @@ def ai_context(who):
 - ตอบเป็นภาษาเดียวกับผู้ใช้ กระชับ อ่านง่าย ใช้หัวข้อหรือรายการเมื่อช่วยให้อ่านง่าย
 - เรื่องที่ทำไปแล้ว ให้ตอบจากบันทึกด้านล่างเท่านั้น ถ้าไม่มีในบันทึกให้บอกตรงๆ ว่าไม่มี ห้ามเดา
 - การคำนวณ (ปริมาตร ความเข้มข้น จำนวนเซลล์ เวลา) ให้แสดงสูตรและตัวเลขทีละขั้น
+- เขียนสูตรและสมการด้วย LaTeX: แบบในบรรทัดใช้ \\( ... \\) แบบแยกบรรทัดใช้ $$ ... $$ (เช่น $$V_1 = \\frac{{C_2 V_2}}{{C_1}}$$) ใส่หน่วยด้วย \\text{{}} เช่น \\text{{µL}} ห้ามใช้ $ เดี่ยวกับตัวเลขเงิน
 - เมื่อผู้ใช้ขอให้บันทึกงานที่ทำ หรือวางแผน ให้เรียกเครื่องมือ propose_entry (ผู้ใช้จะตรวจและกดบันทึกเอง) ใช้ภาษาทางการแบบรายงานวิทยาศาสตร์ ถ้าข้อมูลไม่ครบ (เช่น เวลา) ให้ถามก่อน
 - ห้ามแต่งผลการทดลอง ตัวเลข หรือแหล่งอ้างอิงที่ไม่มีจริง เรื่องความปลอดภัยในแล็บให้แนะนำตามหลักทั่วไปและให้ยืนยันกับอาจารย์/เจ้าหน้าที่
 
@@ -327,6 +328,11 @@ class H(BaseHTTPRequestHandler):
         if p == "/sw.js": return self.send(200, _page("sw.js"), "text/javascript; charset=utf-8")
         if p == "/manifest.webmanifest": return self.send(200, _page("manifest.webmanifest"), "application/manifest+json")
         if p == "/api/lab": return self.send(200, {"events": lab_events(), "now": datetime.now().astimezone().isoformat(timespec="seconds")})
+        if p.startswith("/vendor/"):
+            base = os.path.realpath(os.path.join(HERE, "vendor")); full = os.path.realpath(os.path.join(HERE, p.lstrip("/")))
+            ctype = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".woff2": "font/woff2"}.get(os.path.splitext(full)[1].lower())
+            if full.startswith(base + os.sep) and ctype and os.path.isfile(full): return self.send(200, open(full, "rb").read(), ctype)
+            return self.send(404, {"error": "not found"})
         if p == "/api/ai/status": return self.send(200, {"ready": bool(ai_config()), "model": (ai_config() or {}).get("model")})
         if p == "/api/cal-link": return self.send(200, {"path": f"cal/{cal_token()}.ics"})
         if p.startswith("/cal/") and p.endswith(".ics"):

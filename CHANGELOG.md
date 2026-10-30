@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- AI chat renders LaTeX formulas with KaTeX, served from the app itself (`server/vendor/katex`, MIT) so it works without a CDN.
+
 ## v0.4.0 — 2026-10-29
 
 - **Lab log** on a new home screen: hand-entered counts, sub-passage with pipetting volumes per well/dish/flask, treatments (compound library, multi-compound groups, stock µL per group, matched vehicle %, plate map, harvest timer), culture list, full log with filters and CSV export.
