@@ -23,6 +23,9 @@
 - PDF export waits for every photo to load before printing.
 - Calendar view with per-person filter, treatment spans, harvest times and predicted passages.
 - Notes can have an end time (shown as a time range and duration) and a data table.
+- Planned and all-day entries.
+- Full lab report PDF: cover, timeline, entry details with photos, plans, protocol appendix.
+- Default protocols rewritten in formal Thai.
 
 ## v0.3.0 — 2026-10-27
 
