@@ -34,7 +34,7 @@ FILE_LOCK = threading.Lock()
 LAB = os.path.join(HERE, "lab"); os.makedirs(LAB, exist_ok=True)
 LAB_LOG = os.path.join(LAB, "events.jsonl")
 LAB_LOCK = threading.Lock()
-EVENT_TYPES = {"count", "passage", "treat", "harvest", "culture", "compound", "note", "discard", "delete", "protein", "bca", "checklist"}
+EVENT_TYPES = {"count", "passage", "treat", "harvest", "culture", "compound", "note", "discard", "delete", "protein", "bca", "checklist", "growth"}
 PHOTOS = os.path.join(LAB, "photos")
 PHOTO_ID = re.compile(r"[A-Za-z0-9_-]{6,64}")
 

@@ -16,6 +16,8 @@
 - Plate maps fill column by column (1A, 1B, 2A, …) and well positions are saved with each group.
 - People: entries record who did them; passage vessels can belong to a person; log filter and badges by person.
 - Easier-to-read log cards and detail pages (one group, tube or note per line).
+- Growth prediction in the incubator view, with editable doubling time, lag and passage threshold; passage reminders under To do.
+- A passage can take several source vessels.
 
 ## v0.3.0 — 2026-10-27
 

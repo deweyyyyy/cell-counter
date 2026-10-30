@@ -299,6 +299,11 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .who{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#EEF1F4;color:#3A4358;vertical-align:middle;white-space:nowrap}
 .ev .hd{align-items:flex-start}.ev .hd .who{margin-left:6px;flex:none}.ev .hd b{flex:0 1 auto}.ev .hd .tm{margin-left:auto}
 .f-sep{width:100%;height:0}
+.gr{display:flex;flex-direction:column;gap:6px}.gr.muted{font-size:12px;color:var(--muted)}
+.gr-bar{position:relative;height:8px;border-radius:999px;background:#E8ECF3;overflow:visible}
+.gr-bar span{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#7E9BE8}.gr-bar span.hot{background:#E0803A}
+.gr-bar i{position:absolute;top:-3px;bottom:-3px;width:2px;background:#10182B;opacity:.45}
+.gr-t{font-size:12.5px;color:var(--ink2);white-space:pre-line;line-height:1.5}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -349,7 +354,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <button type="button" class="action" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actNote"></b><span data-i18n="actNoteSub"></span></span></button>
     </div>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
-      <div class="sec-h"><h2 id="hCult" data-i18n="incTitle"></h2><button type="button" id="goAddCulture" data-i18n="addCulture"></button></div>
+      <div class="sec-h"><h2 id="hCult" data-i18n="incTitle"></h2><span style="display:flex;gap:12px"><button type="button" id="goGrowth" data-i18n="grSettings"></button><button type="button" id="goAddCulture" data-i18n="addCulture"></button></span></div>
       <div class="list" id="cultList"></div>
     </section>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hRecentLab">
@@ -1259,8 +1264,8 @@ function cultures(){
   const c=new Map();
   for(const e of allEvents()){
     if(e.type==='culture'&&e.culture) c.set(e.culture.cid,{...e.culture,created:e.at,status:'active',src:e.id,owner:e.culture.owner||e.owner||''});
-    if(e.type==='passage'){ if(e.source_cid&&c.has(e.source_cid)) c.get(e.source_cid).status='passaged';
-      (e.outputs||[]).forEach(o=>c.set(o.cid,{cid:o.cid,line:e.line,passage:e.to_passage,vessel:o.vessel,qty:o.qty,purpose:o.purpose,created:e.at,status:'active',src:e.id,owner:o.owner||e.owner||''}));}
+    if(e.type==='passage'){ for(const s of [e.source_cid,...(e.source_cids||[])]) if(s&&c.has(s)) c.get(s).status='passaged';
+      (e.outputs||[]).forEach(o=>c.set(o.cid,{cid:o.cid,line:e.line,passage:e.to_passage,vessel:o.vessel,qty:o.qty,purpose:o.purpose,cells:o.cells_per_unit,created:e.at,status:'active',src:e.id,owner:o.owner||e.owner||''}));}
     if(e.type==='treat') (e.cids||[]).forEach(id=>{if(c.has(id)){c.get(id).status='treating';c.get(id).treat=e.id;}});
     if(e.type==='harvest'){for(const x of c.values()) if(x.treat===e.treat_id) x.status='harvested';}
     if(e.type==='discard'&&c.has(e.cid)) c.get(e.cid).status='discarded';
@@ -1288,7 +1293,11 @@ function paintHome(){
   paintSync();
   // to do
   const now=Date.now(),hv=e=>e.harvest_at?new Date(e.harvest_at).getTime():Infinity,open=openTreats().sort((a,b)=>hv(a)-hv(b));
-  $('dueSec').hidden=!open.length; const dl=$('dueList'); dl.innerHTML='';
+  const soon=soonToPassage();$('dueSec').hidden=!open.length&&!soon.length; const dl=$('dueList'); dl.innerHTML='';
+  for(const {c,p} of soon){const row=document.createElement('div');row.className='due soon';
+    row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg><span class="tx"><b></b></span><button type="button">Passage</button>`;
+    row.querySelector('b').textContent=t('grDue',`${c.line} P${c.passage} · ${vName(c.vessel)}${c.owner?' · '+c.owner:''}`,shortDate(p.at));
+    row.querySelector('button').onclick=()=>openPassage({source:c.cid});dl.append(row);}
   const rs=store.get(KEY,null);
   if(rs&&rs.R&&Object.keys(rs.R.slots||{}).length&&!R){$('dueSec').hidden=false;const row=document.createElement('div');row.className='due soon';
     row.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg><span class="tx"><b></b></span><button type="button"></button>`;
@@ -1905,6 +1914,7 @@ function paintIncubator(now){
     top.querySelector('b').textContent=`${c.line} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
     top.querySelector('.tx span').textContent=t('incSeeded',shortDate(new Date(c.created)))+(trs.length?` · ${t('incTreat')}`:'');
     top.querySelector('.side').textContent=t('dayN',days);if(c.owner)top.querySelector('.tx b').append(' ',whoBadge(c.owner));card.append(top);
+    if(!trs.length&&c.purpose!=='treat')card.append(growthRow(c));
     trs.forEach((tr,i)=>{const b=document.createElement('div');b.className='inc-treat';
       const h=document.createElement('div');h.className='inc-th';
       h.append(Object.assign(document.createElement('b'),{textContent:tr.title}),
@@ -2021,6 +2031,48 @@ function paintMe(){const seg=$('meSeg');if(!seg)return;seg.innerHTML='';const cu
 function ownerSelect(sel,value){sel.innerHTML='';for(const [v,l] of [['',t('shared')],...PEOPLE.map(p=>[p.name,p.name])]){const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);}sel.value=value||'';}
 let logWho='all';
 
+/* ================= LAB GROWTH: predicted cell number and passage day ================= */
+Object.assign(I18N.th,{
+  grNow:(n,p)=>`คาดว่าตอนนี้ ~${n} เซลล์ · ~${p}% ของเต็ม`,grReach:(p,d)=>`ถึง ${p}% ราว ${d}`,grPast:p=>`น่าจะเกิน ${p}% แล้ว · ควร passage`,
+  grNoN0:'ไม่รู้จำนวนเซลล์ตอนลง จึงคาดการณ์ไม่ได้',grSettings:'ค่าการเติบโต',grDoubling:'Doubling time (ชม.)',grLag:'ช่วงปรับตัวหลังลงเซลล์ (ชม.)',
+  grPassAt:'passage เมื่อถึง (%)',grSave:'บันทึกค่า',grDefault:'ค่าตั้งต้น 24 ชม. ยังไม่ได้วัดจริง แก้ให้ตรงกับเซลล์ของคุณ',grSaved:'ค่าที่ตั้งไว้',
+  grDue:(n,d)=>`ใกล้ passage · ${n} · ถึงเกณฑ์ราว ${d}`,grEst:'ค่าประมาณ'
+});
+Object.assign(I18N.en,{
+  grNow:(n,p)=>`Now ~${n} cells · ~${p}% of confluent`,grReach:(p,d)=>`Reaches ${p}% around ${d}`,grPast:p=>`Probably past ${p}% · time to passage`,
+  grNoN0:'Seeding number unknown, so no prediction',grSettings:'Growth settings',grDoubling:'Doubling time (h)',grLag:'Lag after seeding (h)',
+  grPassAt:'Passage at (%)',grSave:'Save',grDefault:'Default 24 h is a placeholder, not measured. Set it for your cells',grSaved:'Current values',
+  grDue:(n,d)=>`Passage soon · ${n} · reaches the threshold around ${d}`,grEst:'estimate'
+});
+/* rough cells per well/dish/flask at 100% confluence (reference values for a typical adherent line) */
+const CAP={'6-well':1.2e6,'12-well':0.5e6,'24-well':0.24e6,'96-well':0.04e6,'dish-35':1.2e6,'dish-60':3.2e6,'dish-100':8.8e6,'T25':2.8e6,'T75':8.4e6,'T175':1.86e7};
+function growthSet(line){const ev=allEvents().filter(e=>e.type==='growth'&&(!e.line||e.line===line)).pop();
+  return ev?{doubling_h:+ev.doubling_h,lag_h:+ev.lag_h,passage_pct:+ev.passage_pct,saved:true}:{doubling_h:24,lag_h:24,passage_pct:80,saved:false};}
+function predict(c,now=Date.now()){const n0=num(c.cells),cap=CAP[c.vessel];if(!(n0>0)||!cap)return null;
+  const g=growthSet(c.line),h=(now-new Date(c.created))/3.6e6,n=n0*2**(Math.max(0,h-g.lag_h)/g.doubling_h),pct=Math.min(100,n/cap*100);
+  const target=g.passage_pct/100*cap,hT=n0>=target?0:g.lag_h+g.doubling_h*Math.log2(target/n0);
+  return {n:Math.min(n,cap),pct,at:new Date(new Date(c.created).getTime()+hT*3.6e6),g};}
+function growthRow(c){const r=document.createElement('div');r.className='gr';const p=predict(c);
+  if(!p){r.classList.add('muted');r.textContent=t('grNoN0');return r;}
+  const bar=document.createElement('div');bar.className='gr-bar';const fill=document.createElement('span');fill.style.width=p.pct.toFixed(0)+'%';
+  if(p.pct>=p.g.passage_pct)fill.classList.add('hot');bar.append(fill);
+  const mk=document.createElement('i');mk.style.left=p.g.passage_pct+'%';bar.append(mk);
+  const tx=document.createElement('span');tx.className='gr-t';
+  tx.textContent=t('grNow',sciShort(p.n),p.pct<1?'<1':p.pct.toFixed(0))+'\n'+(p.pct>=p.g.passage_pct?t('grPast',p.g.passage_pct):t('grReach',p.g.passage_pct,shortDate(p.at)))+` (${t('grEst')})`;
+  r.append(bar,tx);return r;}
+function soonToPassage(){const now=Date.now();return activeCultures().filter(c=>c.status==='active'&&c.purpose!=='treat').map(c=>({c,p:predict(c,now)}))
+  .filter(x=>x.p&&x.p.at-now<12*3.6e6);}
+function openGrowthBox(){const host=$('cultList');if(host.querySelector('.gr-box'))return;const line=activeCultures()[0]?.line||'Hep-55.1C',g=growthSet(line);
+  const f=document.createElement('div');f.className='box gr-box';
+  f.innerHTML=`<b style="font-size:14px"></b><span class="ck-help"></span><div class="row2"><div class="field"><label for="grD"></label><input id="grD" class="mono" inputmode="decimal"></div><div class="field"><label for="grL"></label><input id="grL" class="mono" inputmode="decimal"></div></div><div class="field"><label for="grP"></label><input id="grP" class="mono" inputmode="decimal"></div><div class="row2"><button type="button" class="btn"></button><button type="button" class="btn primary" style="min-height:48px;font-size:15px"></button></div>`;
+  f.querySelector('b').textContent=`${t('grSettings')} · ${line}`;f.querySelector('.ck-help').textContent=g.saved?t('grSaved'):t('grDefault');
+  [['grD','grDoubling',g.doubling_h],['grL','grLag',g.lag_h],['grP','grPassAt',g.passage_pct]].forEach(([id,k,v])=>{f.querySelector(`[for=${id}]`).textContent=t(k);f.querySelector('#'+id).value=v;});
+  const [c,s]=f.querySelectorAll('.row2:last-child button');c.textContent=t('cancel');s.textContent=t('grSave');c.onclick=()=>f.remove();
+  s.onclick=()=>{const d=num(f.querySelector('#grD').value),l=num(f.querySelector('#grL').value),p=num(f.querySelector('#grP').value);
+    if(!(d>0)||!(l>=0)||!(p>0&&p<=100))return;addEvent({type:'growth',line,title:`${t('grSettings')} · ${line}`,doubling_h:d,lag_h:l,passage_pct:p});f.remove();};
+  host.prepend(f);f.querySelector('#grD').focus();}
+
+$('goGrowth').onclick=()=>openGrowthBox();
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
   paintChecklists();paintMe();show('sHome');syncLab();setInterval(syncLab,60000);
