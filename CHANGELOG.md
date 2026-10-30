@@ -10,6 +10,10 @@
 - **Protein harvest:** tubes per group or per well, lysis buffer, volume, storage and box; BCA values can be added later.
 - **Notes with photos:** attach photos from the camera or gallery, link a note to an experiment or culture; works offline.
 - Date and time fields on passage, hand count and culture forms, for logging past work.
+- Detail page for every log entry, with a labelled plate map and links between related entries.
+- "In the incubator" on the home screen, with plate maps for plates under treatment.
+- Editable checklists and steps for counting, passage, treatment and protein harvest.
+- Plate maps fill column by column (1A, 1B, 2A, …) and well positions are saved with each group.
 
 ## v0.3.0 — 2026-10-27
 

@@ -83,7 +83,9 @@ The home screen also keeps a simple culture log:
 - **Treat:** keep a list of compounds with their stock concentration and solvent (add your own). Build groups (glucose, one or more compounds at µM), and the app works out the stock volume per group, adds vehicle so every group ends at the same DMSO/EtOH %, draws the plate map and sets a harvest timer that shows on the home screen.
 - **Protein harvest:** pick the experiment and the app lists one tube per group (or per well) with lysis buffer volume, storage temperature and box position. Add BCA concentrations to the tubes later from the log.
 - **Notes and photos:** write a note and attach photos (taken with the camera or chosen from the phone), optionally linked to an experiment or a culture. Photos are resized to 2000 px and kept on the phone until they reach the server, so this works offline too.
-- **Log:** everything by date, with filters, delete, and CSV export.
+- **In the incubator:** the home screen lists every plate, dish and flask still growing, with its passage, days in culture and, for plates under treatment, a plate map (columns 1–3, rows A–B for a 6-well plate).
+- **Checklists and steps:** passage, treatment, protein harvest and counting each show a tick-off list of what to prepare and the steps. Ticks reset every day; edit the list in the app and the new version is saved to the log.
+- **Log:** everything by date, with filters, delete, and CSV export. Tap an entry to see all its details: plate map, groups, preparation, tubes, lysis mix, steps, photos and related entries.
 
 The log is stored on the server in `lab/events.jsonl`, one JSON entry per line; photos go to `lab/photos/`.
 

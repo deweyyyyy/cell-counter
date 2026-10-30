@@ -239,6 +239,52 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .tube-card label{display:flex;align-items:center;gap:6px;min-width:0}.tube-card label span{font-size:12px;color:var(--muted);flex:none}.tube-card label input{min-width:0;flex:1}
 .check{display:flex;gap:10px;align-items:center;font-size:14px;min-height:44px}.check input{width:20px;height:20px;accent-color:var(--trypan)}
 .lbl{font-size:12px}
+.ev.tappable{cursor:pointer}.ev.tappable:focus-visible{outline:2px solid var(--trypan);outline-offset:2px}
+.d-head{display:flex;gap:12px;align-items:center}.d-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.d-body{display:flex;flex-direction:column;gap:14px;padding:4px 16px 32px}
+.d-sec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.d-h{margin:0;font-size:13px;font-weight:700;color:var(--ink2)}.d-h3{margin:4px 0 0;font-size:12px;font-weight:700;color:var(--muted)}
+.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 14px;margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.d-sec .kv{border:0;padding:0}
+.kv dt{font-size:13px;color:var(--muted)}.kv dd{margin:0;font-size:14px;overflow-wrap:anywhere}
+.kv-small{background:transparent;border:0;padding:0 4px}.kv-small dt,.kv-small dd{font-size:12px;color:var(--muted)}
+.dtab-wrap{overflow-x:auto;margin:0 -2px}.dtab{width:100%;border-collapse:collapse;font-size:13px}
+.dtab th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:4px 8px 6px 0;border-bottom:1px solid var(--line)}
+.dtab td{padding:8px 8px 8px 0;border-bottom:1px solid #EEF1F6;vertical-align:top}.dtab tr:last-child td{border-bottom:0}
+.with-dot{display:inline-flex;align-items:center;gap:6px}.with-dot .dot12{flex:none}
+.pm-wrap{display:flex;flex-direction:column;gap:10px}
+.pm{display:grid;gap:6px;align-items:center;max-width:360px}.pm-title{grid-column:1/-1;font-size:12px;font-weight:600;color:var(--muted)}
+.pm-ax{font-size:12px;font-weight:700;color:var(--muted);text-align:center;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.pm-well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.pm-well.empty{background:#fff;border:1.5px dashed #C3CAD8}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.preps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}
+.d-text{margin:0;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.d-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.d-photos img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block;background:#E8ECF3}
+.d-links{display:flex;flex-direction:column;gap:6px}
+.d-link{font:inherit;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#FAFBFD;cursor:pointer;color:var(--ink)}
+.d-link b{font-size:14px}.d-link span{font-size:12px;color:var(--muted)}.kv .d-link{padding:6px 10px}
+.d-acts{display:flex;flex-direction:column;gap:8px}.danger-btn{color:#A3361B;border-color:#F2C4B8}
+.inc-card{display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer}
+#cultList.list{background:transparent;border:0;gap:8px;display:flex;flex-direction:column}
+.inc-top{display:flex;align-items:center;gap:10px}.inc-top .tx{flex:1;min-width:0;display:flex;flex-direction:column}.inc-top .tx b{font-size:14px}.inc-top .tx span{font-size:12px;color:var(--muted)}
+.inc-top .side{font-size:12px;color:var(--muted);flex:none}
+.inc-treat{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:12px;background:#FFF8EC;border:1px solid #F5DDB3}
+.inc-th{display:flex;flex-direction:column;gap:2px}.inc-th b{font-size:13px}.inc-th span{font-size:12px;color:#8A5300}
+.inc-acts{display:flex;gap:8px;flex-wrap:wrap}
+.pm:not(.big){max-width:190px;gap:4px}.pm:not(.big) .pm-well{font-size:10px}.pm:not(.big) .pm-ax{font-size:10px}
+.ck{background:#F0F8F6;border:1px solid #CDE8E2;border-radius:14px;padding:4px 12px}
+.ck.all-done{background:#E3F5EE;border-color:#A9DCC7}
+.ck summary{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px;cursor:pointer;font-size:14px;font-weight:600;color:#0B5A4F;list-style:none}
+.ck summary::-webkit-details-marker{display:none}.ck summary::before{content:'▸';margin-right:2px}.ck[open] summary::before{content:'▾'}
+.ck-t{flex:1}.ck-n{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;color:#0B5A4F;flex:none}
+.ck-h{margin:8px 0 2px;font-size:12px;font-weight:700;color:var(--muted)}
+.ck-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:14px;line-height:1.45;cursor:pointer}
+.ck-item input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:#0F7A6E}.ck-item input:checked+span{color:var(--muted);text-decoration:line-through}
+.ck-row{display:flex;gap:8px;justify-content:flex-end;padding:6px 0 10px}
+.ck-edit{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}.ck-edit textarea{font:inherit;font-size:14px;line-height:1.5;padding:10px;border-radius:12px;border:1px solid var(--line);min-height:240px}
+.ck-help{font-size:12px;color:var(--muted)}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -288,7 +334,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
       <button type="button" class="action" id="goNote"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F7A6E" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg><span style="display:flex;flex-direction:column"><b data-i18n="actNote"></b><span data-i18n="actNoteSub"></span></span></button>
     </div>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hCult">
-      <div class="sec-h"><h2 id="hCult" data-i18n="culturesTitle"></h2><button type="button" id="goAddCulture" data-i18n="addCulture"></button></div>
+      <div class="sec-h"><h2 id="hCult" data-i18n="incTitle"></h2><button type="button" id="goAddCulture" data-i18n="addCulture"></button></div>
       <div class="list" id="cultList"></div>
     </section>
     <section style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hRecentLab">
@@ -573,6 +619,12 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
   <footer class="foot"><button type="button" class="btn primary" id="nSave" data-i18n="saveNote"></button></footer>
 </section>
 
+<section class="screen" id="sDetail" hidden aria-labelledby="dTitle">
+  <header class="top"><button type="button" class="icon-btn" id="dBackBtn" data-i18n-aria="logTitle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="d-head" style="flex:1;min-width:0"><span class="d-ic" id="dIcon"></span><div class="title-col"><b id="dTitle"></b><span id="dSub"></span></div></div></header>
+  <div class="d-body" id="dBody"></div>
+</section>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </div>
 
@@ -685,7 +737,7 @@ const curName=()=>slotLabel(curKey(),R.layout);
 const diam=()=>+$('diam').value;
 function saveRound(){if(R) return store.set(KEY,{R,lastRoiFrac}); return true;}
 
-const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote'];
+const SCREENS=['sHome','sStart','sCount','sReview','sSummary','sManual','sPassage','sTreat','sLog','sCulture','sProtein','sNote','sDetail'];
 function show(id){for(const s of SCREENS) $(s).hidden=s!==id; window.scrollTo(0,0); if(id==='sHome') paintHome();
   if(id==='sReview') requestAnimationFrame(()=>{fitView();drawReview();});}
 function refreshAll(){
@@ -1173,7 +1225,7 @@ async function syncLab(){
   await flushOutbox();
   try{const r=await api('api/lab');if(!r.ok)throw 0;const j=await r.json();LAB.server=j.events||[];LAB.online=true;store.set('cc.labcache',LAB.server);}
   catch(e){LAB.online=false;}
-  paintSync(); if(!$('sHome').hidden)paintHome(); if(!$('sLog').hidden)paintLog();
+  paintSync(); if(!$('sHome').hidden)paintHome(); if(!$('sLog').hidden)paintLog(); if(!$('sDetail').hidden)paintDetail(); paintChecklists();
 }
 function addEvent(ev){
   ev={id:uid(),at:new Date().toISOString(),...ev};
@@ -1232,27 +1284,13 @@ function paintHome(){
     row.querySelector('.tx span').textContent=e.harvest_at?`${t('due',shortDate(new Date(e.harvest_at)))} · ${durText(left)}`:t('noHarvestSet',shortDate(new Date(e.at)));
     const b=row.querySelector('button');b.textContent=t('markHarvested');b.onclick=()=>{if(!confirmTwice('h'+e.id))return;addEvent({type:'harvest',treat_id:e.id,title:e.title});};
     dl.append(row);}
-  // cultures
-  const cl=$('cultList');cl.innerHTML='';const list=activeCultures();
-  if(!list.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noCultures');cl.append(p);}
-  for(const c of list.slice(0,12)){const it=document.createElement('div');it.className='item';
-    const days=Math.floor((now-new Date(c.created))/864e5)+1;
-    it.innerHTML=`<span class="pnum"></span><span class="tx"><b></b><span></span></span><span class="side"></span><button type="button" class="mini"></button>`;
-    it.querySelector('.pnum').textContent='P'+c.passage;
-    it.querySelector('b').textContent=`${c.line} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
-    it.querySelector('.tx span').textContent=c.status==='treating'?t('treating'):`${c.purpose==='treat'?t('purposeTreat')+' · ':''}${shortDate(new Date(c.created))}`;
-    it.querySelector('.side').textContent=t('dayN',days);
-    const go=it.querySelector('.mini');
-    if(c.status==='treating'){go.textContent=t('logTitle');go.onclick=()=>openLog();}
-    else if(c.purpose==='treat'){go.textContent='Treat';go.onclick=()=>openTreat(c.cid);}
-    else{go.textContent='Passage';go.onclick=()=>openPassage({source:c.cid});}
-    cl.append(it);}
+  paintIncubator(now);
   // recent log
-  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>e.type!=='compound'&&e.type!=='bca').reverse().slice(0,4);
+  const hl=$('homeLog');hl.innerHTML='';const ev=allEvents().filter(e=>!['compound','bca','checklist'].includes(e.type)).reverse().slice(0,4);
   if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');hl.append(p);}
   for(const e of ev){const d=describe(e);const it=document.createElement('button');it.type='button';it.className='item';
     it.innerHTML=`<span class="tx"><b></b><span></span></span><span class="side"></span>`;it.querySelector('b').textContent=d.title;it.querySelector('.tx span').textContent=d.sub;
-    it.querySelector('.side').textContent=shortDate(new Date(e.at));it.onclick=()=>openLog();hl.append(it);}
+    it.querySelector('.side').textContent=shortDate(new Date(e.at));it.onclick=()=>openDetail(e.id);hl.append(it);}
 }
 $('goCamera').onclick=()=>{checkResume();show('sStart');};
 $('startBack').onclick=()=>show('sHome');
@@ -1451,7 +1489,7 @@ function paintTreat(full=true){
   const cols=per===6?3:per===12?4:per===24?6:per===96?12:1;
   for(let p=0;p<Math.max(plates,1);p++){const pl=document.createElement('div');pl.className='plate';pl.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
     if(per>24)pl.style.gridColumn='1/-1';
-    for(let w=0;w<per;w++){const gi=wells[p*per+w];const el=document.createElement('span');el.className='well'+(gi==null?' empty':'');
+    for(let w=0;w<per;w++){const rows0=per/cols,k=(w%cols)*rows0+Math.floor(w/cols),gi=wells[p*per+k];const el=document.createElement('span');el.className='well'+(gi==null?' empty':'');
       if(gi!=null){const col=COLORS[gi%COLORS.length];el.style.background=col;el.style.color=DARK.has(col)?'#fff':'#10182B';el.title=tGroups[gi].name;el.textContent=per<=12?(tGroups[gi].name||'').replace(/\s+/g,'').slice(0,6):'';}
       pl.append(el);}
     map.append(pl);}
@@ -1477,9 +1515,10 @@ $('tSave').onclick=()=>{
   const C=treatCalc();const missing=C.rows.flatMap(r=>r.stocks.filter(s=>s.missing));if(missing.length){toast(t('noStock',missing[0].name||t('pickCompound')),true);return;}
   const st=new Date($('tStart').value),hrs=num($('tDur').value);const start=isFinite(st)?st:new Date();
   const cul=activeCultures().find(x=>x.cid===$('tCulture').value);
+  const perW=VESSELS[$('tVessel').value]?.wells||1,plN=num($('tPlates').value)||1;let qq=0;const nextPos=n=>Array.from({length:n},()=>posLabel(perW,plN,qq++));
   addEvent({type:'treat',title:name,at:start.toISOString(),cids:cul?[cul.cid]:[],line:cul?.line||null,passage:cul?.passage||null,
     vessel:$('tVessel').value,plates:num($('tPlates').value),well_ml:num($('tVol').value),extra_pct:num($('tExtra').value),
-    groups:C.rows.map(r=>({name:r.g.name,glucose:num(r.g.glucose),wells:num(r.g.wells)||0,compounds:r.stocks.map(s=>({name:s.name,uM:s.uM,stock_ul:+s.ul.toFixed(2)})),
+    groups:C.rows.map(r=>({wells_pos:nextPos(num(r.g.wells)||0),name:r.g.name,glucose:num(r.g.glucose),wells:num(r.g.wells)||0,compounds:r.stocks.map(s=>({name:s.name,uM:s.uM,stock_ul:+s.ul.toFixed(2)})),
       medium_ml:+r.med.toFixed(2),vehicle_ul:Object.fromEntries(Object.entries(r.vehicle).map(([k,v])=>[k,+v.toFixed(2)]))})),
     solvent_pct:Object.fromEntries(Object.entries(C.target).map(([k,v])=>[k,+(v*100).toFixed(3)])),
     duration_h:hrs,harvest_at:new Date(start.getTime()+hrs*3.6e6).toISOString(),notes:$('tNotes').value.trim()});
@@ -1512,6 +1551,7 @@ function describe(e){
     case 'protein':{const cc=proteinConc(e.id),tb=e.tubes||[];
       return {title:`${t('evProtein')} · ${e.title}`,sub:[t('tubesN',tb.length),[e.buffer,e.vol_per_well?e.vol_per_well+' µL/'+t('unitWell'):''].filter(Boolean).join(' '),[e.storage,e.box].filter(Boolean).join(' '),
         tb.map(x=>x.label+(cc[x.label]!=null?` ${cc[x.label]} mg/mL`:'')).join(', ')].filter(Boolean).join(' · ')};}
+    case 'checklist':return {title:`${t('ckTitle')} · ${t({count:'evCount',passage:'evPassage',treat:'evTreat',protein:'evProtein'}[e.kind]||'evNote')}`,sub:String(e.text||'').split('\n').filter(l=>l.trim()&&!l.startsWith('#')).length+' ✓'};
     case 'bca':return {title:`${t('evBca')} · ${e.title||''}`,sub:Object.entries(e.conc||{}).map(([k,v])=>`${k} ${v} mg/mL`).join(' · ')};
     default:{const tr=e.treat_id&&allEvents().find(x=>x.id===e.treat_id),cu=e.cid&&cultures().find(x=>x.cid===e.cid);
       return {title:e.photos&&e.photos.length&&!e.text?`${t('evNote')} · ${t('photoN',e.photos.length)}`:t('evNote'),sub:[e.text||'',tr?tr.title:'',cu?cultLabel(cu):''].filter(Boolean).join(' · ')};}}
@@ -1528,7 +1568,8 @@ function paintLog(){
   for(const e of ev){const d=new Date(e.at),k=d.toDateString();
     if(k!==day){day=k;const h=document.createElement('h2');h.className='logday';h.textContent=niceDate(d).split(' · ')[0];box.append(h);}
     const [bg,fg,path]=ICON[e.type]||ICON.note,ds=describe(e);
-    const a=document.createElement('article');a.className='ev'+(e.pending?' pending':'');
+    const a=document.createElement('article');a.className='ev tappable'+(e.pending?' pending':'');a.tabIndex=0;a.setAttribute('role','button');
+    a.onclick=x=>{if(!x.target.closest('button,a,input,.bca-box'))openDetail(e.id);};a.onkeydown=x=>{if((x.key==='Enter'||x.key===' ')&&x.target===a){x.preventDefault();openDetail(e.id);}};
     a.innerHTML=`<span class="ic" style="background:${bg}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" aria-hidden="true">${path}</svg></span>
       <div class="hd"><b></b><span class="tm"></span></div><span class="sb"></span><div class="acts"></div>`;
     a.querySelector('b').textContent=ds.title;a.querySelector('.tm').textContent=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
@@ -1553,6 +1594,8 @@ function labRefreshLang(){
   if(!$('sHome').hidden)paintHome();if(!$('sLog').hidden)paintLog();if(!$('sManual').hidden)paintManual();
   if(!$('sPassage').hidden){const v=$('pCount').value;openPassage({source:$('pSource').value,count:v});}
   if(!$('sTreat').hidden)paintTreat();
+  if(!$('sDetail').hidden)paintDetail();
+  paintChecklists();
 }
 /* ================= LAB MORE: protein harvest, notes with photos ================= */
 Object.assign(I18N.th,{
@@ -1680,9 +1723,263 @@ $('goProtein').onclick=()=>openProtein();
 $('goNote').onclick=()=>openNote();
 $('logNote').onclick=()=>openNote();
 
+/* ================= LAB DETAIL: readable view of one log entry ================= */
+Object.assign(I18N.th,{
+  dWhen:'วันเวลา',dBy:'บันทึกโดย',dCells:'เซลล์',dVessel:'ภาชนะ',dMedium:'Medium',dDuration:'ระยะเวลา',dHarvest:'เก็บเซลล์',dNotHarvested:'ยังไม่ได้เก็บ',
+  dGroups:'กลุ่ม',dWells:'หลุม',dConc:'ความเข้มข้น',dPrep:'วิธีเตรียม',dProtocol:'ขั้นตอน',dPhotos:'รูป',dRelated:'รายการที่เกี่ยวข้อง',dTubes:'หลอด',
+  dLysis:'ส่วนผสม lysis buffer',dStorage:'ที่เก็บ',dSource:'มาจาก',dOutputs:'แบ่งลง',dSquares:'แต่ละช่อง',dEdited:'แก้ไขล่าสุด',dFromExp:'จากการทดลอง',
+  dMethod:'วิธีนับ',dPerUnit:'เซลล์ต่อหน่วย',dSusp:'cell susp.',dPurpose:'ใช้ทำ',dStock:'Stock',dNotes:'หมายเหตุ',dVol:'ปริมาตร',dBuffer:'Lysis buffer',
+  dPerWell:'ต่อหลุม',dPlate:'เพลต',dAbout:'เกี่ยวกับ',dCatalog:'Cat / Lot',dFor:'สำหรับ',dTapHint:'แตะรายการเพื่อดูรายละเอียด',dHours:h=>`${h} ชม.`,
+  dPlateN:n=>`เพลตที่ ${n}`,dSquare:'ช่อง',dCount:'จำนวน',dMean:'เฉลี่ย',dDf:'Dilution factor',dReport:'รายงาน'
+});
+Object.assign(I18N.en,{
+  dWhen:'Date and time',dBy:'Recorded by',dCells:'Cells',dVessel:'Vessel',dMedium:'Medium',dDuration:'Duration',dHarvest:'Harvest',dNotHarvested:'Not harvested yet',
+  dGroups:'Groups',dWells:'Wells',dConc:'Concentration',dPrep:'Preparation',dProtocol:'Steps',dPhotos:'Photos',dRelated:'Related entries',dTubes:'Tubes',
+  dLysis:'Lysis buffer mix',dStorage:'Stored at',dSource:'From',dOutputs:'Split into',dSquares:'Squares',dEdited:'Last edited',dFromExp:'From experiment',
+  dMethod:'Method',dPerUnit:'Cells per unit',dSusp:'cell susp.',dPurpose:'For',dStock:'Stock',dNotes:'Notes',dVol:'Volume',dBuffer:'Lysis buffer',
+  dPerWell:'per well',dPlate:'Plate',dAbout:'About',dCatalog:'Cat / Lot',dFor:'For',dTapHint:'Tap an entry to see the details',dHours:h=>`${h} h`,
+  dPlateN:n=>`Plate ${n}`,dSquare:'Square',dCount:'Count',dMean:'Mean',dDf:'Dilution factor',dReport:'Report'
+});
+const plateDims=per=>per===6?[2,3]:per===12?[3,4]:per===24?[4,6]:per===96?[8,12]:[1,1];
+const posLabel=(per,plates,q)=>{const [rows]=plateDims(per),p=Math.floor(q/per),w=q%per;return (plates>1?`P${p+1}-`:'')+(Math.floor(w/rows)+1)+String.fromCharCode(65+w%rows);};
+/* well position -> group index, from stored positions or filled column by column (1A,1B,2A,...) */
+function treatWellMap(e){const per=VESSELS[e.vessel]?.wells||1,plates=num(e.plates)||1,m={};let q=0;
+  (e.groups||[]).forEach((g,i)=>{const n=num(g.wells)||0,pos=g.wells_pos||[];for(let k=0;k<n;k++){m[pos[k]||posLabel(per,plates,q)]=i;q++;}});
+  return {m,per,plates};}
+const shortConc=g=>{const c=(g.compounds||[]).filter(x=>x.name);if(!c.length)return '0';return c.map(x=>fmtN(num(x.uM))).join('+');};
+function plateGrid({m,per,plates},groups,big){
+  const wrap=document.createElement('div');wrap.className='pm-wrap';const [rows,cols]=plateDims(per);
+  for(let p=0;p<plates;p++){const pl=document.createElement('div');pl.className='pm'+(big?' big':'');pl.style.gridTemplateColumns=`20px repeat(${cols},minmax(0,1fr))`;
+    if(plates>1){const h=document.createElement('div');h.className='pm-title';h.textContent=t('dPlateN',p+1);pl.append(h);}
+    pl.append(document.createElement('span'));
+    for(let c=1;c<=cols;c++){const s=document.createElement('span');s.className='pm-ax';s.textContent=c;pl.append(s);}
+    for(let r=0;r<rows;r++){const s=document.createElement('span');s.className='pm-ax';s.textContent=String.fromCharCode(65+r);pl.append(s);
+      for(let c=1;c<=cols;c++){const lab=(plates>1?`P${p+1}-`:'')+c+String.fromCharCode(65+r),gi=m[lab],w=document.createElement('span');
+        w.className='pm-well'+(gi==null?' empty':'');w.title=lab+(gi!=null?` · ${groups[gi].name}`:'');
+        if(gi!=null){const col=COLORS[gi%COLORS.length];w.style.background=col;w.style.color=DARK.has(col)?'#fff':'#10182B';if(per<=24)w.textContent=shortConc(groups[gi]);}
+        pl.append(w);}}
+    wrap.append(pl);}
+  return wrap;}
+
+let dBack='sLog',dId=null;
+const dEl=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!=null)x.textContent=text;return x;};
+function dSection(title){const s=dEl('section','d-sec');s.append(dEl('h2','d-h',title));return s;}
+function dKV(rows){const d=dEl('dl','kv');for(const [k,v] of rows){if(v==null||v==='')continue;d.append(dEl('dt',null,k));const dd=dEl('dd');if(v instanceof Node)dd.append(v);else dd.textContent=v;d.append(dd);}return d;}
+function dTable(head,rows){const tb=dEl('table','dtab');const tr=dEl('tr');head.forEach(h=>tr.append(dEl('th',null,h)));const th=dEl('thead');th.append(tr);tb.append(th);
+  const body=dEl('tbody');for(const r of rows){const x=dEl('tr');r.forEach(c=>{const td=dEl('td');if(c instanceof Node)td.append(c);else td.textContent=c??'–';x.append(td);});body.append(x);}tb.append(body);
+  const w=dEl('div','dtab-wrap');w.append(tb);return w;}
+function dSteps(text){const ol=dEl('ol','steps');String(text).split(/\s*·\s*/).filter(Boolean).forEach(s=>ol.append(dEl('li',null,s)));return ol;}
+function dLink(ev){const b=dEl('button','d-link');b.type='button';const ds=describe(ev);b.append(dEl('b',null,ds.title),dEl('span',null,shortDate(new Date(ev.at))));b.onclick=()=>openDetail(ev.id,true);return b;}
+function dPhotos(ids){const g=dEl('div','d-photos');for(const id of ids){const a=dEl('a');a.href=photoUrl(id);a.target='_blank';a.rel='noopener';a.setAttribute('aria-label',t('openPhoto'));
+  const im=new Image();im.loading='lazy';im.alt='';im.src=photoUrl(id);im.onerror=async()=>{im.onerror=null;const b=await PDB.get(id);if(b){const u=URL.createObjectURL(b);im.src=u;a.href=u;}};a.append(im);g.append(a);}return g;}
+const swatch=i=>{const s=dEl('span','dot12');s.style.background=COLORS[i%COLORS.length];return s;};
+const withDot=(i,text)=>{const s=dEl('span','with-dot');s.append(swatch(i),document.createTextNode(text));return s;};
+const evById=id=>allEvents().find(e=>e.id===id);
+
+function openDetail(id,keepBack){const e=evById(id);if(!e)return;if(!keepBack){const cur=SCREENS.find(s=>!$(s).hidden);dBack=cur==='sDetail'?dBack:(cur||'sLog');}
+  dId=id;paintDetail();show('sDetail');window.scrollTo(0,0);}
+$('dBackBtn').onclick=()=>{if(dBack==='sLog')openLog();else show(dBack);};
+function paintDetail(){
+  const e=evById(dId),body=$('dBody');body.innerHTML='';if(!e){show(dBack);return;}
+  const ds=describe(e),d=new Date(e.at),[bg,fg,path]=ICON[e.type]||ICON.note;
+  $('dTitle').textContent=ds.title;$('dSub').textContent=`${niceDate(d)}`;
+  $('dIcon').style.background=bg;$('dIcon').innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" aria-hidden="true">${path}</svg>`;
+  const all=allEvents();
+  const meta=dSection(t('dWhen'));meta.querySelector('h2').remove();
+  const rows=[];
+  if(e.type==='treat'){
+    const hv=all.find(x=>x.type==='harvest'&&x.treat_id===e.id),wm=treatWellMap(e);
+    rows.push([t('dCells'),[e.line,e.passage!=null?'P'+e.passage:''].filter(Boolean).join(' · ')],[t('dVessel'),`${vName(e.vessel)} × ${e.plates||1}`+(e.well_ml?` · ${e.well_ml} mL/${t('unitWell')}`:'')],
+      [t('dMedium'),e.medium||''],[t('dDuration'),e.duration_h?t('dHours',e.duration_h):''],[t('dHarvest'),hv?shortDate(new Date(hv.at)):e.harvest_at?t('due',shortDate(new Date(e.harvest_at))):t('dNotHarvested')]);
+    body.append(dKV(rows));
+    const pm=dSection(t('plateMap'));pm.append(plateGrid(wm,e.groups||[],true));
+    const leg=dEl('div','legend');(e.groups||[]).forEach((g,i)=>leg.append(withDot(i,g.name)));pm.append(leg);body.append(pm);
+    const gs=dSection(t('dGroups'));
+    gs.append(dTable([t('dGroups'),t('dWells'),t('dConc'),'DMSO'],(e.groups||[]).map((g,i)=>[withDot(i,g.name),(g.wells_pos||[]).join(', ')||String(g.wells),
+      (g.compounds||[]).filter(c=>c.name).map(c=>`${c.name} ${fmtN(num(c.uM))} µM`).join(' + ')||'0 µM',g.dmso_pct!=null?g.dmso_pct+'%':''])));
+    const preps=(e.groups||[]).filter(g=>g.prep);
+    if(preps.length){const ul=dEl('ul','preps');preps.forEach(g=>{const li=dEl('li');li.append(dEl('b',null,g.name+': '),document.createTextNode(g.prep));ul.append(li);});gs.append(dEl('h3','d-h3',t('dPrep')),ul);}
+    body.append(gs);
+    if(e.protocol){const s=dSection(t('dProtocol'));s.append(dSteps(e.protocol));body.append(s);}
+  } else if(e.type==='protein'){
+    const tr=e.treat_id&&evById(e.treat_id),cc=proteinConc(e.id);
+    rows.push([t('dFromExp'),tr?dLink(tr):''],[t('dCells'),[e.line,e.passage!=null?'P'+e.passage:''].filter(Boolean).join(' · ')],[t('dBuffer'),e.buffer||''],
+      [t('dVol'),e.vol_per_well?`${e.vol_per_well} µL ${t('dPerWell')}`:''],[t('dStorage'),[e.storage,e.box].filter(Boolean).join(' · ')]);
+    body.append(dKV(rows));
+    if(tr){const pm=dSection(t('plateMap'));pm.append(plateGrid(treatWellMap(tr),tr.groups||[],true));const leg=dEl('div','legend');(tr.groups||[]).forEach((g,i)=>leg.append(withDot(i,g.name)));pm.append(leg);body.append(pm);}
+    const ts=dSection(t('dTubes'));const hasC=Object.keys(cc).length;
+    ts.append(dTable([t('tubeLabel'),t('dWells'),'µL'].concat(hasC?['mg/mL']:[]),(e.tubes||[]).map((x,i)=>[tr?withDot(i,x.label):x.label,x.wells||'',x.vol_ul??''].concat(hasC?[cc[x.label]??'']:[]))));body.append(ts);
+    if(e.lysis_mix){const L=e.lysis_mix,s=dSection(t('dLysis'));
+      s.append(dKV([['RIPA',L.RIPA_ul!=null?`${L.RIPA_ul} µL`:''],['Protease inhibitor 100×',L.protease_inhibitor_100x_ul!=null?`${L.protease_inhibitor_100x_ul} µL`:''],
+        ['Phosphatase inhibitor',L.phosphatase_inhibitor_ul!=null?`${L.phosphatase_inhibitor_ul} µL`:''],['PUGNAc 1 mM',L.PUGNAc_1mM_ul!=null?`${L.PUGNAc_1mM_ul} µL`:''],[t('dCatalog'),L.catalog||'']]));body.append(s);}
+    if(e.protocol){const s=dSection(t('dProtocol'));s.append(dSteps(e.protocol));body.append(s);}
+  } else if(e.type==='passage'){
+    const src=e.source_cid&&all.find(x=>x.type==='passage'&&(x.outputs||[]).some(o=>o.cid===e.source_cid));
+    rows.push([t('dCells'),`${e.line} · P${e.from_passage} → P${e.to_passage}`],[t('cellsPerMl'),e.cells_per_ml?sci(e.cells_per_ml):''],[t('dSource'),src?dLink(src):'']);
+    body.append(dKV(rows));
+    const s=dSection(t('dOutputs'));
+    s.append(dTable([t('vessel'),t('qty'),t('dPerUnit'),'medium',t('dSusp'),t('dPurpose')],(e.outputs||[]).map(o=>[vName(o.vessel),String(o.qty),o.cells_per_unit?`${sciShort(o.cells_per_unit)}/${vUnit(o.vessel)}`:'',
+      o.medium_ml?`${o.medium_ml} mL`:'',o.susp_ul?fmtUl(o.susp_ul):'',t({keep:'purposeKeep',treat:'purposeTreat',other:'purposeOther'}[o.purpose]||'purposeOther')])));body.append(s);
+  } else if(e.type==='count'){
+    rows.push([t('dMethod'),e.method==='manual'?t('manual'):t('camera')],[t('cellsPerMl'),sci(e.cells_per_ml)],[t('dMean'),isFinite(e.mean)?`${(+e.mean).toFixed(1)} ± ${isFinite(e.sd)?(+e.sd).toFixed(1):'–'}`:''],
+      ['CV',isFinite(e.cv)?(+e.cv).toFixed(1)+'%':''],[t('dDf'),e.df]);
+    if(e.report){const a=dEl('a',null,t('viewReport'));a.href=e.report;a.target='_blank';a.rel='noopener';rows.push([t('dReport'),a]);}
+    body.append(dKV(rows));
+    if(e.squares){const s=dSection(t('dSquares'));s.append(dTable([t('dSquare'),t('dCount')],Object.entries(e.squares).map(([k,v])=>[slotLabel(k,e.layout||4),v==null?'–':String(v)])));body.append(s);}
+  } else if(e.type==='note'){
+    const tr=e.treat_id&&evById(e.treat_id),cu=e.cid&&cultures().find(x=>x.cid===e.cid);
+    if(e.text){const p=dEl('p','d-text',e.text);body.append(p);}
+    body.append(dKV([[t('dAbout'),tr?dLink(tr):cu?cultLabel(cu):'']]));
+  } else if(e.type==='harvest'){const tr=evById(e.treat_id);body.append(dKV([[t('dFromExp'),tr?dLink(tr):'']]));}
+  else if(e.type==='culture'){const c=e.culture||{};body.append(dKV([[t('dCells'),`${c.line} · P${c.passage}`],[t('vessel'),`${vName(c.vessel)} × ${c.qty}`]]));}
+  else if(e.type==='compound'){const c=e.compound||{};body.append(dKV([[t('dStock'),`${c.stock} ${c.unit==='uM'?'µM':'mM'}`],[t('solvent'),c.solvent]]));}
+  else if(e.type==='bca'){const p=evById(e.target);body.append(dKV([[t('dFor'),p?dLink(p):'']]));body.append(dTable([t('tubeLabel'),'mg/mL'],Object.entries(e.conc||{}).map(([k,v])=>[k,String(v)])));}
+  if(e.notes){const s=dSection(t('dNotes'));s.append(dEl('p','d-text',e.notes));body.append(s);}
+  if(e.photos&&e.photos.length){const s=dSection(t('dPhotos'));s.append(dPhotos(e.photos));body.append(s);}
+  // related entries
+  const rel=all.filter(x=>x.id!==e.id&&(x.treat_id===e.id||x.target===e.id||(e.treat_id&&x.id!==e.treat_id&&x.treat_id===e.treat_id&&x.type!=='bca')||(e.type==='passage'&&x.type==='treat'&&(x.cids||[]).some(c=>(e.outputs||[]).some(o=>o.cid===c)))||
+    (e.type==='passage'&&x.type==='passage'&&(e.outputs||[]).some(o=>o.cid===x.source_cid))||(e.type==='treat'&&x.type==='note'&&x.treat_id===e.id)));
+  if(rel.length){const s=dSection(t('dRelated'));const l=dEl('div','d-links');rel.forEach(x=>l.append(dLink(x)));s.append(l);body.append(s);}
+  const foot=dKV([[t('dBy'),e.by&&e.by!=='local'?e.by:''],[t('dEdited'),e.edited||'']]);foot.classList.add('kv-small');body.append(foot);
+  const acts=dEl('div','d-acts');
+  if(e.type==='treat'){const b=dEl('button','btn',t('harvestProtein'));b.type='button';b.onclick=()=>openProtein(e.id);acts.append(b);}
+  if(e.type==='protein'&&(e.tubes||[]).length){const b=dEl('button','btn',Object.keys(proteinConc(e.id)).length?t('editConc'):t('addConc'));b.type='button';
+    b.onclick=()=>{const host=dEl('div');body.append(host);host.style.display='grid';host.style.gridTemplateColumns='0 minmax(0,1fr)';openBca(e,host);host.querySelector('input')?.scrollIntoView({block:'center'});};acts.append(b);}
+  const del=dEl('button','btn danger-btn',t('deleteEntry'));del.type='button';del.onclick=()=>{if(confirmTwice('d'+e.id)){addEvent({type:'delete',target:e.id});show(dBack);}};acts.append(del);
+  body.append(acts);
+}
+
+/* ================= LAB EXTRA: incubator view, checklists ================= */
+Object.assign(I18N.th,{
+  incTitle:'ในตู้ incubator',incEmpty:'ตอนนี้ไม่มีเซลล์ในตู้ · เพิ่มขวด หรือบันทึก passage',incSeeded:d=>`ลงเซลล์ ${d}`,incTreat:'กำลัง treat',
+  incStarted:d=>`เริ่ม ${d}`,incHarvestDue:d=>`เก็บ ${d}`,incNoHarvest:'ยังไม่ได้ตั้งเวลาเก็บ',incPlateOf:(i,n)=>`เพลต ${i}/${n}`,
+  ckTitle:'เช็กลิสต์ & ขั้นตอน',ckEdit:'แก้ไข',ckClear:'ล้างเครื่องหมาย',ckSave:'บันทึกเช็กลิสต์',ckHelp:'บรรทัดละ 1 ข้อ · บรรทัดที่ขึ้นต้นด้วย # คือหัวข้อ',
+  ckDraft:'ร่าง · บอกให้แก้ได้',ckOf:(a,b)=>`${a}/${b}`
+});
+Object.assign(I18N.en,{
+  incTitle:'In the incubator',incEmpty:'Nothing in the incubator. Add a culture or save a passage',incSeeded:d=>`Seeded ${d}`,incTreat:'Being treated',
+  incStarted:d=>`Started ${d}`,incHarvestDue:d=>`Harvest ${d}`,incNoHarvest:'No harvest time set',incPlateOf:(i,n)=>`Plate ${i}/${n}`,
+  ckTitle:'Checklist & steps',ckEdit:'Edit',ckClear:'Clear ticks',ckSave:'Save checklist',ckHelp:'One item per line · lines starting with # are headings',
+  ckDraft:'Draft · tell us what to fix',ckOf:(a,b)=>`${a}/${b}`
+});
+
+/* ---------- incubator ---------- */
+function paintIncubator(now){
+  const cl=$('cultList');cl.innerHTML='';const list=activeCultures(),open=openTreats(),all=allEvents();
+  if(!list.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('incEmpty');cl.append(p);return;}
+  for(const c of list.slice(0,16)){
+    const days=Math.floor((now-new Date(c.created))/864e5)+1,trs=open.filter(e=>(e.cids||[]).includes(c.cid));
+    const card=document.createElement('div');card.className='inc-card';card.tabIndex=0;card.setAttribute('role','button');
+    const top=document.createElement('div');top.className='inc-top';
+    top.innerHTML='<span class="pnum"></span><span class="tx"><b></b><span></span></span><span class="side"></span>';
+    top.querySelector('.pnum').textContent='P'+c.passage;
+    top.querySelector('b').textContent=`${c.line} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
+    top.querySelector('.tx span').textContent=t('incSeeded',shortDate(new Date(c.created)))+(trs.length?` · ${t('incTreat')}`:'');
+    top.querySelector('.side').textContent=t('dayN',days);card.append(top);
+    trs.forEach((tr,i)=>{const b=document.createElement('div');b.className='inc-treat';
+      const h=document.createElement('div');h.className='inc-th';
+      h.append(Object.assign(document.createElement('b'),{textContent:tr.title}),
+        Object.assign(document.createElement('span'),{textContent:[trs.length>1&&c.qty>1?t('incPlateOf',i+1,c.qty):'',t('incStarted',shortDate(new Date(tr.at))),
+          tr.harvest_at?t('incHarvestDue',shortDate(new Date(tr.harvest_at))):t('incNoHarvest')].filter(Boolean).join(' · ')}));
+      b.append(h,plateGrid(treatWellMap(tr),tr.groups||[],false));
+      b.onclick=x=>{x.stopPropagation();openDetail(tr.id);};card.append(b);});
+    const acts=document.createElement('div');acts.className='inc-acts';
+    const btn=(label,fn)=>{const x=document.createElement('button');x.type='button';x.className='mini';x.textContent=label;x.onclick=ev=>{ev.stopPropagation();fn();};acts.append(x);};
+    if(trs.length)btn(t('harvestProtein'),()=>openProtein(trs[0].id));
+    else if(c.purpose==='treat')btn('Treat',()=>openTreat(c.cid));
+    btn('Passage',()=>openPassage({source:c.cid}));
+    card.append(acts);
+    const src=all.find(e=>e.id===c.src);
+    card.onclick=()=>{if(src)openDetail(src.id);};card.onkeydown=x=>{if(x.key==='Enter'&&x.target===card&&src)openDetail(src.id);};
+    cl.append(card);}
+}
+
+/* ---------- checklists (defaults are drafts; edits are saved to the log) ---------- */
+const CK_DEFAULT={
+count:`# ก่อนทำ
+เช็ด hemocytometer และ coverslip ด้วย 70% ethanol ให้แห้ง
+เตรียม trypan blue 0.4% และ tube เล็ก
+# ขั้นตอน
+ผสม cell suspension กับ trypan blue 1:1 (เช่น 10 µL + 10 µL) แล้ว pipette ให้เข้ากัน
+หยอด 10 µL ลงช่องนับ
+นับ 4 ช่องใหญ่ที่มุม (นับเซลล์ที่แตะเส้นบน/ซ้าย ไม่นับเส้นล่าง/ขวา)
+cells/mL = ค่าเฉลี่ยต่อช่อง × 2 × 10⁴
+บันทึกผลในแอป (กล้อง หรือกรอกมือ)`,
+passage:`# ก่อนทำ
+อุ่น DMEM HG, PBS และ trypsin-EDTA ที่ 37 °C
+เปิด BSC + UV แล้วเช็ด 70% ethanol
+ดูเซลล์ใต้กล้อง (ความหนาแน่น, contamination)
+เตรียม tube 15 mL, hemocytometer, trypan blue
+ติดฉลากภาชนะใหม่: เซลล์ · P ใหม่ · วันที่
+# ขั้นตอน
+ดูด medium เก่าทิ้ง
+ล้างด้วย PBS แล้วดูดทิ้ง
+ใส่ trypsin-EDTA แล้ว incubate 37 °C จนเซลล์หลุด (~3–5 นาที)
+ใส่ medium หยุด trypsin, pipette ให้เซลล์แยก แล้วย้ายลง tube 15 mL
+นับเซลล์ (trypan blue 1:1)
+คำนวณปริมาตรจากแอป แล้วใส่เซลล์ + medium ลงภาชนะใหม่ (6-well: 80,000 เซลล์ + 2 mL/หลุม)
+เขย่าเป็นรูปเลข 8 ให้เซลล์กระจาย แล้วเข้า incubator 37 °C 5% CO₂
+บันทึก passage ในแอป`,
+treat:`# ก่อนทำ
+อุ่น DMEM HG
+เอา stock สาร (Pinocembrin 30 mM / OGT inhibitor) และ DMSO ออกมาให้ละลายที่อุณหภูมิห้อง
+ติดฉลาก tube 15 mL ตามกลุ่ม (เช่น 0 / 50 / 100 µM)
+ดูเซลล์ใต้กล้องก่อน treat
+# ขั้นตอน (Pinocembrin)
+100 µM: media 6,976.7 µL + Pinocembrin 30 mM 23.3 µL
+50 µM: media 2,500 µL + 100 µM 2,500 µL
+0 µM: media 6,983.5 µL + DMSO 16.5 µL
+ดูด medium เก่าออกจากหลุมให้หมด
+ใส่หลุมละ 2 mL ตามผัง: 1A,B = 0 · 2A,B = 50 · 3A,B = 100
+เข้า incubator แล้วบันทึก treat ในแอป (เวลาเริ่ม)`,
+protein:`# ก่อนทำ
+จองเครื่องปั่น (ห้องเครื่องมือกลาง) และตั้ง 4 °C ล่วงหน้า
+เตรียม 1.5 mL tube ติดฉลาก วางบนโฟม + น้ำแข็ง
+PBS 1× เย็น
+ผสม lysis buffer บนน้ำแข็ง: RIPA 1,000 µL + protease inhibitor 100× 10 µL + phosphatase inhibitor 10 µL + PUGNAc 1 mM 5 µL
+ไม้ขูดเซลล์ (scraper)
+# ขั้นตอน
+ดูด medium ออกจากหลุม
+ล้าง PBS เย็น 2 mL แล้วดูดออกให้หมด (2 รอบ)
+ใส่ lysis buffer 80 µL/หลุม
+ขูดเซลล์ แล้วดูดใส่ 1.5 mL tube (รวมหลุม A,B ของกลุ่มเดียวกัน)
+ปั่น 12,000 rpm 30 นาที 4 °C
+ดูดส่วนใสใส่หลอดใหม่ (เก็บไว้ ไม่ทิ้ง)
+เก็บตู้เย็นห้อง western blot แล้วบันทึกในแอป`};
+const CK_SCREEN={sManual:'count',sStart:'count',sPassage:'passage',sTreat:'treat',sProtein:'protein'};
+function ckText(kind){const ev=allEvents().filter(e=>e.type==='checklist'&&e.kind===kind).pop();return {text:ev?ev.text:CK_DEFAULT[kind],draft:!ev};}
+function ckParse(text){const out=[];let sec=null;for(let l of String(text).split('\n')){l=l.trim();if(!l)continue;
+  if(l.startsWith('#')){sec={h:l.replace(/^#+\s*/,''),items:[]};out.push(sec);continue;}
+  if(!sec){sec={h:'',items:[]};out.push(sec);}sec.items.push(l.replace(/^([-•*]|\d+[.)])\s*/,''));}return out;}
+const ckKey=kind=>`cc.ck.${kind}.${new Date().toDateString()}`;
+function paintChecklist(scr){const kind=CK_SCREEN[scr],box=$('ck_'+scr);if(!box)return;
+  const {text,draft}=ckText(kind),secs=ckParse(text),done=store.get(ckKey(kind),{});const wasOpen=box.open;box.innerHTML='';
+  let n=0,d=0;const sum=document.createElement('summary');box.append(sum);
+  for(const s of secs){if(s.h)box.append(Object.assign(document.createElement('h3'),{className:'ck-h',textContent:s.h}));
+    s.items.forEach(it=>{const k=(s.h+'|'+it).slice(0,160);n++;if(done[k])d++;
+      const lab=document.createElement('label');lab.className='ck-item';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!done[k];
+      cb.onchange=()=>{const cur=store.get(ckKey(kind),{});if(cb.checked)cur[k]=1;else delete cur[k];store.set(ckKey(kind),cur);paintChecklist(scr);};
+      lab.append(cb,Object.assign(document.createElement('span'),{textContent:it}));box.append(lab);});}
+  sum.innerHTML='<span class="ck-t"></span><span class="ck-n"></span>';sum.querySelector('.ck-t').textContent=t('ckTitle')+(draft?` · ${t('ckDraft')}`:'');
+  sum.querySelector('.ck-n').textContent=t('ckOf',d,n);box.classList.toggle('all-done',n>0&&d===n);
+  const row=document.createElement('div');row.className='ck-row';
+  const clr=document.createElement('button');clr.type='button';clr.className='mini';clr.textContent=t('ckClear');clr.onclick=()=>{store.del(ckKey(kind));paintChecklist(scr);};
+  const ed=document.createElement('button');ed.type='button';ed.className='mini';ed.textContent=t('ckEdit');ed.onclick=()=>editChecklist(scr);
+  row.append(clr,ed);box.append(row);box.open=wasOpen;}
+function editChecklist(scr){const kind=CK_SCREEN[scr],box=$('ck_'+scr);if(box.querySelector('textarea'))return;
+  const f=document.createElement('div');f.className='ck-edit';const ta=document.createElement('textarea');ta.rows=12;ta.value=ckText(kind).text;ta.setAttribute('aria-label',t('ckTitle'));
+  const help=Object.assign(document.createElement('span'),{className:'ck-help',textContent:t('ckHelp')});
+  const row=document.createElement('div');row.className='row2';const c=document.createElement('button');c.type='button';c.className='btn';c.textContent=t('cancel');
+  const s=document.createElement('button');s.type='button';s.className='btn primary';s.style.cssText='min-height:48px;font-size:15px';s.textContent=t('ckSave');
+  c.onclick=()=>f.remove();s.onclick=()=>{const tx=ta.value.trim();if(!tx)return;addEvent({type:'checklist',kind,title:`${t('ckTitle')} · ${kind}`,text:tx});f.remove();setTimeout(()=>paintChecklist(scr),50);};
+  row.append(c,s);f.append(help,ta,row);box.append(f);ta.focus();}
+for(const scr of Object.keys(CK_SCREEN)){const host=$(scr).querySelector('.form')||$(scr).querySelector('.start-main');if(!host)continue;
+  const d=document.createElement('details');d.className='ck';d.id='ck_'+scr;host.prepend(d);}
+function paintChecklists(){for(const scr of Object.keys(CK_SCREEN))paintChecklist(scr);}
+
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
-  show('sHome');syncLab();setInterval(syncLab,60000);
+  paintChecklists();show('sHome');syncLab();setInterval(syncLab,60000);
 }
 
 /* ---------------- boot ---------------- */
