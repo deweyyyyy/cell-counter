@@ -26,6 +26,7 @@
 - Planned and all-day entries.
 - Full lab report PDF: cover, timeline, entry details with photos, plans, protocol appendix.
 - Default protocols rewritten in formal Thai.
+- Secret iCal feed (`/cal/<token>.ics`, optional `?who=`) for Google Calendar, with copyable links in the calendar screen.
 
 ## v0.3.0 — 2026-10-27
 

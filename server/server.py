@@ -14,6 +14,7 @@ Endpoints
   GET  /reports/...   saved report files, and reports/runs.csv (all rounds, opens in Excel)
   GET  /api/lab       the lab log: every count, passage, treatment, harvest, culture and compound
   POST /api/lab/photo?id=... store a photo for a note (GET /lab/photos/<id>.jpg)
+  GET  /cal/<secret>.ics   lab log as an iCal feed (add to Google Calendar "From URL"; ?who=<name> for one person)
   POST /api/lab/event add one lab-log event (idempotent by its "id", so offline phones can resend safely)
   GET  /sw.js, /manifest.webmanifest   let the page open and record entries without internet
 """
@@ -61,6 +62,89 @@ def lab_events():
             try: out.append(json.loads(line))
             except Exception: pass
     return out
+
+# ---------- calendar feed (iCal) for Google Calendar "From URL" ----------
+CAL_TOKEN_FILE = os.path.join(LAB, "cal_token.txt")
+def cal_token():
+    """A long random secret in the feed URL; delete lab/cal_token.txt to issue a new one."""
+    if not os.path.exists(CAL_TOKEN_FILE):
+        import secrets
+        os.makedirs(LAB, exist_ok=True)
+        open(CAL_TOKEN_FILE, "w").write(secrets.token_urlsafe(24))
+    return open(CAL_TOKEN_FILE).read().strip()
+
+def _ics_esc(s):
+    return str(s or "").replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\r", "").replace("\n", "\\n")
+
+def _ics_fold(line):
+    b = line.encode("utf-8"); out = []
+    while len(b) > 74:
+        cut = 74
+        while cut > 0 and (b[cut] & 0xC0) == 0x80: cut -= 1   # never split a UTF-8 character
+        out.append(b[:cut]); b = b" " + b[cut:]
+    out.append(b)
+    return b"\r\n".join(out).decode("utf-8")
+
+def _ics_time(iso):
+    from datetime import timezone
+    d = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    if d.tzinfo is None: d = d.astimezone()
+    return d.astimezone(timezone.utc)
+
+VESSEL_TH = {"6-well": "6-well plate", "12-well": "12-well plate", "24-well": "24-well plate", "96-well": "96-well plate",
+             "dish-35": "จาน 35 mm", "dish-60": "จาน 60 mm", "dish-100": "จาน 100 mm", "T25": "ขวด T25", "T75": "ขวด T75", "T175": "ขวด T175"}
+
+def ical_feed(who=None):
+    from datetime import timedelta
+    evs = lab_events()
+    gone = {e.get("target") for e in evs if e.get("type") == "delete"}
+    harvested = {e.get("treat_id") for e in evs if e.get("type") == "harvest"}
+    skip = {"compound", "checklist", "growth", "delete", "discard", "bca"}
+    stamp = _ics_time(datetime.now().astimezone().isoformat()).strftime("%Y%m%dT%H%M%SZ")
+    L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Cell Lab//Hep-55.1C//TH", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+         "X-WR-CALNAME:Cell Lab" + (f" · {who}" if who else ""), "X-WR-TIMEZONE:Asia/Bangkok",
+         "REFRESH-INTERVAL;VALUE=DURATION:PT1H", "X-PUBLISHED-TTL:PT1H"]
+    def add(uid, start, end, summary, desc, all_day=False):
+        L.append("BEGIN:VEVENT"); L.append(f"UID:{uid}@cell-lab"); L.append(f"DTSTAMP:{stamp}")
+        if all_day:
+            s = start.astimezone()  # local (Mac) date
+            d0 = (s + timedelta(hours=7) if s.utcoffset().total_seconds() == 0 else s).date()
+            L.append(f"DTSTART;VALUE=DATE:{d0:%Y%m%d}"); L.append(f"DTEND;VALUE=DATE:{d0 + timedelta(days=1):%Y%m%d}")
+        else:
+            L.append(f"DTSTART:{start:%Y%m%dT%H%M%SZ}"); L.append(f"DTEND:{end:%Y%m%dT%H%M%SZ}")
+        L.append(_ics_fold("SUMMARY:" + _ics_esc(summary)))
+        if desc: L.append(_ics_fold("DESCRIPTION:" + _ics_esc(desc)))
+        L.append("END:VEVENT")
+    for e in evs:
+        t = e.get("type")
+        if t in skip or e.get("id") in gone: continue
+        if who and e.get("owner") and e.get("owner") != who: continue
+        try: s = _ics_time(e["at"])
+        except Exception: continue
+        en = _ics_time(e["end_at"]) if e.get("end_at") else s + timedelta(minutes=30)
+        owner = e.get("owner") or ""
+        if t == "passage":
+            outs = "\n".join(f"{VESSEL_TH.get(o.get('vessel'), o.get('vessel'))} × {o.get('qty')}" + (f" · {int(o['cells_per_unit']):,} เซลล์" if o.get("cells_per_unit") else "") + (f" · {o['owner']}" if o.get("owner") else "") for o in e.get("outputs", []))
+            summ = f"Passage {e.get('line','')} P{e.get('from_passage')} → P{e.get('to_passage')}"; desc = outs + ("\n" + e["notes"] if e.get("notes") else "")
+        elif t == "treat":
+            summ = f"ให้สาร: {e.get('title','')}"; desc = "\n".join(f"{','.join(g.get('wells_pos') or [])} — {g.get('name')}" for g in e.get("groups", [])) + ("\n" + e["notes"] if e.get("notes") else "")
+            if e.get("harvest_at") and e.get("id") not in harvested:
+                h = _ics_time(e["harvest_at"]); add(e["id"] + "-due", h, h + timedelta(minutes=30), f"ครบเวลาเก็บเซลล์: {e.get('title','')}", owner)
+        elif t == "harvest": summ = f"เก็บเซลล์: {e.get('title','')}"; desc = e.get("notes", "")
+        elif t == "protein":
+            summ = f"เก็บโปรตีน: {e.get('title','')}"; desc = "\n".join(f"{x.get('wells','')} — {x.get('label','')}" for x in e.get("tubes", [])) + ("\n" + e["notes"] if e.get("notes") else "")
+        elif t == "count":
+            cpm = e.get("cells_per_ml"); summ = "นับเซลล์" + (f": {cpm:.2e} cells/mL" if isinstance(cpm, (int, float)) else ""); desc = e.get("title", "")
+        elif t == "culture":
+            c = e.get("culture", {}); summ = f"เพิ่มขวด {c.get('line','')} P{c.get('passage','')}"; desc = c.get("notes", "")
+        else:
+            summ = ("แผน: " if e.get("planned") else "") + (e.get("heading") or e.get("title") or "บันทึก"); desc = e.get("text", "")
+            tb = e.get("table")
+            if tb: desc += "\n\n" + (tb.get("title") or "") + "\n" + "\n".join(" · ".join(map(str, r)) for r in tb.get("rows", []))
+        if owner: desc = (desc + "\n\n" if desc else "") + f"ผู้ปฏิบัติงาน: {owner}"
+        add(e["id"], s, en, summ, desc, all_day=bool(e.get("all_day")))
+    L.append("END:VCALENDAR")
+    return "\r\n".join(L) + "\r\n"
 
 def lab_add(ev, who):
     """Append one event; an event whose id is already stored is ignored (safe to resend)."""
@@ -139,6 +223,14 @@ class H(BaseHTTPRequestHandler):
         if p == "/sw.js": return self.send(200, _page("sw.js"), "text/javascript; charset=utf-8")
         if p == "/manifest.webmanifest": return self.send(200, _page("manifest.webmanifest"), "application/manifest+json")
         if p == "/api/lab": return self.send(200, {"events": lab_events(), "now": datetime.now().astimezone().isoformat(timespec="seconds")})
+        if p == "/api/cal-link": return self.send(200, {"path": f"cal/{cal_token()}.ics"})
+        if p.startswith("/cal/") and p.endswith(".ics"):
+            tok = p[len("/cal/"):-len(".ics")]
+            import hmac
+            if not hmac.compare_digest(tok, cal_token()): return self.send(404, {"error": "not found"})
+            q = dict(kv.split("=", 1) for kv in self.path.partition("?")[2].split("&") if "=" in kv)
+            who = q.get("who") or None
+            return self.send(200, ical_feed(who), "text/calendar; charset=utf-8")
         if p.startswith("/lab/photos/"):
             name = p[len("/lab/photos/"):]
             path = os.path.join(PHOTOS, name)

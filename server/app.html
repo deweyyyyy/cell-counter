@@ -406,6 +406,9 @@ body.sm-open{overflow:hidden}
   .rp-entry .pr-detail{zoom:1.05}.rp-entry .d-photos{grid-template-columns:1fr 1fr}.rp-entry .d-photos img{max-height:120mm}
   .rp-appendix{break-before:page}
 }
+.ic-box{gap:10px}.ic-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:6px;align-items:center}.ic-l{font-size:13px;font-weight:600}
+.ic-row input{font-size:12px;min-height:40px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#FAFBFD;min-width:0}
+.ic-steps{margin:4px 0 0;font-size:13px;line-height:1.6;color:var(--ink2);white-space:pre-line}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -775,6 +778,8 @@ body.sm-open{overflow:hidden}
     <div class="cal-nav"><button type="button" class="icon-btn" id="calPrev" aria-label="‹"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div class="cal-grid" id="calGrid"></div>
       <button type="button" class="icon-btn" id="calNext" aria-label="›"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
+    <button type="button" class="btn" id="calIcalBtn" data-i18n="icBtn"></button>
+    <div class="box ic-box" id="calIcal" hidden></div>
     <h2 class="sec-h2" id="calDayLabel"></h2>
     <div class="cal-list" id="calList"></div>
   </div>
@@ -2526,6 +2531,26 @@ function printFullReport(){toast(t('rpWorking'),false);
   printOut(t('rpTitle'),t('rpSub'),nodes);}
 
 $('logReport').onclick=()=>printFullReport();
+/* ================= LAB ICAL: links for Google Calendar ================= */
+Object.assign(I18N.th,{icBtn:'ซิงก์กับ Google Calendar',icTitle:'ลิงก์ปฏิทินสำหรับ Google Calendar',icAll:'ทุกคน',icCopy:'คัดลอก',icCopied:'คัดลอกลิงก์แล้ว',
+  icSteps:'เปิด Google Calendar บนคอมพิวเตอร์ → ปฏิทินอื่นๆ (+) → จาก URL → วางลิงก์ → เพิ่มปฏิทิน\nGoogle จะดึงข้อมูลใหม่เองทุกหลายชั่วโมง\nลิงก์นี้เป็นความลับ ใครมีลิงก์ก็เห็นบันทึกได้ อย่าแชร์ในที่สาธารณะ',icFail:'ยังสร้างลิงก์ไม่ได้ (ต้องรีสตาร์ต server ก่อน)'});
+Object.assign(I18N.en,{icBtn:'Sync with Google Calendar',icTitle:'Calendar links for Google Calendar',icAll:'Everyone',icCopy:'Copy',icCopied:'Link copied',
+  icSteps:'Open Google Calendar on a computer → Other calendars (+) → From URL → paste the link → Add calendar\nGoogle refreshes it on its own every few hours\nThe link is secret: anyone with it can see the log. Don’t post it publicly',icFail:'No link yet (restart the server first)'});
+async function openIcal(){const host=$('calIcal');if(!host.hidden){host.hidden=true;return;}host.hidden=false;host.innerHTML='';
+  let path=null;try{const r=await api('api/cal-link');if(r.ok)path=(await r.json()).path;}catch(e){}
+  host.append(Object.assign(document.createElement('b'),{textContent:t('icTitle')}));
+  if(!path){host.append(Object.assign(document.createElement('p'),{className:'ck-help',textContent:t('icFail')}));return;}
+  const base=new URL(path,location.href).href;
+  for(const [label,url] of [[t('icAll'),base],...PEOPLE.map(p=>[p.name,`${base}?who=${encodeURIComponent(p.name)}`])]){
+    const row=document.createElement('div');row.className='ic-row';
+    row.append(Object.assign(document.createElement('span'),{className:'ic-l',textContent:label}));
+    const inp=document.createElement('input');inp.readOnly=true;inp.value=url;inp.className='mono';inp.setAttribute('aria-label',label);inp.onclick=()=>inp.select();
+    const b=document.createElement('button');b.type='button';b.className='mini';b.textContent=t('icCopy');
+    b.onclick=async()=>{try{await navigator.clipboard.writeText(url);}catch(e){inp.select();document.execCommand&&document.execCommand('copy');}toast(t('icCopied'),false);};
+    row.append(inp,b);host.append(row);}
+  host.append(Object.assign(document.createElement('p'),{className:'ic-steps',textContent:t('icSteps')}));}
+$('calIcalBtn').onclick=()=>openIcal();
+
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
   paintChecklists();paintMe();show('sHome');syncLab();setInterval(syncLab,60000);

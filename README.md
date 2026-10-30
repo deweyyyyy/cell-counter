@@ -90,6 +90,7 @@ The home screen also keeps a simple culture log:
 - **Several people, one log:** pick your name on the home screen and new entries are recorded under it. Each vessel in a passage can belong to someone, and the log can be filtered by person. Edit the `PEOPLE` list in `app.html` for your lab.
 - **PDF / print:** print any checklist (big tick boxes for reading at the hood), any entry's detail page, or the filtered log. Choose "Save as PDF" in the print dialog.
 - **Calendar:** a month view with coloured dots for every entry, a stripe on days under treatment, and coming-up items (harvest times, predicted passages). Tap a day to see what was done, with start–end times, and tap an entry for its details. Notes can have an end time and a data table.
+- **Google Calendar feed:** Calendar → Sync with Google Calendar gives a secret iCal link (everyone or one person). Add it in Google Calendar under Other calendars → From URL. If the app sits behind a login (for example Cloudflare Access), let the `/cal/` path through without login so Google can fetch it; the random token in the link keeps it private. Delete `server/lab/cal_token.txt` to issue a new link.
 - **Full report:** one PDF with a cover page, a timeline table, every entry's details (plate maps, tables, notes, photos), planned work, and the protocols as an appendix. Log → Full report.
 - **Log:** everything by date, with filters, delete, and CSV export. Tap an entry to see all its details: plate map, groups, preparation, tubes, lysis mix, steps, photos and related entries.
 
