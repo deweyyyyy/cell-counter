@@ -85,6 +85,7 @@ The home screen also keeps a simple culture log:
 - **Notes and photos:** write a note and attach photos (taken with the camera or chosen from the phone), optionally linked to an experiment or a culture. Photos are resized to 2000 px and kept on the phone until they reach the server, so this works offline too.
 - **In the incubator:** the home screen lists every plate, dish and flask still growing, with its passage, days in culture and, for plates under treatment, a plate map (columns 1–3, rows A–B for a 6-well plate).
 - **Checklists and steps:** passage, treatment, protein harvest and counting each show a tick-off list of what to prepare and the steps. Ticks reset every day; edit the list in the app and the new version is saved to the log.
+- **Several people, one log:** pick your name on the home screen and new entries are recorded under it. Each vessel in a passage can belong to someone, and the log can be filtered by person. Edit the `PEOPLE` list in `app.html` for your lab.
 - **Log:** everything by date, with filters, delete, and CSV export. Tap an entry to see all its details: plate map, groups, preparation, tubes, lysis mix, steps, photos and related entries.
 
 The log is stored on the server in `lab/events.jsonl`, one JSON entry per line; photos go to `lab/photos/`.

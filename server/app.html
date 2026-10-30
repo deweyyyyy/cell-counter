@@ -294,6 +294,11 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .note-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.5}
 .kv{gap:10px 14px}.kv dd{line-height:1.5}
 .dtab td{line-height:1.45}
+.me-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.me-l{font-size:13px;color:var(--muted)}.me-seg{min-width:180px}
+.me-row.unset .me-seg{outline:2px solid #F5B26B;border-radius:12px}.me-hint{font-size:12px;color:#8A5300;width:100%}
+.who{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#EEF1F4;color:#3A4358;vertical-align:middle;white-space:nowrap}
+.ev .hd{align-items:flex-start}.ev .hd .who{margin-left:6px;flex:none}.ev .hd b{flex:0 1 auto}.ev .hd .tm{margin-left:auto}
+.f-sep{width:100%;height:0}
 .well{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;overflow:hidden}
 .well.empty{border:1.5px dashed var(--line2)}
 .logday{margin:8px 4px 0;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
@@ -329,6 +334,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
     </div>
   </header>
   <div class="home-main">
+    <div class="me-row" id="meRow"><span class="me-l" data-i18n="meLabel"></span><div class="seg me-seg" id="meSeg" role="group"></div><span class="me-hint" id="meHint" data-i18n="pickMe"></span></div>
     <div class="notice warn" id="syncNote" hidden style="margin:0"><span id="syncText"></span><button type="button" id="syncBtn" data-i18n="syncNow"></button></div>
     <section id="dueSec" hidden style="display:flex;flex-direction:column;gap:8px" aria-labelledby="hDue">
       <div class="sec-h"><h2 id="hDue" data-i18n="dueTitle"></h2></div>
@@ -1137,6 +1143,8 @@ $('nextRun').onclick=()=>{
 };
 window.addEventListener('beforeunload',saveRound);
 
+/* LAB PEOPLE HELPERS */
+
 /* ================= LAB MODULE: home, manual count, passage, treat, log ================= */
 Object.assign(I18N.th,{
   backHome:'กลับหน้าแรก',syncNow:'ส่งตอนนี้',dueTitle:'ต้องทำ',actCamera:'นับด้วยกล้อง',actCameraSub:'ถ่ายรูป · CellNet',actManual:'กรอกผลนับมือ',actManualSub:'ใช้ได้แม้ไม่มีเน็ต',
@@ -1237,7 +1245,7 @@ async function syncLab(){
   paintSync(); if(!$('sHome').hidden)paintHome(); if(!$('sLog').hidden)paintLog(); if(!$('sDetail').hidden)paintDetail(); paintChecklists();
 }
 function addEvent(ev){
-  ev={id:uid(),at:new Date().toISOString(),...ev};
+  ev={id:uid(),at:new Date().toISOString(),...(store.get('cc.me','')?{owner:store.get('cc.me','')}:{}),...ev};
   LAB.outbox=LAB.outbox.filter(e=>e.id!==ev.id);LAB.outbox.push(ev);store.set('cc.outbox',LAB.outbox);
   flushOutbox().then(n=>{toast(LAB.outbox.some(e=>e.id===ev.id)?t('savedOffline'):t('saved'),false);syncLab();});
   return ev;
@@ -1250,9 +1258,9 @@ window.addEventListener('online',()=>syncLab());
 function cultures(){
   const c=new Map();
   for(const e of allEvents()){
-    if(e.type==='culture'&&e.culture) c.set(e.culture.cid,{...e.culture,created:e.at,status:'active',src:e.id});
+    if(e.type==='culture'&&e.culture) c.set(e.culture.cid,{...e.culture,created:e.at,status:'active',src:e.id,owner:e.culture.owner||e.owner||''});
     if(e.type==='passage'){ if(e.source_cid&&c.has(e.source_cid)) c.get(e.source_cid).status='passaged';
-      (e.outputs||[]).forEach(o=>c.set(o.cid,{cid:o.cid,line:e.line,passage:e.to_passage,vessel:o.vessel,qty:o.qty,purpose:o.purpose,created:e.at,status:'active',src:e.id}));}
+      (e.outputs||[]).forEach(o=>c.set(o.cid,{cid:o.cid,line:e.line,passage:e.to_passage,vessel:o.vessel,qty:o.qty,purpose:o.purpose,created:e.at,status:'active',src:e.id,owner:o.owner||e.owner||''}));}
     if(e.type==='treat') (e.cids||[]).forEach(id=>{if(c.has(id)){c.get(id).status='treating';c.get(id).treat=e.id;}});
     if(e.type==='harvest'){for(const x of c.values()) if(x.treat===e.treat_id) x.status='harvested';}
     if(e.type==='discard'&&c.has(e.cid)) c.get(e.cid).status='discarded';
@@ -1374,7 +1382,7 @@ function openPassage({source,count}={}){
   for(const c of counts().slice(0,12)){const o=document.createElement('option');o.value=c.id;o.textContent=`${sciShort(c.cells_per_ml)} · ${c.title} · ${shortDate(new Date(c.at))}`;sel.append(o);}
   const o=document.createElement('option');o.value='__type';o.textContent=t('typeCpm');sel.append(o);
   sel.value=count||(counts()[0]&&Date.now()-new Date(counts()[0].at)<12*3.6e6?counts()[0].id:'__type');
-  if(!pRows.length) pRows=store.get('cc.lastOutputs',null)||[{vessel:'6-well',qty:2,cells:'3e5',ml:2,purpose:'treat'},{vessel:'dish-100',qty:1,cells:'1e6',ml:10,purpose:'keep'}];
+  if(!pRows.length) pRows=store.get('cc.lastOutputs',null)||[{vessel:'6-well',qty:1,cells:'8e4',ml:2,purpose:'treat'},{vessel:'dish-60',qty:1,cells:'2e5',ml:4,purpose:'keep'}];
   sourceChanged();paintPassage();show('sPassage');
 }
 function sourceChanged(){const c=activeCultures().find(x=>x.cid===$('pSource').value);
@@ -1395,7 +1403,7 @@ function paintPassage(){
       <div class="field"><label for="pq${i}"></label><input id="pq${i}" class="mono" type="text" inputmode="numeric"></div>
       <div class="field"><label for="pc${i}"></label><input id="pc${i}" class="mono" type="text" inputmode="decimal"></div>
       <div class="field"><label for="pm${i}"></label><input id="pm${i}" class="mono" type="text" inputmode="decimal"></div>
-      <div class="foot-row"><span><label for="pp${i}"></label> <select id="pp${i}" class="mini"></select></span><button type="button" class="mini danger"></button></div>`;
+      <div class="foot-row"><span><label for="pp${i}"></label> <select id="pp${i}" class="mini"></select></span><span><label for="po${i}"></label> <select id="po${i}" class="mini"></select></span><button type="button" class="mini danger"></button></div>`;
     d.querySelector(`[for=pv${i}]`).textContent=t('vessel');d.querySelector(`[for=pq${i}]`).textContent=`${t('qty')} (${vMany(r.vessel)})`;
     d.querySelector(`[for=pc${i}]`).textContent=t('cellsPerUnit',u);d.querySelector(`[for=pm${i}]`).textContent=t('mediumPerUnit',u);d.querySelector(`[for=pp${i}]`).textContent=t('purpose');
     const vs=d.querySelector('select');fillVesselSelect(vs,r.vessel);vs.onchange=()=>{r.vessel=vs.value;r.ml=VESSELS[r.vessel].ml;paintPassage();};
@@ -1404,6 +1412,7 @@ function paintPassage(){
     const m=d.querySelector(`#pm${i}`);m.value=r.ml;m.oninput=()=>{r.ml=m.value;paintPCalc();};
     const pp=d.querySelector(`#pp${i}`);[['keep','purposeKeep'],['treat','purposeTreat'],['other','purposeOther']].forEach(([v,k])=>{const o=document.createElement('option');o.value=v;o.textContent=t(k);pp.append(o);});
     pp.value=r.purpose;pp.onchange=()=>r.purpose=pp.value;
+    if(r.owner===undefined)r.owner=me();const po=d.querySelector(`#po${i}`);d.querySelector(`[for=po${i}]`).textContent=t('ownerOf');ownerSelect(po,r.owner);po.onchange=()=>r.owner=po.value;
     const rm=d.querySelector('.danger');rm.textContent=t('remove');rm.onclick=()=>{pRows.splice(i,1);paintPassage();};
     box.append(d);});
   paintPCalc();
@@ -1431,7 +1440,7 @@ $('pSave').onclick=()=>{
   store.set('cc.lastOutputs',pRows);
   addEvent({id,at:readWhen('pWhen'),type:'passage',title:`${line} P${to}`,line,from_passage:src?src.passage:to-1,to_passage:to,source_cid:src?.cid||null,
     count_id:$('pCount').value==='__type'?null:$('pCount').value,cells_per_ml:cpm,
-    outputs:rows.map((r,i)=>({cid:`${id}-${i}`,vessel:r.vessel,qty:r.qty,units:r.units,cells_per_unit:r.cells,medium_ml:r.ml,susp_ul:+r.ul.toFixed(1),purpose:r.purpose})),
+    outputs:rows.map((r,i)=>({cid:`${id}-${i}`,vessel:r.vessel,qty:r.qty,units:r.units,cells_per_unit:r.cells,medium_ml:r.ml,susp_ul:+r.ul.toFixed(1),purpose:r.purpose,owner:r.owner||null})),
     notes:$('pNotes').value.trim()});
   $('pNotes').value='';show('sHome');
 };
@@ -1574,7 +1583,9 @@ function openLog(){paintLog();show('sLog');}
 function paintLog(){
   const f=$('logFilters');f.innerHTML='';
   for(const [k,l] of [['all','fAll'],['count','fCount'],['passage','fPassage'],['treat','fTreat'],['protein','fProtein'],['note','fNote'],['other','fOther']]){const b=document.createElement('button');b.type='button';b.textContent=t(l);b.setAttribute('aria-pressed',logFilter===k);b.onclick=()=>{logFilter=k;paintLog();};f.append(b);}
-  const ev=allEvents().reverse().filter(e=>logFilter==='all'||e.type===logFilter||(logFilter==='treat'&&e.type==='harvest')||(logFilter==='protein'&&e.type==='bca')||(logFilter==='other'&&!['count','passage','treat','harvest','protein','bca','note'].includes(e.type)));
+  {const sep=document.createElement('span');sep.className='f-sep';f.append(sep);
+   for(const k of ['all',...PEOPLE.map(p=>p.name)]){const b=document.createElement('button');b.type='button';b.textContent=k==='all'?t('everyone'):k;b.setAttribute('aria-pressed',logWho===k);b.onclick=()=>{logWho=k;paintLog();};f.append(b);}}
+  const ev=allEvents().reverse().filter(e=>logWho==='all'||!e.owner||e.owner===logWho).filter(e=>logFilter==='all'||e.type===logFilter||(logFilter==='treat'&&e.type==='harvest')||(logFilter==='protein'&&e.type==='bca')||(logFilter==='other'&&!['count','passage','treat','harvest','protein','bca','note'].includes(e.type)));
   const lines=[...new Set(cultures().map(c=>c.line))];$('logSub').textContent=lines.join(' · ');
   const box=$('logList');box.innerHTML='';
   if(!ev.length){const p=document.createElement('p');p.className='empty-note';p.textContent=t('noLog');box.append(p);return;}
@@ -1587,6 +1598,7 @@ function paintLog(){
     a.innerHTML=`<span class="ic" style="background:${bg}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" aria-hidden="true">${path}</svg></span>
       <div class="hd"><b></b><span class="tm"></span></div><span class="sb"></span><div class="acts"></div>`;
     a.querySelector('b').textContent=ds.title;a.querySelector('.tm').textContent=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    if(e.owner)a.querySelector('.hd b').after(whoBadge(e.owner));
     a.querySelector('.sb').textContent=ds.sub;if(!ds.sub)a.querySelector('.sb').remove();
     if(e.notes){const n=document.createElement('span');n.className='nt';n.textContent=noteLines(e.notes);a.insertBefore(n,a.querySelector('.acts'));}
     if((e.by&&e.by!=='local')||e.pending){const n=document.createElement('span');n.className='byl';n.textContent=[e.by&&e.by!=='local'?e.by:'',e.pending?'⏳':''].filter(Boolean).join(' · ');a.insertBefore(n,a.querySelector('.acts'));}
@@ -1856,6 +1868,7 @@ function paintDetail(){
   const rel=all.filter(x=>x.id!==e.id&&(x.treat_id===e.id||x.target===e.id||(e.treat_id&&x.id!==e.treat_id&&x.treat_id===e.treat_id&&x.type!=='bca')||(e.type==='passage'&&x.type==='treat'&&(x.cids||[]).some(c=>(e.outputs||[]).some(o=>o.cid===c)))||
     (e.type==='passage'&&x.type==='passage'&&(e.outputs||[]).some(o=>o.cid===x.source_cid))||(e.type==='treat'&&x.type==='note'&&x.treat_id===e.id)));
   if(rel.length){const s=dSection(t('dRelated'));const l=dEl('div','d-links');rel.forEach(x=>l.append(dLink(x)));s.append(l);body.append(s);}
+  if(e.owner)body.insertBefore(dKV([[t('dOwner'),whoBadge(e.owner)]]),body.firstChild);
   const foot=dKV([[t('dBy'),e.by&&e.by!=='local'?e.by:''],[t('dEdited'),e.edited||'']]);foot.classList.add('kv-small');body.append(foot);
   const acts=dEl('div','d-acts');
   if(e.type==='treat'){const b=dEl('button','btn',t('harvestProtein'));b.type='button';b.onclick=()=>openProtein(e.id);acts.append(b);}
@@ -1891,7 +1904,7 @@ function paintIncubator(now){
     top.querySelector('.pnum').textContent='P'+c.passage;
     top.querySelector('b').textContent=`${c.line} · ${vName(c.vessel)}${c.qty>1?' × '+c.qty:''}`;
     top.querySelector('.tx span').textContent=t('incSeeded',shortDate(new Date(c.created)))+(trs.length?` · ${t('incTreat')}`:'');
-    top.querySelector('.side').textContent=t('dayN',days);card.append(top);
+    top.querySelector('.side').textContent=t('dayN',days);if(c.owner)top.querySelector('.tx b').append(' ',whoBadge(c.owner));card.append(top);
     trs.forEach((tr,i)=>{const b=document.createElement('div');b.className='inc-treat';
       const h=document.createElement('div');h.className='inc-th';
       h.append(Object.assign(document.createElement('b'),{textContent:tr.title}),
@@ -1993,9 +2006,23 @@ for(const scr of Object.keys(CK_SCREEN)){const host=$(scr).querySelector('.form'
   const d=document.createElement('details');d.className='ck';d.id='ck_'+scr;host.prepend(d);}
 function paintChecklists(){for(const scr of Object.keys(CK_SCREEN))paintChecklist(scr);}
 
+/* ================= LAB PEOPLE: who did what ================= */
+Object.assign(I18N.th,{meLabel:'บันทึกในชื่อ',shared:'ร่วม',everyone:'ทุกคน',dOwner:'ผู้ทำ',pickMe:'เลือกชื่อคุณก่อนบันทึก',ownerOf:'ของ'});
+Object.assign(I18N.en,{meLabel:'Recording as',shared:'Shared',everyone:'Everyone',dOwner:'Done by',pickMe:'Pick your name before recording',ownerOf:'Belongs to'});
+const PEOPLE=[{name:'Dewey',bg:'#E7ECFA',fg:'#1F3A8A'},{name:'Phupha',bg:'#FBE7F3',fg:'#8E2C6B'}];
+const me=()=>store.get('cc.me','');
+function whoBadge(name){const p=PEOPLE.find(x=>x.name===name),s=document.createElement('span');s.className='who';s.textContent=name||t('shared');
+  if(p){s.style.background=p.bg;s.style.color=p.fg;}return s;}
+function paintMe(){const seg=$('meSeg');if(!seg)return;seg.innerHTML='';const cur=me();
+  for(const p of PEOPLE){const b=document.createElement('button');b.type='button';b.textContent=p.name;b.setAttribute('aria-pressed',cur===p.name);
+    b.onclick=()=>{store.set('cc.me',p.name);paintMe();};seg.append(b);}
+  $('meRow').classList.toggle('unset',!cur);$('meHint').hidden=!!cur;}
+function ownerSelect(sel,value){sel.innerHTML='';for(const [v,l] of [['',t('shared')],...PEOPLE.map(p=>[p.name,p.name])]){const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);}sel.value=value||'';}
+let logWho='all';
+
 function labBoot(){
   if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{});}
-  paintChecklists();show('sHome');syncLab();setInterval(syncLab,60000);
+  paintChecklists();paintMe();show('sHome');syncLab();setInterval(syncLab,60000);
 }
 
 /* ---------------- boot ---------------- */
