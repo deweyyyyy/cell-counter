@@ -207,11 +207,17 @@ def ai_context(who):
     return sysmsg
 
 def _ai_post(cfg, payload):
-    import urllib.request
+    import urllib.request, urllib.error
     req = urllib.request.Request(cfg["base_url"].rstrip("/") + "/chat/completions", data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json", "Authorization": "Bearer " + cfg["api_key"]})
-    with urllib.request.urlopen(req, timeout=90) as r:
-        return json.loads(r.read())
+        headers={"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + cfg["api_key"],
+                 "User-Agent": "CellLab/1.0 (+lab assistant)"})
+    try:
+        with urllib.request.urlopen(req, timeout=90) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        detail = e.read()[:400].decode("utf-8", "replace")
+        log(f"ai     HTTP {e.code} from AI endpoint: {detail}")
+        raise
 
 def ai_chat(body, who):
     cfg = ai_config()
