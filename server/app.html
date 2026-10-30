@@ -2009,7 +2009,8 @@ function paintChecklists(){for(const scr of Object.keys(CK_SCREEN))paintChecklis
 /* ================= LAB PEOPLE: who did what ================= */
 Object.assign(I18N.th,{meLabel:'บันทึกในชื่อ',shared:'ร่วม',everyone:'ทุกคน',dOwner:'ผู้ทำ',pickMe:'เลือกชื่อคุณก่อนบันทึก',ownerOf:'ของ'});
 Object.assign(I18N.en,{meLabel:'Recording as',shared:'Shared',everyone:'Everyone',dOwner:'Done by',pickMe:'Pick your name before recording',ownerOf:'Belongs to'});
-const PEOPLE=[{name:'Dewey',bg:'#E7ECFA',fg:'#1F3A8A'},{name:'Phupha',bg:'#FBE7F3',fg:'#8E2C6B'}];
+const PEOPLE=[{name:'Dewey',bg:'#E7ECFA',fg:'#1F3A8A'},{name:'Poohpha',bg:'#FBE7F3',fg:'#8E2C6B'}];
+try{if(store.get('cc.me','')==='Phupha')store.set('cc.me','Poohpha');}catch(e){}
 const me=()=>store.get('cc.me','');
 function whoBadge(name){const p=PEOPLE.find(x=>x.name===name),s=document.createElement('span');s.className='who';s.textContent=name||t('shared');
   if(p){s.style.background=p.bg;s.style.color=p.fg;}return s;}
