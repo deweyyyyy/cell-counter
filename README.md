@@ -89,6 +89,7 @@ The home screen also keeps a simple culture log:
 - **Checklists and steps:** passage, treatment, protein harvest and counting each show a tick-off list of what to prepare and the steps. Ticks reset every day; edit the list in the app and the new version is saved to the log.
 - **Several people, one log:** pick your name on the home screen and new entries are recorded under it. Each vessel in a passage can belong to someone, and the log can be filtered by person. Edit the `PEOPLE` list in `app.html` for your lab.
 - **PDF / print:** print any checklist (big tick boxes for reading at the hood), any entry's detail page, or the filtered log. Choose "Save as PDF" in the print dialog.
+- **Calendar:** a month view with coloured dots for every entry, a stripe on days under treatment, and coming-up items (harvest times, predicted passages). Tap a day to see what was done, with start–end times, and tap an entry for its details. Notes can have an end time and a data table.
 - **Log:** everything by date, with filters, delete, and CSV export. Tap an entry to see all its details: plate map, groups, preparation, tubes, lysis mix, steps, photos and related entries.
 
 The log is stored on the server in `lab/events.jsonl`, one JSON entry per line; photos go to `lab/photos/`.

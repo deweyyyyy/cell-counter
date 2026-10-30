@@ -21,6 +21,8 @@
 - PDF / print for checklists, entry details and the log; count entries show their report image.
 - Protocols screen and illustrated steps (icons, highlighted numbers, cautions, tips, timers), with a full-screen step-by-step mode.
 - PDF export waits for every photo to load before printing.
+- Calendar view with per-person filter, treatment spans, harvest times and predicted passages.
+- Notes can have an end time (shown as a time range and duration) and a data table.
 
 ## v0.3.0 — 2026-10-27
 
