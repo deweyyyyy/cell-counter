@@ -2,6 +2,8 @@
 
 Count cells on a Neubauer-improved hemocytometer from a phone photo. Photograph each corner large square through the microscope eyepiece, let **CellNet** (a small neural network) mark the cells, fix any mistakes with a tap, and get cells/mL with a report image you can paste into a lab notebook.
 
+**Try it:** [cell.deweysworld.app/public](https://cell.deweysworld.app/public) — a public demo that counts one square. It runs on a budget server, so it may be offline or slow.
+
 ![The four screens of the app: start a round, count a square, review, round summary](docs/screens.png)
 
 - **Phone-first app** in Thai or English: start a round, count square by square, review, summary.
@@ -13,7 +15,7 @@ Count cells on a Neubauer-improved hemocytometer from a phone photo. Photograph 
 - **Training data:** squares you have corrected can be saved as training data for a better model.
 - **Lab log:** record hand counts (works offline), sub-passages with pipetting volumes, and treatments with stock-volume calculations, a plate map and a harvest timer. See [Lab log](#lab-log).
 
-> **Accuracy:** the bundled model (CellNet v0.3) was trained on simulated hemocytometer images plus a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
+> **Accuracy:** the bundled model (CellNet v0.4) was trained on simulated hemocytometer images and fine-tuned on a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
 
 ## Run it on your computer
 
@@ -115,7 +117,7 @@ These folders are ignored by git.
 
 ## Public demo page
 
-`/public` is a one-page demo for people outside the lab: take or choose a photo of one large square, see live and dead cells, the square found automatically, and live cells/mL. Visitors can zoom in, fix rings (add, remove, live ↔ dead) and, if they tick the consent box, send the corrected square for training. Nothing else is stored.
+`/public` is a one-page demo for people outside the lab ([live demo](https://cell.deweysworld.app/public)): take or choose a photo of one large square, see live and dead cells, the square found automatically, and live cells/mL. Visitors can zoom in, fix rings (add, remove, live ↔ dead) and, if they tick the consent box, send the corrected square for training. Nothing else is stored.
 
 Because it runs on your own computer, it is rate-limited per visitor and overall (see `PUBLIC_LIMITS` in `server.py`), only one public count runs at a time, and uploads are capped at 6 MB. It only uses `/public` and `/api/public/*`; the lab app and its data stay behind your login.
 
