@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.5.0 — 2026-11-02
 
 - **CellNet v0.4**, fine-tuned from v0.3 on real corrected squares plus simulated patches. On a held-out half square (73 cells) it scores F1 0.98 (74 found: 2 false, 1 missed), against 0.94 for v0.3 at its default setting (82 found). The simulated test set is unchanged (F1 0.88). Default strictness 0.87.
 - **Public demo page** at `/public`: count one square, see live/dead and cells/mL, fix rings and send them for training. Rate-limited; uploads go to `pb_train_dt/`.
