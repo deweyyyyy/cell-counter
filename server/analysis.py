@@ -37,7 +37,8 @@ def classify_dead(rgb, pts, target):
 
 def _peaks(p, mind):
     med = np.median(p); mad = np.median(np.abs(p - med)) + 1e-6
-    cand = [i for i in range(1, len(p) - 1) if p[i] >= p[i - 1] and p[i] >= p[i + 1] and p[i] > med + 4 * mad]
+    thr = med + max(4 * mad, 0.3 * (np.percentile(p, 99.5) - med))   # lines stand well above the background
+    cand = [i for i in range(1, len(p) - 1) if p[i] >= p[i - 1] and p[i] >= p[i + 1] and p[i] > thr]
     cand.sort(key=lambda i: -p[i]); out = []
     for i in cand:
         if all(abs(i - j) >= mind for j in out): out.append(i)
@@ -60,8 +61,13 @@ def _runs(pk, strength, n, smin, smax):
                 idx.append(j)
             if not ok: continue
             idx.append(b)
-            if any(pk[a] + tol < pk[k] < pk[b] - tol and k not in idx for k in range(len(pk))): continue
-            pos = [pk[j] for j in idx]; sp = np.diff(pos)
+            lines = [pk[j] for j in idx]
+            if any(pk[a] + tol < q < pk[b] - tol and min(abs(q - l) for l in lines) > tol for q in pk): continue
+            pos = [pk[j] for j in idx]
+            # a triple border line counts as one line at its middle
+            for e in (0, n - 1):
+                pos[e] = float(np.mean([q for q in pk if abs(q - pos[e]) <= 0.07 * s]))
+            sp = np.diff(pos)
             sc = sum(strength[j] for j in idx) * (1 - np.std(sp) / np.mean(sp))
             if best is None or sc > best[0]: best = (sc, pos[0], pos[-1], float(np.mean(sp)))
     return best
@@ -80,8 +86,8 @@ def detect_frame(rgb):
         th = np.abs(a - np.asarray(r.filter(ImageFilter.GaussianBlur(4)), np.float32))   # thin lines, either polarity
         rows, cols = np.percentile(th, 75, axis=1), np.percentile(th, 75, axis=0)
         h, w = th.shape; smin, smax = 0.12 * min(h, w), 0.32 * max(h, w)
-        pr, _, madr = _peaks(rows, max(3, int(0.012 * h)))
-        pc, _, madc = _peaks(cols, max(3, int(0.012 * w)))
+        pr, _, madr = _peaks(rows, max(3, int(0.006 * h)))
+        pc, _, madc = _peaks(cols, max(3, int(0.006 * w)))
         ry, rx = _runs(pr, rows, 5, smin, smax), _runs(pc, cols, 5, smin, smax)
         if not ry or not rx or abs(ry[3] - rx[3]) / max(ry[3], rx[3]) > 0.15: continue
         score = ry[0] / (np.median(rows) + madr * 5) + rx[0] / (np.median(cols) + madc * 5)

@@ -117,7 +117,7 @@ These folders are ignored by git.
 
 ## Public demo page
 
-`/public` is a one-page demo for people outside the lab ([live demo](https://cell.deweysworld.app/public)): take or choose a photo of one large square, see live and dead cells, the square found automatically, and live cells/mL. Visitors can zoom in, fix rings (add, remove, live ↔ dead) and, if they tick the consent box, send the corrected square for training. Nothing else is stored.
+`/public` is a one-page demo for people outside the lab ([live demo](https://cell.deweysworld.app/public)): take or choose a photo of one large square, or try a simulated sample with an answer key, see live and dead cells, the square found automatically, and live cells/mL. Visitors can zoom in, fix rings (add, remove, live ↔ dead) and, if they tick the consent box, send the corrected square for training. Nothing else is stored.
 
 Because it runs on your own computer, it is rate-limited per visitor and overall (see `PUBLIC_LIMITS` in `server.py`), only one public count runs at a time, and uploads are capped at 6 MB. It only uses `/public` and `/api/public/*`; the lab app and its data stay behind your login.
 

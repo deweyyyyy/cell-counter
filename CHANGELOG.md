@@ -2,6 +2,8 @@
 
 ## v0.5.0 — 2026-11-02
 
+- Public demo: **Try a simulated sample** draws a hemocytometer square with live and dead cells and an answer key, counts it, and shows how many live cells CellNet found, added or missed.
+- Square detection is steadier: triple border lines are read as one line, and faint noise is no longer mistaken for grid lines.
 - **CellNet v0.4**, fine-tuned from v0.3 on real corrected squares plus simulated patches. On a held-out half square (73 cells) it scores F1 0.98 (74 found: 2 false, 1 missed), against 0.94 for v0.3 at its default setting (82 found). The simulated test set is unchanged (F1 0.88). Default strictness 0.87.
 - **Public demo page** at `/public`: count one square, see live/dead and cells/mL, fix rings and send them for training. Rate-limited; uploads go to `pb_train_dt/`.
 - Zoom for checking cells: double-tap to zoom in, zoom buttons on the photo, full-screen editing on the demo page, and a **Live ↔ dead** tool to switch a ring's status.

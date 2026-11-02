@@ -111,7 +111,7 @@ footer a{display:inline-flex;align-items:center;gap:6px;font-weight:600}
             <label class="btn primary" for="camIn" data-i="takePhoto"></label>
             <label class="btn" for="pickIn" data-i="choose"></label>
           </div>
-          <button type="button" class="btn" id="sampleBtn" style="background:transparent;color:#DCE2EE;border-color:#2A3449" data-i="tryNoPhoto" hidden></button>
+          <button type="button" class="btn" id="sampleBtn" style="background:transparent;color:#DCE2EE;border-color:#3A4660" data-i="tryNoPhoto"></button>
         </div>
         <div class="zbar" id="zbar" hidden>
           <button type="button" id="fullBtn" aria-label="Full screen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -132,6 +132,7 @@ footer a{display:inline-flex;align-items:center;gap:6px;font-weight:600}
         <span class="sp"></span>
         <button type="button" id="undo" data-i="undo"></button>
         <label class="btn" for="pickIn" style="min-height:36px;padding:0 12px;font-size:13px;border-radius:10px" data-i="newPhoto"></label>
+        <button type="button" id="sampleBtn2" data-i="newDemo"></button>
       </div>
       <p class="hint" id="hint" hidden></p>
       <div class="legend" id="legend" hidden>
@@ -162,6 +163,7 @@ footer a{display:inline-flex;align-items:center;gap:6px;font-weight:600}
       </div>
       <button type="button" class="btn" id="recount" style="width:100%;margin-top:12px" hidden data-i="recount"></button>
       <div class="notice" id="msg" hidden role="status"></div>
+      <div class="notice info" id="demoBox" hidden></div>
 
       <div class="send" id="sendBox" hidden>
         <h2 data-i="sendTitle"></h2>
@@ -183,7 +185,9 @@ footer a{display:inline-flex;align-items:center;gap:6px;font-weight:600}
 const $=id=>document.getElementById(id);
 const T={
  en:{title:'Trypan Cell Counter',subtitle:'Public demo · counts live cells in one hemocytometer square with CellNet',photo:'Photo',
-  emptyHint:'Take or choose a photo of one large square (the 4×4 corner square) of a hemocytometer with trypan blue.',takePhoto:'Take photo',choose:'Choose photo',tryNoPhoto:'',
+  emptyHint:'Take or choose a photo of one large square (the 4×4 corner square) of a hemocytometer with trypan blue.',takePhoto:'Take photo',choose:'Choose photo',tryNoPhoto:'No photo? Try a simulated sample',newDemo:'New simulated sample',making:'Drawing a simulated sample…',
+  demoKey:(l,d)=>`Simulated sample · answer key: ${l} live and ${d} dead cells inside the square (edge rule applied). Cells on the top/left lines count; cells on the bottom/right lines don't.`,
+  demoScore:(m,x,mi,l)=>`CellNet: ${m} of ${l} live cells found, ${x} extra, ${mi} missed.`,
   counting:'Counting…',toolAdd:'Add cell',toolErase:'Remove',toolFrame:'Draw square',toolFlip:'Live ↔ dead',hintFlip:'Tap a ring to switch it between live and dead.',zoomTip:'Zoom in to check each cell: pinch, scroll, double-tap or ＋. Drag to move.',undo:'Undo',newPhoto:'New photo',
   hintAdd:'Tap a missed cell to add it.',hintErase:'Tap a ring to remove it (dust, a dead cell marked as live, …).',hintFrame:'Drag along the large-square border to set the square.',
   lgLive:'Live (counted)',lgDead:'Dead, blue (not counted)',lgMan:'Added by you',lgFrame:'Square',
@@ -199,7 +203,9 @@ const T={
   offline:'The counter is offline right now. Please try again later.',failed:'Counting failed: ',badImg:'That file could not be opened as an image.',sendFail:'Sending failed: ',
   formula:(n,df)=>`${n} × ${df} × 10⁴`},
  th:{title:'Trypan Cell Counter',subtitle:'เดโมสาธารณะ · นับเซลล์มีชีวิตใน 1 ช่องใหญ่ของ hemocytometer ด้วย CellNet',photo:'รูปภาพ',
-  emptyHint:'ถ่ายหรือเลือกรูป 1 ช่องใหญ่ (large square 4×4 ที่มุม) ของ hemocytometer ที่ผสม trypan blue',takePhoto:'ถ่ายรูป',choose:'เลือกรูป',tryNoPhoto:'',
+  emptyHint:'ถ่ายหรือเลือกรูป 1 ช่องใหญ่ (large square 4×4 ที่มุม) ของ hemocytometer ที่ผสม trypan blue',takePhoto:'ถ่ายรูป',choose:'เลือกรูป',tryNoPhoto:'ไม่มีรูป? ลองภาพจำลอง',newDemo:'ภาพจำลองใหม่',making:'กำลังสร้างภาพจำลอง…',
+  demoKey:(l,d)=>`ภาพจำลอง · เฉลย: เซลล์มีชีวิต ${l} เซลล์ และเซลล์ตาย ${d} เซลล์ในกรอบ (ใช้กฎขอบแล้ว) เซลล์ที่ทับเส้นบน/ซ้ายนับ ทับเส้นล่าง/ขวาไม่นับ`,
+  demoScore:(m,x,mi,l)=>`CellNet: เจอ ${m} จาก ${l} เซลล์มีชีวิต เกิน ${x} พลาด ${mi}`,
   counting:'กำลังนับ…',toolAdd:'เพิ่มเซลล์',toolErase:'ลบ',toolFrame:'วาดกรอบ',toolFlip:'สลับ เป็น ↔ ตาย',hintFlip:'แตะวงเพื่อสลับระหว่างเซลล์มีชีวิตกับเซลล์ตาย',zoomTip:'ซูมเข้าไปเช็กทีละเซลล์: ถ่างสองนิ้ว เลื่อนลูกกลิ้ง แตะสองครั้ง หรือกด ＋ แล้วลากเพื่อเลื่อนภาพ',undo:'ย้อนกลับ',newPhoto:'รูปใหม่',
   hintAdd:'แตะเซลล์ที่ตกหล่นเพื่อเพิ่ม',hintErase:'แตะวงเพื่อลบ (ฝุ่น หรือเซลล์ตายที่ถูกนับเป็นเซลล์เป็น ฯลฯ)',hintFrame:'ลากตามขอบช่องใหญ่เพื่อตั้งกรอบ',
   lgLive:'มีชีวิต (นับ)',lgDead:'ตาย สีน้ำเงิน (ไม่นับ)',lgMan:'เพิ่มเอง',lgFrame:'กรอบช่อง',
@@ -239,13 +245,70 @@ function autoLevels(c){
   for(let j=0;j<d.length;j+=4)for(let k=0;k<3;k++){const v=(d[j+k]-lo)*s;d[j+k]=v<0?0:v>255?255:v;}
   x.putImageData(id,0,0);
 }
+/* ---------- simulated sample (like the classic page): dim, transparent cells, some trypan-blue dead cells ---------- */
+async function makeSample(seed){
+  const yieldUI=()=>new Promise(r=>setTimeout(r,0));
+  const S=1200,A=50,B=1150,L=B-A,c=document.createElement('canvas');c.width=S;c.height=S;const cx2=c.getContext('2d');
+  let sd=seed;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  const id=cx2.createImageData(S,S),px=new Float32Array(S*S*3);
+  const base=.26+rnd()*.1,tint=[1,1.03,.9];
+  for(let y=0;y<S;y++){if(y%200===0)await yieldUI();for(let x=0;x<S;x++){const i=(y*S+x)*3,il=1+.25*(1-Math.hypot((x-S*.45)/S,(y-S*.42)/S)*1.8);for(let k=0;k<3;k++)px[i+k]=base*il*tint[k];}}
+  const mul=(x,y,f)=>{if(x<0||y<0||x>=S||y>=S)return;const i=(y*S+x)*3;px[i]*=f[0];px[i+1]*=f[1];px[i+2]*=f[2];};
+  const line=(p,vert,th,dark)=>{for(let o=-4;o<=4;o++){const f=1-dark*Math.exp(-.5*(o/(th/2))**2),q=Math.round(p+o);for(let t=0;t<S;t++)vert?mul(q,t,[f,f,f]):mul(t,q,[f,f,f]);}};
+  for(let i=1;i<4;i++){line(A+i*L/4,1,1.4,.45);line(A+i*L/4,0,1.4,.45);}
+  for(const p of [A,B])for(const o of [-6,0,6]){line(p+o,1,1.3,.5);line(p+o,0,1.3,.5);}
+  for(let i=0;i<160;i++){const cx=rnd()*S,cy=rnd()*S,r=.6+rnd()*(rnd()<.85?2:4),k=.15+rnd()*.4;
+    for(let y=Math.floor(cy-r-1);y<=cy+r+1;y++)for(let x=Math.floor(cx-r-1);x<=cx+r+1;x++){const m=Math.max(0,Math.min(1,1.3-Math.hypot(x-cx,y-cy)/r));if(m>0){const f=1-k*m;mul(x,y,[f,f,f]);}}}
+  const rimC=.16,deadFrac=.04+rnd()*.16;
+  const drawCell=(cx,cy,r,stained)=>{const a=rnd()*3.14,e=.9+rnd()*.2,rimw=.13+rnd()*.06,cc=rimC*(.6+rnd()*.8),core=rnd()*.1,s=.45+rnd()*.45;
+    for(let y=Math.floor(cy-2*r);y<=cy+2*r;y++)for(let x=Math.floor(cx-2*r);x<=cx+2*r;x++){
+      const dx=x-cx,dy=y-cy,u=(dx*Math.cos(a)+dy*Math.sin(a))/(r*e),v=(-dx*Math.sin(a)+dy*Math.cos(a))/(r/e),rr=Math.hypot(u,v);if(rr>2)continue;
+      const rim=Math.exp(-.5*((rr-1)/rimw)**2),ins=Math.max(0,Math.min(1,(1-rr)/.15));
+      if(!stained){const halo=.08*Math.exp(-.5*((rr-1.35)/.18)**2),f=1+core*ins+halo-cc*rim;mul(x,y,[f,f,f]);}
+      else{const bl=[1-.5*s,1-.38*s,1-.06*s],dk=1-.2*s;mul(x,y,[(1-ins)+ins*bl[0]*dk,(1-ins)+ins*bl[1]*dk,(1-ins)+ins*bl[2]*dk]);const f=1-cc*.6*rim;mul(x,y,[f,f,f]);}}};
+  const pts=[],R=()=>4.6+rnd()*1.4,free=(x,y,r,k)=>pts.every(p=>Math.hypot(p.x-x,p.y-y)>k*(p.r+r));
+  for(let i=0;i<16;i++){const r=R(),q=A+60+rnd()*(L-120),on=(i%2?-1:1)*rnd()*r*.6;
+    const [x,y,cnt]=[[q,A+on,1],[A+on,q,1],[q,B+on,0],[B+on,q,0]][i%4];if(free(x,y,r,1.3))pts.push({x,y,r,c:cnt});else i--;}
+  const need=110+Math.floor(rnd()*150)-pts.filter(p=>p.c).length;let placed=0,tries=0;
+  while(placed<need&&tries++<20000){const r=R();let x,y;
+    if(pts.length>20&&rnd()<.15){const p=pts[(rnd()*pts.length)|0],a=rnd()*6.28;x=p.x+Math.cos(a)*(p.r+r)*1.02;y=p.y+Math.sin(a)*(p.r+r)*1.02;if(!free(x,y,r,.97))continue;}
+    else{x=A+rnd()*L;y=A+rnd()*L;if(!free(x,y,r,1.4))continue;}
+    if(x<A+r+3||y<A+r+3||x>B-r-3||y>B-r-3)continue;pts.push({x,y,r,c:1});placed++;}
+  for(let i=0;i<14;i++){const r=R(),side=i%4,q=60+rnd()*(S-120),o=A-r-14;const [x,y]=[[q,o],[q,S-o],[o,q],[S-o,q]][side];pts.push({x,y,r,c:0});}
+  await yieldUI();for(const p of pts){p.dead=rnd()<deadFrac;drawCell(p.x,p.y,p.r,p.dead);}await yieldUI();
+  const tmp=new Float32Array(px.length);
+  for(let y=0;y<S;y++){if(y%120===0)await yieldUI();for(let x=0;x<S;x++)for(let k=0;k<3;k++){let s=0,n=0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=x+dx;if(yy<0||xx<0||yy>=S||xx>=S)continue;const w=(dx||dy)?(dx&&dy?.5:1):2;s+=px[(yy*S+xx)*3+k]*w;n+=w;}tmp[(y*S+x)*3+k]=s/n;}}
+  for(let i=0;i<S*S;i++){const nz=(rnd()-.5)*.05;for(let k=0;k<3;k++)id.data[i*4+k]=Math.max(0,Math.min(255,(tmp[i*3+k]+nz)*255));id.data[i*4+3]=255;}
+  cx2.putImageData(id,0,0);
+  return {canvas:c,truth:pts.filter(p=>p.c).map(p=>({x:p.x,y:p.y,dead:p.dead}))};
+}
+let sampleSeed=(Date.now()%2147483646)+1;
+async function trySample(){
+  msg('');$('empty').hidden=true;$('busy').hidden=false;$('busy').querySelector('span').textContent=t('making');
+  sampleSeed=(sampleSeed*48271)%2147483647;
+  const {canvas,truth}=await makeSample(sampleSeed);
+  $('busy').querySelector('span').textContent=t('counting');
+  $('diam').value=11;$('diamOut').textContent='11 px';
+  shot={img:canvas,pts:null,roi:null,roiSrc:null,added:[],removed:new Set(),flip:new Set(),undo:[],sent:false,sample:{truth}};view=null;
+  $('tools').hidden=false;$('legend').hidden=false;$('hint').hidden=false;
+  count();
+}
+$('sampleBtn').onclick=trySample;$('sampleBtn2').onclick=trySample;
+function paintDemo(has){
+  const box=$('demoBox');if(!has||!shot.sample){box.hidden=true;return;}
+  const tr=shot.sample.truth,tl=tr.filter(p=>!p.dead),td=tr.filter(p=>p.dead),L=live(),used=new Set();let m=0;
+  for(const p of L){let bj=-1,bd=diam()*.7;tl.forEach((q,j)=>{const d=Math.hypot(q.x-p.x,q.y-p.y);if(d<bd&&!used.has(j)){bd=d;bj=j;}});if(bj>=0){used.add(bj);m++;}}
+  box.hidden=false;box.textContent=t('demoKey',tl.length,td.length)+' '+t('demoScore',m,L.length-m,tl.length-m,tl.length);
+}
+
 function loadFile(f){
   if(!f)return; msg('');
   const url=URL.createObjectURL(f),im=new Image();
   im.onload=()=>{const MAX=1600,k=Math.min(1,MAX/Math.max(im.width,im.height));
     const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
     c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);autoLevels(c);
-    shot={img:c,pts:null,roi:null,roiSrc:null,added:[],removed:new Set(),flip:new Set(),undo:[],sent:false};view=null;
+    shot={img:c,pts:null,roi:null,roiSrc:null,added:[],removed:new Set(),flip:new Set(),undo:[],sent:false,sample:null};view=null;
     $('empty').hidden=true;$('tools').hidden=false;$('legend').hidden=false;$('hint').hidden=false;
     count();};
   im.onerror=()=>{URL.revokeObjectURL(url);msg(t('badImg'));};
@@ -301,7 +364,8 @@ function paint(){
   const L=has?live().length:0,D=has?dead().length:0,df=+$('df').value||1;
   $('nLive').textContent=has?L:'–';$('nDead').textContent=has?D:'–';$('viab').textContent=has&&L+D?(100*L/(L+D)).toFixed(1)+'%':'–';
   $('perMl').textContent=has&&shot.roi?sci(L*df*1e4):'–';$('formula').textContent=has&&shot.roi?t('formula',L,df):'';
-  $('sendBox').hidden=!has;$('sendBtn').disabled=!has||!$('agree').checked||shot.sent;$('sendBtn').textContent=shot&&shot.sent?t('sent'):t('send');
+  $('sendBox').hidden=!has||!!shot.sample;
+  paintDemo(has);$('sendBtn').disabled=!has||!$('agree').checked||shot.sent;$('sendBtn').textContent=shot&&shot.sent?t('sent'):t('send');
   const fn=$('frameNote');if(!has){fn.hidden=true;}else{fn.hidden=false;fn.className='notice '+(shot.roiSrc?'info':'warn');fn.textContent=shot.roiSrc==='auto'?t('frameAuto'):shot.roiSrc==='manual'?t('frameManual'):t('frameNone');}
   $('hint').textContent=t({add:'hintAdd',erase:'hintErase',frame:'hintFrame',flip:'hintFlip'}[tool])+' '+t('zoomTip');
   $('zbar').hidden=!has; if(view) $('zLabel').textContent=(view.s/view.fit).toFixed(view.s/view.fit<10?1:0).replace(/\.0$/,'')+'×';
