@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **CellNet v0.4**, fine-tuned from v0.3 on real corrected squares plus simulated patches. On a held-out half square (73 cells) it scores F1 0.98 (74 found: 2 false, 1 missed), against 0.94 for v0.3 at its default setting (82 found). The simulated test set is unchanged (F1 0.88). Default strictness 0.87.
+- **Public demo page** at `/public`: count one square, see live/dead and cells/mL, fix rings and send them for training. Rate-limited; uploads go to `pb_train_dt/`.
+- Zoom for checking cells: double-tap to zoom in, zoom buttons on the photo, full-screen editing on the demo page, and a **Live ↔ dead** tool to switch a ring's status.
 - "Send this photo as CellNet training data" on the count screen: correct one photo and send it, without counting a whole round. Dead-cell positions are included.
 - Live/dead: cells stained by trypan blue are marked as dead (dashed blue rings) and left out of the count; the count screen and summary show the dead count and % viable.
 - The large square is found automatically from the grid lines, so only cells inside it are counted. If no whole square is in the photo, the previous square or the manual border is used.

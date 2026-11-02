@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4F6FA">
+<title>Trypan Cell Counter · Demo</title>
+<meta name="description" content="Count live cells in a hemocytometer photo with CellNet. Public demo.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 30 30%22%3E%3Crect width=%2230%22 height=%2230%22 rx=%228%22 fill=%22%232E4FB3%22/%3E%3Ccircle cx=%2211%22 cy=%2212%22 r=%223.4%22 fill=%22white%22/%3E%3Ccircle cx=%2219%22 cy=%2217%22 r=%224%22 fill=%22white%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F4F6FA; --surface:#FFFFFF; --ink:#10182B; --ink2:#3A4358; --muted:#5B6478;
+  --line:#DDE2EC; --trypan:#2E4FB3; --trypan-d:#1F3A8A; --trypan-tint:#E7ECFA;
+  --good:#0B6B4E; --good-bg:#E3F5EE; --warn:#8A5300; --warn-bg:#FFF1DC; --bad:#A3361B; --bad-bg:#FDE8E2;
+  --manual:#E07A10; --night:#0F1522;
+  --f:'IBM Plex Sans Thai',system-ui,-apple-system,sans-serif; --m:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--trypan)}
+:focus-visible{outline:3px solid var(--trypan);outline-offset:2px}
+.mono{font-family:var(--m);font-variant-numeric:tabular-nums}
+.wrap{max-width:980px;margin:0 auto;padding:16px 16px 32px}
+header{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
+.logo{width:40px;height:40px;border-radius:11px;background:var(--trypan);display:grid;place-items:center;flex:none}
+header>div:nth-child(2){min-width:0}
+header h1{margin:0;font-size:19px;line-height:1.2}
+header p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.lang{margin-left:auto;flex:none;display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:7px 11px;font-size:13px;font-weight:600;color:var(--muted)}
+.lang button[aria-pressed=true]{background:var(--trypan-tint);color:var(--trypan)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media (min-width:860px){.grid{grid-template-columns:minmax(0,1fr) 320px;align-items:start}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.stage{position:relative;background:var(--night);border-radius:14px;overflow:hidden;aspect-ratio:1/1;touch-action:none}
+.stage canvas{width:100%;height:100%;display:block}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#DCE2EE;text-align:center;padding:20px}
+.empty p{margin:0;font-size:14px;color:#A9B2C6;max-width:320px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:15px;text-decoration:none;color:var(--ink)}
+.btn.primary{background:var(--trypan);border-color:var(--trypan);color:#fff}
+.btn.primary:hover{background:var(--trypan-d)}
+.btn:disabled{opacity:.5;cursor:default}
+.busy{position:absolute;inset:0;background:rgba(15,21,34,.62);display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-size:14px}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.zbar{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.zbar button{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(15,21,34,.72);color:#fff;font-size:20px;font-weight:600;display:grid;place-items:center;backdrop-filter:blur(4px)}
+.zbar span{font-family:var(--m);font-size:12px;color:#fff;background:rgba(15,21,34,.72);border-radius:8px;padding:3px 6px}
+.card.full{position:fixed;inset:0;z-index:50;border-radius:0;border:0;overflow:auto;padding:10px max(10px,env(safe-area-inset-left))}
+.card.full .stage{aspect-ratio:auto;height:calc(100dvh - 150px)}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tools button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink2)}
+.tools button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tools .sp{flex:1}
+@media (max-width:520px){.tools .sp{display:none}}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 2px 0}
+.big{display:flex;align-items:baseline;gap:8px}
+.big b{font-family:var(--m);font-size:44px;font-weight:600;letter-spacing:-1px;line-height:1}
+.big span{font-size:14px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.stat{background:var(--ground);border-radius:10px;padding:9px 11px}
+.stat small{display:block;font-size:12px;color:var(--muted)}
+.stat b{font-family:var(--m);font-size:17px;font-weight:600}
+.field{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.field label{font-size:13px;font-weight:600}
+.field .row{display:flex;align-items:center;gap:10px}
+.field input[type=range]{flex:1;accent-color:var(--trypan)}
+.field input[type=number]{width:84px;border:1px solid var(--line);border-radius:9px;padding:7px 9px}
+.field small{font-size:12px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink2);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.ring{width:11px;height:11px;border-radius:50%;border:2px solid #12936B}
+.ring.man{border-color:var(--manual)} .ring.dead{border:2px dashed #3D6BE0} .ring.frame{border-radius:2px;border:2px dashed #E0A800}
+.notice{border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px}
+.notice.info{background:var(--trypan-tint);color:var(--trypan-d)}
+.notice.warn{background:var(--warn-bg);color:var(--warn)}
+.notice.ok{background:var(--good-bg);color:var(--good)}
+.notice.bad{background:var(--bad-bg);color:var(--bad)}
+.send{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.send h2{margin:0 0 4px;font-size:15px}
+.send p{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:8px 0 10px}
+.check input{margin-top:3px;accent-color:var(--trypan)}
+footer{margin-top:22px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+footer a{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18" opacity=".55"/><circle cx="7.5" cy="7" r="2.2" fill="#fff" stroke="none"/><circle cx="16" cy="12.5" r="2.6" fill="#fff" stroke="none"/><circle cx="10" cy="18" r="1.9" fill="#fff" stroke="none"/></svg></div>
+    <div><h1 data-i="title"></h1><p data-i="subtitle"></p></div>
+    <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en">EN</button><button type="button" data-lang="th">ไทย</button></div>
+  </header>
+
+  <div class="grid">
+    <section class="card" id="photoCard" aria-labelledby="hPhoto">
+      <h2 id="hPhoto" class="visually-hidden" data-i="photo"></h2>
+      <div class="stage" id="stage">
+        <canvas id="cv" width="900" height="900" aria-label=""></canvas>
+        <div class="empty" id="empty">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <p data-i="emptyHint"></p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+            <label class="btn primary" for="camIn" data-i="takePhoto"></label>
+            <label class="btn" for="pickIn" data-i="choose"></label>
+          </div>
+          <button type="button" class="btn" id="sampleBtn" style="background:transparent;color:#DCE2EE;border-color:#2A3449" data-i="tryNoPhoto" hidden></button>
+        </div>
+        <div class="zbar" id="zbar" hidden>
+          <button type="button" id="fullBtn" aria-label="Full screen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          <button type="button" id="zIn2" aria-label="Zoom in">＋</button>
+          <button type="button" id="zOut2" aria-label="Zoom out">－</button>
+          <button type="button" id="zFit" aria-label="Fit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>
+          <span id="zLabel">1×</span>
+        </div>
+        <div class="busy" id="busy" hidden><div class="spin"></div><span data-i="counting"></span></div>
+      </div>
+      <input id="camIn" class="visually-hidden" type="file" accept="image/*" capture="environment">
+      <input id="pickIn" class="visually-hidden" type="file" accept="image/*">
+      <div class="tools" id="tools" hidden role="toolbar">
+        <button type="button" data-tool="add" aria-pressed="true" data-i="toolAdd"></button>
+        <button type="button" data-tool="erase" aria-pressed="false" data-i="toolErase"></button>
+        <button type="button" data-tool="flip" aria-pressed="false" data-i="toolFlip"></button>
+        <button type="button" data-tool="frame" aria-pressed="false" data-i="toolFrame"></button>
+        <span class="sp"></span>
+        <button type="button" id="undo" data-i="undo"></button>
+        <label class="btn" for="pickIn" style="min-height:36px;padding:0 12px;font-size:13px;border-radius:10px" data-i="newPhoto"></label>
+      </div>
+      <p class="hint" id="hint" hidden></p>
+      <div class="legend" id="legend" hidden>
+        <span><span class="ring"></span><span data-i="lgLive"></span></span>
+        <span><span class="ring dead"></span><span data-i="lgDead"></span></span>
+        <span><span class="ring man"></span><span data-i="lgMan"></span></span>
+        <span><span class="ring frame"></span><span data-i="lgFrame"></span></span>
+      </div>
+      <div class="notice" id="frameNote" hidden></div>
+    </section>
+
+    <aside class="card" aria-labelledby="hRes">
+      <h2 id="hRes" style="margin:0 0 8px;font-size:15px" data-i="result"></h2>
+      <div class="big"><b id="nLive">–</b><span data-i="liveCells"></span></div>
+      <div class="stats">
+        <div class="stat"><small data-i="dead"></small><b id="nDead">–</b></div>
+        <div class="stat"><small data-i="viability"></small><b id="viab">–</b></div>
+        <div class="stat" style="grid-column:1/-1"><small data-i="perMl"></small><b id="perMl">–</b><small id="formula" class="mono" style="margin-top:2px"></small></div>
+      </div>
+      <div class="field">
+        <label for="diam" data-i="cellSize"></label>
+        <div class="row"><input id="diam" type="range" min="6" max="60" step="1" value="14"><span class="mono" id="diamOut">14 px</span></div>
+        <small data-i="cellSizeHint"></small>
+      </div>
+      <div class="field">
+        <label for="df" data-i="dilution"></label>
+        <div class="row"><input id="df" type="number" min="1" max="1000" step="0.5" value="2"><small data-i="dfHint"></small></div>
+      </div>
+      <button type="button" class="btn" id="recount" style="width:100%;margin-top:12px" hidden data-i="recount"></button>
+      <div class="notice" id="msg" hidden role="status"></div>
+
+      <div class="send" id="sendBox" hidden>
+        <h2 data-i="sendTitle"></h2>
+        <p data-i="sendBody"></p>
+        <label class="check"><input type="checkbox" id="agree"><span data-i="agree"></span></label>
+        <button type="button" class="btn primary" id="sendBtn" style="width:100%" disabled data-i="send"></button>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <span data-i="footNote"></span>
+    <a href="https://github.com/deweyyyyy/cell-counter" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg><span data-i="github"></span></a>
+  </footer>
+</div>
+
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const T={
+ en:{title:'Trypan Cell Counter',subtitle:'Public demo · counts live cells in one hemocytometer square with CellNet',photo:'Photo',
+  emptyHint:'Take or choose a photo of one large square (the 4×4 corner square) of a hemocytometer with trypan blue.',takePhoto:'Take photo',choose:'Choose photo',tryNoPhoto:'',
+  counting:'Counting…',toolAdd:'Add cell',toolErase:'Remove',toolFrame:'Draw square',toolFlip:'Live ↔ dead',hintFlip:'Tap a ring to switch it between live and dead.',zoomTip:'Zoom in to check each cell: pinch, scroll, double-tap or ＋. Drag to move.',undo:'Undo',newPhoto:'New photo',
+  hintAdd:'Tap a missed cell to add it.',hintErase:'Tap a ring to remove it (dust, a dead cell marked as live, …).',hintFrame:'Drag along the large-square border to set the square.',
+  lgLive:'Live (counted)',lgDead:'Dead, blue (not counted)',lgMan:'Added by you',lgFrame:'Square',
+  frameAuto:'The large square was found automatically. Only cells inside it are counted (cells on the right and bottom lines are left out).',
+  frameNone:'No whole large square found, so the whole photo is counted. Use “Draw square” to set it.',frameManual:'Using the square you drew.',
+  result:'Result',liveCells:'live cells',dead:'Dead (blue)',viability:'Viability',perMl:'Live cells / mL',
+  cellSize:'Cell size in this photo',cellSizeHint:'Roughly how wide one cell is. Change it and press Count again if many cells are missed or doubled.',
+  dilution:'Dilution factor',dfHint:'2 for 1:1 with trypan blue',recount:'Count again with this cell size',
+  sendTitle:'Help train CellNet',sendBody:'If you corrected the rings, you can send this photo and your corrections. They are used only to train the model and are kept apart from lab data.',
+  agree:'I agree to send this photo and my corrections. The photo contains no personal information.',send:'Send for training',sent:'Thank you! Sent.',
+  footNote:'Runs on budget server, so it may be offline or slow. Nothing is saved unless you press Send.',github:'Source code on GitHub',
+  busyServer:'Someone else is counting right now. Try again in a few seconds.',limited:s=>`Too many requests from your network. Try again in about ${s>90?Math.ceil(s/60)+' min':s+' s'}.`,
+  offline:'The counter is offline right now. Please try again later.',failed:'Counting failed: ',badImg:'That file could not be opened as an image.',sendFail:'Sending failed: ',
+  formula:(n,df)=>`${n} × ${df} × 10⁴`},
+ th:{title:'Trypan Cell Counter',subtitle:'เดโมสาธารณะ · นับเซลล์มีชีวิตใน 1 ช่องใหญ่ของ hemocytometer ด้วย CellNet',photo:'รูปภาพ',
+  emptyHint:'ถ่ายหรือเลือกรูป 1 ช่องใหญ่ (large square 4×4 ที่มุม) ของ hemocytometer ที่ผสม trypan blue',takePhoto:'ถ่ายรูป',choose:'เลือกรูป',tryNoPhoto:'',
+  counting:'กำลังนับ…',toolAdd:'เพิ่มเซลล์',toolErase:'ลบ',toolFrame:'วาดกรอบ',toolFlip:'สลับ เป็น ↔ ตาย',hintFlip:'แตะวงเพื่อสลับระหว่างเซลล์มีชีวิตกับเซลล์ตาย',zoomTip:'ซูมเข้าไปเช็กทีละเซลล์: ถ่างสองนิ้ว เลื่อนลูกกลิ้ง แตะสองครั้ง หรือกด ＋ แล้วลากเพื่อเลื่อนภาพ',undo:'ย้อนกลับ',newPhoto:'รูปใหม่',
+  hintAdd:'แตะเซลล์ที่ตกหล่นเพื่อเพิ่ม',hintErase:'แตะวงเพื่อลบ (ฝุ่น หรือเซลล์ตายที่ถูกนับเป็นเซลล์เป็น ฯลฯ)',hintFrame:'ลากตามขอบช่องใหญ่เพื่อตั้งกรอบ',
+  lgLive:'มีชีวิต (นับ)',lgDead:'ตาย สีน้ำเงิน (ไม่นับ)',lgMan:'เพิ่มเอง',lgFrame:'กรอบช่อง',
+  frameAuto:'ตรวจพบกรอบช่องใหญ่อัตโนมัติ นับเฉพาะเซลล์ในกรอบ (ไม่นับเซลล์ที่ทับเส้นขวาและเส้นล่าง)',
+  frameNone:'ไม่พบช่องใหญ่ครบทั้งช่อง จึงนับทั้งภาพ กด "วาดกรอบ" เพื่อตั้งกรอบเอง',frameManual:'ใช้กรอบที่วาดเอง',
+  result:'ผลการนับ',liveCells:'เซลล์มีชีวิต',dead:'เซลล์ตาย (สีน้ำเงิน)',viability:'% มีชีวิต',perMl:'เซลล์มีชีวิต / mL',
+  cellSize:'ขนาดเซลล์ในรูปนี้',cellSizeHint:'ความกว้างโดยประมาณของ 1 เซลล์ ถ้านับตกหล่นหรือซ้ำมาก ให้ปรับแล้วกดนับใหม่',
+  dilution:'Dilution factor',dfHint:'ผสม trypan blue 1:1 ใช้ 2',recount:'นับใหม่ด้วยขนาดเซลล์นี้',
+  sendTitle:'ช่วยเทรน CellNet',sendBody:'ถ้าแก้วงให้ถูกแล้ว ส่งรูปนี้พร้อมการแก้ไขมาได้ ข้อมูลใช้สำหรับเทรนโมเดลเท่านั้น และเก็บแยกจากข้อมูลแล็บ',
+  agree:'ยินยอมส่งรูปนี้และการแก้ไข รูปไม่มีข้อมูลส่วนบุคคล',send:'ส่งไปเทรน',sent:'ขอบคุณครับ ส่งแล้ว',
+  footNote:'ระบบรันบนเซิร์ฟเวอร์ราคาประหยัด อาจปิดอยู่หรือช้าในบางเวลา ไม่มีการบันทึกข้อมูลใด ๆ ยกเว้นเมื่อกดส่ง',github:'ซอร์สโค้ดบน GitHub',
+  busyServer:'มีคนกำลังนับอยู่ ลองใหม่ในอีกไม่กี่วินาที',limited:s=>`ส่งคำขอบ่อยเกินไป ลองใหม่ในอีกประมาณ ${s>90?Math.ceil(s/60)+' นาที':s+' วินาที'}`,
+  offline:'ตอนนี้ตัวนับออฟไลน์อยู่ ลองใหม่ภายหลัง',failed:'นับไม่สำเร็จ: ',badImg:'เปิดไฟล์นี้เป็นรูปไม่ได้',sendFail:'ส่งไม่สำเร็จ: ',
+  formula:(n,df)=>`${n} × ${df} × 10⁴`}
+};
+let LANG=(()=>{try{return localStorage.getItem('pb.lang')}catch(e){return null}})()||((navigator.language||'').startsWith('th')?'th':'en');
+const t=(k,...a)=>{const v=T[LANG][k]??T.en[k];return typeof v==='function'?v(...a):v;};
+function applyLang(){document.documentElement.lang=LANG;document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=t(e.dataset.i)});
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));paint();}
+document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;try{localStorage.setItem('pb.lang',LANG)}catch(e){}applyLang();});
+
+let INFO={thr:.85,target:13,version:'CellNet'};
+fetch('api/public/info').then(r=>r.ok?r.json():null).then(j=>{if(j)INFO=j;}).catch(()=>{});
+
+let shot=null,tool='add';
+const cv=$('cv'),g=cv.getContext('2d');
+const diam=()=>+$('diam').value;
+
+function msg(text,kind='bad'){const m=$('msg');m.hidden=!text;m.className='notice '+kind;m.textContent=text||'';}
+
+function autoLevels(c){
+  const x=c.getContext('2d',{willReadFrequently:true}),id=x.getImageData(0,0,c.width,c.height),d=id.data,h=new Uint32Array(256);
+  for(let j=0;j<d.length;j+=16)h[(d[j]*.299+d[j+1]*.587+d[j+2]*.114)|0]++;
+  const tot=h.reduce((a,b)=>a+b,0);let acc=0,lo=0,hi=255;
+  for(let i=0;i<256;i++){acc+=h[i];if(acc<tot*.01)lo=i;if(acc<tot*.995)hi=i;}
+  if(hi-lo<20)return;const s=255/(hi-lo);
+  for(let j=0;j<d.length;j+=4)for(let k=0;k<3;k++){const v=(d[j+k]-lo)*s;d[j+k]=v<0?0:v>255?255:v;}
+  x.putImageData(id,0,0);
+}
+function loadFile(f){
+  if(!f)return; msg('');
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{const MAX=1600,k=Math.min(1,MAX/Math.max(im.width,im.height));
+    const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);autoLevels(c);
+    shot={img:c,pts:null,roi:null,roiSrc:null,added:[],removed:new Set(),flip:new Set(),undo:[],sent:false};view=null;
+    $('empty').hidden=true;$('tools').hidden=false;$('legend').hidden=false;$('hint').hidden=false;
+    count();};
+  im.onerror=()=>{URL.revokeObjectURL(url);msg(t('badImg'));};
+  im.src=url;
+}
+$('camIn').onchange=e=>{const f=e.target.files[0];e.target.value='';loadFile(f);};
+$('pickIn').onchange=e=>{const f=e.target.files[0];e.target.value='';loadFile(f);};
+
+async function count(){
+  if(!shot)return;
+  const s=shot,d=diam(),k=Math.min(1,INFO.target/d);
+  const c=document.createElement('canvas');c.width=Math.max(8,Math.round(s.img.width*k));c.height=Math.max(8,Math.round(s.img.height*k));
+  const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(s.img,0,0,c.width,c.height);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));
+  $('busy').hidden=false;$('recount').hidden=true;msg('');
+  try{
+    const r=await fetch(`api/public/count?diam=${(d*k).toFixed(2)}&frame=1`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob});
+    if(r.status===429){const j=await r.json().catch(()=>({}));const w=+(r.headers.get('Retry-After')||j.retry_after||5);throw {user:w<=5?t('busyServer'):t('limited',w)};}
+    if(r.status>=500||r.status===0)throw {user:t('offline')};
+    if(!r.ok){const m=await r.text().catch(()=>'');throw {user:t('failed')+r.status+' '+m.slice(0,80)};}
+    const j=await r.json();if(shot!==s)return;
+    s.pts=j.points.map(([px,py,p,dd],i)=>({x:(px+.5)/k-.5,y:(py+.5)/k-.5,p,i,dead:!!dd}));
+    s.removed=new Set();s.flip=new Set();s.diamUsed=d;
+    if(j.frame&&s.roiSrc!=='manual'){const f=j.frame;s.roi={x:f.x/k,y:f.y/k,w:f.w/k,h:f.h/k};s.roiSrc='auto';}
+    else if(s.roiSrc!=='manual'){s.roi=null;s.roiSrc=null;}
+  }catch(e){msg(e&&e.user?e.user:t('offline'));}
+  finally{$('busy').hidden=true;}
+  fit();paint();
+}
+$('recount').onclick=count;
+$('diam').oninput=()=>{$('diamOut').textContent=diam()+' px';$('recount').hidden=!shot||!shot.diamUsed||Math.abs(diam()-shot.diamUsed)<1;paint();};
+$('df').oninput=()=>paint();
+
+function inFrame(p,roi,d){if(!roi)return true;const r=d/2;return p.x>=roi.x-r&&p.y>=roi.y-r&&p.x<roi.x+roi.w-r&&p.y<roi.y+roi.h-r;}
+function aiAll(){if(!shot||!shot.pts)return [];const d=diam(),sep=d*.55,out=[];
+  for(const p of shot.pts.filter(p=>p.p>INFO.thr).sort((a,b)=>b.p-a.p)) if(!out.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<sep)) out.push(p);
+  return out.filter(p=>inFrame(p,shot.roi,d)&&!shot.removed.has(p.i));}
+const isDead=p=>p.dead!==shot.flip.has(p.i);
+const manIn=()=>shot?shot.added.map((p,j)=>({...p,j})).filter(p=>inFrame(p,shot.roi,diam())):[];
+const live=()=>aiAll().filter(p=>!isDead(p)).map(p=>({...p,src:'ai'})).concat(manIn().filter(p=>!p.dead).map(p=>({...p,src:'man'})));
+const dead=()=>aiAll().filter(p=>isDead(p)).map(p=>({...p,src:'dead'})).concat(manIn().filter(p=>p.dead).map(p=>({...p,src:'dead',man:true})));
+
+/* view: fit the square (or the photo) into the canvas, with zoom */
+let view=null;
+function sizeCv(){const r=$('stage').getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);}
+function fit(){if(!shot)return;sizeCv();const d=diam(),f=shot.roi?{x:shot.roi.x-d*2,y:shot.roi.y-d*2,w:shot.roi.w+d*4,h:shot.roi.h+d*4}:{x:0,y:0,w:shot.img.width,h:shot.img.height};
+  const s=Math.min(cv.width/f.w,cv.height/f.h);view={s,fit:s,tx:cv.width/2-(f.x+f.w/2)*s,ty:cv.height/2-(f.y+f.h/2)*s};}
+const toScr=(x,y)=>[x*view.s+view.tx,y*view.s+view.ty];
+const toImg=(X,Y)=>[(X-view.tx)/view.s,(Y-view.ty)/view.s];
+let dragRect=null;
+function paint(){
+  const has=!!(shot&&shot.pts);
+  const L=has?live().length:0,D=has?dead().length:0,df=+$('df').value||1;
+  $('nLive').textContent=has?L:'–';$('nDead').textContent=has?D:'–';$('viab').textContent=has&&L+D?(100*L/(L+D)).toFixed(1)+'%':'–';
+  $('perMl').textContent=has&&shot.roi?sci(L*df*1e4):'–';$('formula').textContent=has&&shot.roi?t('formula',L,df):'';
+  $('sendBox').hidden=!has;$('sendBtn').disabled=!has||!$('agree').checked||shot.sent;$('sendBtn').textContent=shot&&shot.sent?t('sent'):t('send');
+  const fn=$('frameNote');if(!has){fn.hidden=true;}else{fn.hidden=false;fn.className='notice '+(shot.roiSrc?'info':'warn');fn.textContent=shot.roiSrc==='auto'?t('frameAuto'):shot.roiSrc==='manual'?t('frameManual'):t('frameNone');}
+  $('hint').textContent=t({add:'hintAdd',erase:'hintErase',frame:'hintFrame',flip:'hintFlip'}[tool])+' '+t('zoomTip');
+  $('zbar').hidden=!has; if(view) $('zLabel').textContent=(view.s/view.fit).toFixed(view.s/view.fit<10?1:0).replace(/\.0$/,'')+'×';
+  if(!shot){g.fillStyle='#0F1522';g.fillRect(0,0,cv.width,cv.height);return;}
+  if(!view)fit();
+  g.fillStyle='#0F1522';g.fillRect(0,0,cv.width,cv.height);
+  g.imageSmoothingEnabled=view.s<2;g.drawImage(shot.img,view.tx,view.ty,shot.img.width*view.s,shot.img.height*view.s);
+  const dpr=cv.width/Math.max(1,cv.clientWidth),r=Math.max(4*dpr,(diam()/2+1.5)*view.s),lw=Math.max(1.6*dpr,Math.min(3*dpr,view.s*1.2));
+  const roi=dragRect||shot.roi;
+  if(roi){const [a,b]=toScr(roi.x,roi.y),[c,d]=toScr(roi.x+roi.w,roi.y+roi.h);g.save();g.setLineDash([lw*4,lw*3]);g.lineWidth=lw;g.strokeStyle='#FFD166';g.strokeRect(a,b,c-a,d-b);g.restore();}
+  if(!has)return;
+  for(const c of dead().concat(live())){const [X,Y]=toScr(c.x,c.y);
+    g.lineWidth=lw+1.6;g.strokeStyle='rgba(0,0,0,.6)';g.setLineDash([]);g.beginPath();g.arc(X,Y,r,0,7);g.stroke();
+    g.lineWidth=lw;g.strokeStyle=c.src==='man'?'#FF9F1C':c.src==='dead'?'#5B8CFF':'#29E0A8';if(c.src==='dead')g.setLineDash([lw*2.2,lw*1.6]);
+    g.beginPath();g.arc(X,Y,r,0,7);g.stroke();g.setLineDash([]);}
+}
+function sci(v){if(!isFinite(v)||v<=0)return '0';const e=Math.floor(Math.log10(v)),m=v/10**e;return `${m.toFixed(2)} × 10${String(e).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'['0123456789'.indexOf(c)]||'⁻').join('')}`;}
+$('agree').onchange=paint;
+
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b));paint();});
+function zoom(f,X,Y){if(!view)return;const ns=Math.max(view.fit*.8,Math.min(view.fit*10,view.s*f)),[ix,iy]=toImg(X,Y);view.s=ns;view.tx=X-ix*ns;view.ty=Y-iy*ns;paint();}
+$('zIn2').onclick=()=>zoom(1.6,cv.width/2,cv.height/2);$('zOut2').onclick=()=>zoom(1/1.6,cv.width/2,cv.height/2);
+$('zFit').onclick=()=>{fit();paint();};
+$('fullBtn').onclick=()=>{const c=$('photoCard');c.classList.toggle('full');document.body.style.overflow=c.classList.contains('full')?'hidden':'';requestAnimationFrame(()=>{fit();paint();});};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('photoCard').classList.contains('full'))$('fullBtn').click();});
+cv.addEventListener('wheel',e=>{if(!shot)return;e.preventDefault();const [X,Y]=xy(e);zoom(e.deltaY<0?1.15:1/1.15,X,Y);},{passive:false});
+const xy=e=>{const r=cv.getBoundingClientRect(),dpr=cv.width/r.width;return [(e.clientX-r.left)*dpr,(e.clientY-r.top)*dpr];};
+const ptrs=new Map();let gest=null;
+cv.addEventListener('pointerdown',e=>{if(!shot||!shot.pts)return;cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,xy(e));
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];gest={type:'pinch',d:Math.hypot(a[0]-b[0],a[1]-b[1]),s:view.s,tx:view.tx,ty:view.ty,m:[(a[0]+b[0])/2,(a[1]+b[1])/2]};dragRect=null;return;}
+  const p=xy(e);gest={type:tool==='frame'?'frame':'tap',start:p,last:p,moved:0};});
+cv.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!gest)return;const p=xy(e);ptrs.set(e.pointerId,p);
+  if(gest.type==='pinch'&&ptrs.size===2){const [a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+    const ns=Math.max(view.fit*.8,Math.min(view.fit*10,gest.s*d/gest.d)),ix=(gest.m[0]-gest.tx)/gest.s,iy=(gest.m[1]-gest.ty)/gest.s;view.s=ns;view.tx=m[0]-ix*ns;view.ty=m[1]-iy*ns;paint();return;}
+  gest.moved=Math.max(gest.moved,Math.hypot(p[0]-gest.start[0],p[1]-gest.start[1]));
+  if(gest.type==='frame'){const [ax,ay]=toImg(...gest.start),[bx,by]=toImg(...p);dragRect={x:Math.min(ax,bx),y:Math.min(ay,by),w:Math.abs(bx-ax),h:Math.abs(by-ay)};paint();return;}
+  if(gest.moved>12){view.tx+=p[0]-gest.last[0];view.ty+=p[1]-gest.last[1];gest.last=p;paint();}});
+function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!gest)return;
+  if(gest.type==='pinch'){if(!ptrs.size)gest=null;return;}
+  if(gest.type==='frame'){if(dragRect&&dragRect.w*view.s>40&&dragRect.h*view.s>40){shot.undo.push({t:'roi',prev:shot.roi,src:shot.roiSrc});shot.roi=dragRect;shot.roiSrc='manual';shot.sent=false;}dragRect=null;gest=null;paint();return;}
+  if(gest.type==='tap'&&gest.moved<=12&&e.type==='pointerup')tap(...gest.start);gest=null;}
+cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
+let lastTap=null,lastTap0=null;
+function tap(X,Y){
+  const now=Date.now();
+  if(lastTap&&now-lastTap.t<320&&Math.hypot(X-lastTap.X,Y-lastTap.Y)<30*(cv.width/cv.clientWidth)){   // double tap: zoom in, undo the first tap
+    lastTap=null;if(lastTap0&&lastTap0.undoable){$('undo').click();}zoom(2.5,X,Y);return;}
+  lastTap={t:now,X,Y};lastTap0={undoable:false};
+  const [x,y]=toImg(X,Y),list=tool==='add'?live().concat(dead()):live().concat(dead());
+  const dpr=cv.width/cv.clientWidth,hitR=(tool==='erase'||tool==='flip')?Math.max(diam()*.8,Math.min(16*dpr/view.s,diam()*2)):diam()*.6;
+  let best=null,bd=Infinity;for(const c of list){const d=Math.hypot(c.x-x,c.y-y);if(d<bd){bd=d;best=c;}}
+  const hit=bd<hitR?best:null;
+  if(tool==='erase'){if(!hit)return;if(hit.src==='man'||hit.man){const p=shot.added.splice(hit.j,1)[0];shot.undo.push({t:'rmAdd',p,j:hit.j});}else{shot.removed.add(hit.i);shot.undo.push({t:'rm',i:hit.i});}}
+  else if(tool==='flip'){if(!hit)return;if(hit.src==='man'||hit.man){shot.added[hit.j].dead=!shot.added[hit.j].dead;shot.undo.push({t:'flipMan',j:hit.j});}else{shot.flip.has(hit.i)?shot.flip.delete(hit.i):shot.flip.add(hit.i);shot.undo.push({t:'flip',i:hit.i});}}
+  else{if(hit)return;shot.added.push({x,y});shot.undo.push({t:'add'});}
+  lastTap0.undoable=true;
+  shot.sent=false;paint();
+}
+$('undo').onclick=()=>{if(!shot||!shot.undo.length)return;const u=shot.undo.pop();
+  if(u.t==='add')shot.added.pop();else if(u.t==='rm')shot.removed.delete(u.i);else if(u.t==='rmAdd')shot.added.splice(u.j,0,u.p);else if(u.t==='roi'){shot.roi=u.prev;shot.roiSrc=u.src;}else if(u.t==='flip'){shot.flip.has(u.i)?shot.flip.delete(u.i):shot.flip.add(u.i);}else if(u.t==='flipMan'){shot.added[u.j].dead=!shot.added[u.j].dead;}
+  shot.sent=false;paint();};
+window.addEventListener('resize',()=>{if(shot){fit();paint();}});
+
+/* training upload: the square plus a margin, at the photo's resolution */
+$('sendBtn').onclick=async()=>{
+  if(!shot||!shot.pts)return;const s=shot,d=diam(),r=s.roi||{x:0,y:0,w:s.img.width,h:s.img.height},mg=d*3;
+  const x0=Math.max(0,Math.floor(r.x-mg)),y0=Math.max(0,Math.floor(r.y-mg)),x1=Math.min(s.img.width,Math.ceil(r.x+r.w+mg)),y1=Math.min(s.img.height,Math.ceil(r.y+r.h+mg));
+  const c=document.createElement('canvas');c.width=x1-x0;c.height=y1-y0;c.getContext('2d').drawImage(s.img,x0,y0,c.width,c.height,0,0,c.width,c.height);
+  const rel=p=>[+(p.x-x0).toFixed(1),+(p.y-y0).toFixed(1)];
+  const body={format:'cellcount-v1',cell_diameter_px:d,roi:{x:r.x-x0,y:r.y-y0,w:r.w,h:r.h},cells:live().map(rel),dead:dead().map(rel),image:c.toDataURL('image/jpeg',.9)};
+  $('sendBtn').disabled=true;
+  try{const res=await fetch('api/public/training',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(res.status===429){const w=+(res.headers.get('Retry-After')||60);throw {user:t('limited',w)};}
+    if(!res.ok)throw {user:t('sendFail')+res.status};
+    s.sent=true;msg(t('sent'),'ok');
+  }catch(e){msg(e&&e.user?e.user:t('sendFail')+t('offline'));}
+  paint();
+};
+
+$('diamOut').textContent=diam()+' px';sizeCv();applyLang();
+})();
+</script>
+</body>
+</html>

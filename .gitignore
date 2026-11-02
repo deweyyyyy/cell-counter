@@ -20,3 +20,6 @@ training/cellnet_w.json
 # Lab log and service log stay local
 server/lab/
 server/server.log
+
+# Public demo uploads stay local
+server/pb_train_dt/

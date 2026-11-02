@@ -125,6 +125,7 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .tools button[aria-pressed="true"]{background:var(--manual);color:var(--ink);font-weight:600}
 .tools button[data-tool="frame"][aria-pressed="true"]{background:#FFD166}
 .tools button[data-tool="pan"][aria-pressed="true"]{background:#fff}
+.tools button[data-tool="flip"][aria-pressed="true"]{background:#9DB6FF}
 .slider{display:flex;flex-direction:column;gap:4px}
 .slider .lab{display:flex;justify-content:space-between;font-size:13px}
 .slider .lab label{color:var(--nmuted)}
@@ -722,6 +723,7 @@ body.sm-open{overflow:hidden}
       <button type="button" data-tool="pan" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg><span data-i18n="toolPan"></span></button>
       <button type="button" data-tool="add" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg><span data-i18n="toolAdd"></span></button>
       <button type="button" data-tool="erase" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></svg><span data-i18n="toolErase"></span></button>
+      <button type="button" data-tool="flip" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5" stroke-dasharray="2.5 2"/></svg><span data-i18n="toolFlip"></span></button>
       <button type="button" data-tool="frame" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/></svg><span data-i18n="toolFrame"></span></button>
     </div>
     <div class="slider">
@@ -960,7 +962,7 @@ const I18N={
   startCounting:'เริ่มนับ',recentRounds:'รอบล่าสุด',allCsv:'CSV ทุกรอบ',oldPage:'หน้าเดิม',loading:'กำลังโหลด…',
   countScreen:'นับช่อง',backToStart:'กลับหน้าเริ่มรอบ',squares:'ช่องที่นับ',stageLabel:'ภาพช่องที่กำลังนับ',
   shootHint:'ให้ 1 large square อยู่เต็มภาพ โฟกัสให้ขอบเซลล์คม',takePhoto:'ถ่ายรูป',fromAlbum:'เลือกจากอัลบั้ม',cells:'เซลล์',
-  legendAi:'เซลล์มีชีวิต',legendManual:'เพิ่มเอง',legendDead:'เซลล์ตาย (ไม่นับ)',shotTrain:'ส่งภาพนี้เป็นข้อมูลฝึก CellNet (ตรวจแก้ให้ถูกก่อน)',shotTrainSent:'ส่งภาพนี้เป็นข้อมูลฝึกแล้ว ✓',cellsLive:'เซลล์มีชีวิต',deadLine:(d,v)=>`ตาย ${d} · มีชีวิต ${v}%`,deadShort:d=>`ตาย ${d}`,deadWord:'ตาย',viabSum:(v,d)=>`มีชีวิต ${v}% (ตายรวม ${d})`,frameAuto:'ตรวจพบกรอบช่องอัตโนมัติ นับเฉพาะเซลล์ในกรอบ',legendFrame:'ขอบช่อง (กฎขอบ)',noFrame:'ยังไม่ได้ตั้งกรอบช่อง จึงยังไม่ใช้กฎขอบ',setFrame:'ตั้งกรอบ',
+  legendAi:'เซลล์มีชีวิต',legendManual:'เพิ่มเอง',legendDead:'เซลล์ตาย (ไม่นับ)',toolFlip:'เป็น↔ตาย',hintFlip:'แตะวงเพื่อสลับเซลล์มีชีวิต/เซลล์ตาย',dblZoom:'แตะสองครั้งเพื่อซูม',shotTrain:'ส่งภาพนี้เป็นข้อมูลฝึก CellNet (ตรวจแก้ให้ถูกก่อน)',shotTrainSent:'ส่งภาพนี้เป็นข้อมูลฝึกแล้ว ✓',cellsLive:'เซลล์มีชีวิต',deadLine:(d,v)=>`ตาย ${d} · มีชีวิต ${v}%`,deadShort:d=>`ตาย ${d}`,deadWord:'ตาย',viabSum:(v,d)=>`มีชีวิต ${v}% (ตายรวม ${d})`,frameAuto:'ตรวจพบกรอบช่องอัตโนมัติ นับเฉพาะเซลล์ในกรอบ',legendFrame:'ขอบช่อง (กฎขอบ)',noFrame:'ยังไม่ได้ตั้งกรอบช่อง จึงยังไม่ใช้กฎขอบ',setFrame:'ตั้งกรอบ',
   frameReused:'ใช้กรอบเดียวกับช่องก่อนหน้า',checkFrame:'ตรวจกรอบ',review:'ตรวจแก้',retake:'ถ่ายใหม่',undo:'ย้อนการแก้ล่าสุด',done:'เสร็จ',
   rvCanvas:'ภาพขยาย แตะเพื่อแก้จุดเซลล์',recounting:'กำลังนับใหม่…',zoomIn:'ซูมเข้า',zoomOut:'ซูมออก',tools:'เครื่องมือ',
   toolPan:'เลื่อน',toolAdd:'เพิ่มเซลล์',toolErase:'ลบ',toolFrame:'กรอบช่อง',strictness:'ความเข้มงวด',strictLow:'นับมากขึ้น',strictHigh:'เข้มขึ้น ตัด noise',
@@ -991,7 +993,7 @@ const I18N={
   startCounting:'Start counting',recentRounds:'Recent rounds',allCsv:'All rounds (CSV)',oldPage:'Classic page',loading:'Loading…',
   countScreen:'Count a square',backToStart:'Back to start',squares:'Squares',stageLabel:'Photo of the square being counted',
   shootHint:'Fill the photo with one large square and focus on the cell edges',takePhoto:'Take photo',fromAlbum:'Choose from album',cells:'cells',
-  legendAi:'Live cell',legendManual:'Added by you',legendDead:'Dead cell (not counted)',shotTrain:'Send this photo as CellNet training data (review it first)',shotTrainSent:'Sent as training data ✓',cellsLive:'live cells',deadLine:(d,v)=>`${d} dead · ${v}% viable`,deadShort:d=>`${d} dead`,deadWord:'dead',viabSum:(v,d)=>`${v}% viable (${d} dead)`,frameAuto:'Square found automatically; only cells inside it are counted',legendFrame:'Square border (edge rule)',noFrame:'No square border set, so the edge rule is off',setFrame:'Set border',
+  legendAi:'Live cell',legendManual:'Added by you',legendDead:'Dead cell (not counted)',toolFlip:'Live↔dead',hintFlip:'Tap a ring to switch live / dead',dblZoom:'double-tap to zoom',shotTrain:'Send this photo as CellNet training data (review it first)',shotTrainSent:'Sent as training data ✓',cellsLive:'live cells',deadLine:(d,v)=>`${d} dead · ${v}% viable`,deadShort:d=>`${d} dead`,deadWord:'dead',viabSum:(v,d)=>`${v}% viable (${d} dead)`,frameAuto:'Square found automatically; only cells inside it are counted',legendFrame:'Square border (edge rule)',noFrame:'No square border set, so the edge rule is off',setFrame:'Set border',
   frameReused:'Using the border from the previous square',checkFrame:'Check border',review:'Review',retake:'Retake',undo:'Undo last edit',done:'Done',
   rvCanvas:'Zoomed photo. Tap to edit cell marks',recounting:'Recounting…',zoomIn:'Zoom in',zoomOut:'Zoom out',tools:'Tools',
   toolPan:'Move',toolAdd:'Add cell',toolErase:'Remove',toolFrame:'Border',strictness:'Strictness',strictLow:'Count more',strictHigh:'Stricter, less noise',
@@ -1209,7 +1211,7 @@ async function countShot(){
       if(j.frame){const f=j.frame;s.roi={x:x0+f.x/k,y:y0+f.y/k,w:f.w/k,h:f.h/k};s.roiAuto=true;s.roiReused=false;}
       else if(lastRoiFrac){const fr=lastRoiFrac;s.roi={x:fr.x*s.img.width,y:fr.y*s.img.height,w:fr.w*s.img.width,h:fr.h*s.img.height};s.roiReused=true;}
     }
-    s.secs=j.secs; s.diamUsed=d; s.removed=new Set();
+    s.secs=j.secs; s.diamUsed=d; s.removed=new Set(); s.flip=new Set();
   }catch(e){
     if(e.name==='AbortError') return;
     toast(t('countFail',e.message||e),true);
@@ -1223,8 +1225,9 @@ function aiAll(){
   for(const p of shot.pts.filter(p=>p.p>thrV).sort((a,b)=>b.p-a.p)) if(!out.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<sep)) out.push(p);
   return out.filter(p=>inFrame(p,shot.roi,d));
 }
-function aiCells(){return aiAll().filter(p=>!p.dead);}
-function deadNow(){if(!shot||!shot.pts)return [];return aiAll().filter(p=>p.dead&&!shot.removed.has(p.i)).map(p=>({x:p.x,y:p.y,src:'dead',i:p.i}));}
+const isDead=p=>p.dead!==!!(shot.flip&&shot.flip.has(p.i));
+function aiCells(){return aiAll().filter(p=>!isDead(p));}
+function deadNow(){if(!shot||!shot.pts)return [];return aiAll().filter(p=>isDead(p)&&!shot.removed.has(p.i)).map(p=>({x:p.x,y:p.y,src:'dead',i:p.i}));}
 function viabTxt(live,dead){return live+dead?t('deadLine',dead,(100*live/(live+dead)).toFixed(1)):'';}
 function cellsNow(){
   if(!shot) return [];
@@ -1288,7 +1291,7 @@ $('toReview').onclick=()=>{if(!shot)return;setTool('add');$('rTitle').textConten
 $('roiFix').onclick=$('roiCheck').onclick=$('roiAutoCheck').onclick=()=>{if(!shot)return;setTool('frame');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
 $('rDone').onclick=()=>{paintCount();show('sCount');};
 function setTool(x){tool=x;document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tool===x));
-  $('rHint').textContent=t({pan:'hintPan',add:'hintAdd',erase:'hintErase',frame:'hintFrame'}[x]);}
+  $('rHint').textContent=t({pan:'hintPan',add:'hintAdd',erase:'hintErase',frame:'hintFrame',flip:'hintFlip'}[x])+' · '+t('dblZoom');}
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
 function sizeCanvas(){const r=$('rvStage').getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);rvCv.width=Math.round(r.width*dpr);rvCv.height=Math.round(r.height*dpr);}
 function fitView(){if(!shot)return;sizeCanvas();const f=frameOf(shot),W=rvCv.width,H=rvCv.height;fitS=Math.min(W/f.w,H/f.h)*.96;view={s:fitS,tx:W/2-(f.x+f.w/2)*fitS,ty:H/2-(f.y+f.h/2)*fitS};}
@@ -1326,22 +1329,30 @@ function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(
   gest=null;}
 rvCv.addEventListener('pointerup',endPtr);rvCv.addEventListener('pointercancel',endPtr);
 rvCv.addEventListener('wheel',e=>{e.preventDefault();const [X,Y]=evXY(e);zoomAt(e.deltaY<0?1.15:1/1.15,X,Y);},{passive:false});
+let lastTap=null;
 function tap(X,Y){
-  const [x,y]=toImg(X,Y),list=tool==='erase'?cellsNow().concat(deadNow()):cellsNow();
+  const now=Date.now();
+  if(lastTap&&now-lastTap.t<320&&Math.hypot(X-lastTap.X,Y-lastTap.Y)<30*(rvCv.width/rvCv.clientWidth)){   // double tap = zoom in here
+    if(lastTap.changed) $('undoBtn').click(); lastTap=null; zoomAt(2.5,X,Y); return;}
+  lastTap={t:now,X,Y,changed:false};
+  const [x,y]=toImg(X,Y),list=tool==='erase'||tool==='flip'?cellsNow().concat(deadNow()):cellsNow();
   const fingerImg=(16*(rvCv.width/rvCv.clientWidth))/view.s;
-  const hitR=tool==='erase'?Math.max(diam()*.8,Math.min(fingerImg,diam()*2)):diam()*.6;
+  const hitR=(tool==='erase'||tool==='flip')?Math.max(diam()*.8,Math.min(fingerImg,diam()*2)):diam()*.6;
   let best=null,bd=Infinity;for(const c of list){const d=Math.hypot(c.x-x,c.y-y);if(d<bd){bd=d;best=c;}}
   const hit=bd<hitR?best:null;
   if(tool==='erase'){if(!hit)return;
     if(hit.src==='ai'||hit.src==='dead'){shot.removed.add(hit.i);shot.undo.push({t:'rm',i:hit.i});}
     else{const p=shot.added.splice(hit.j,1)[0];shot.undo.push({t:'rmAdd',p,j:hit.j});}}
+  else if(tool==='flip'){if(!hit||hit.src==='man')return;shot.flip.has(hit.i)?shot.flip.delete(hit.i):shot.flip.add(hit.i);shot.undo.push({t:'flip',i:hit.i});}
   else if(tool==='add'){if(hit)return;shot.added.push({x,y});shot.undo.push({t:'add'});}
+  else return;
+  lastTap.changed=true;
   shot.trainSent=false;
   drawReview();
 }
 $('undoBtn').onclick=()=>{if(!shot||!shot.undo.length){toast(t('nothingUndo'));return;}const u=shot.undo.pop();
   if(u.t==='add')shot.added.pop();else if(u.t==='rm')shot.removed.delete(u.i);else if(u.t==='rmAdd')shot.added.splice(u.j,0,u.p);
-  else if(u.t==='roi'){shot.roi=u.prev;countShot();}drawReview();};
+  else if(u.t==='roi'){shot.roi=u.prev;countShot();}else if(u.t==='flip'){shot.flip.has(u.i)?shot.flip.delete(u.i):shot.flip.add(u.i);}drawReview();};
 $('thr').oninput=()=>{thrV=+$('thr').value/100;$('thrOut').textContent=thrV.toFixed(2);drawReview();};
 function updateRecount(){$('recount').hidden=!shot||!shot.diamUsed||Math.abs(diam()-shot.diamUsed)<1;}
 $('diam').oninput=()=>{$('diamOut').textContent=diam()+' px';updateRecount();drawReview();};

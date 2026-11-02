@@ -107,10 +107,19 @@ Everything stays inside `server/`:
 | `reports/<date>_<name>/` | `report.png`, each square's annotated image (`tl.jpg`, …) and `run.json` |
 | `reports/runs.csv` | one row per round: every square's count, mean, SD, CV, chamber means, cells/mL |
 | `training_data/` | corrected squares sent with **Send as CellNet training data** |
+| `pb_train_dt/` | squares sent from the public demo page, kept apart from your own |
 | `lab/events.jsonl` | the lab log: counts, passages, treatments, protein harvests, notes |
 | `lab/photos/` | photos attached to notes |
 
 These folders are ignored by git.
+
+## Public demo page
+
+`/public` is a one-page demo for people outside the lab: take or choose a photo of one large square, see live and dead cells, the square found automatically, and live cells/mL. Visitors can zoom in, fix rings (add, remove, live ↔ dead) and, if they tick the consent box, send the corrected square for training. Nothing else is stored.
+
+Because it runs on your own computer, it is rate-limited per visitor and overall (see `PUBLIC_LIMITS` in `server.py`), only one public count runs at a time, and uploads are capped at 6 MB. It only uses `/public` and `/api/public/*`; the lab app and its data stay behind your login.
+
+If you put the server behind Cloudflare Access, add a **Bypass** policy for exactly these two paths: `public` and `api/public`.
 
 ## Improve the model
 
@@ -121,7 +130,9 @@ These folders are ignored by git.
 - `server/app.html`: the phone app (plain HTML/JS, no build step).
 - `server/server.py`: a standard-library HTTP server. `POST /api/count` takes the cropped square, rescales it so cells are about 13 px across, runs CellNet and returns candidate centres with confidence scores. The page applies the strictness threshold, de-duplication and the edge rule, so moving the slider needs no new request.
 - `server/cellnet_np.py`: CellNet inference in NumPy, plus an MLX path for Apple GPUs. The model is a ~118k-parameter U-Net that outputs a heatmap of cell centres.
-- `server/cellnet_w.json`: the weights (≈ 470 KB).
+- `server/analysis.py`: marks trypan-blue (dead) cells by colour and finds the large square from the grid lines.
+- `server/public.html`: the public demo page.
+- `server/cellnet_w.json`: the weights (≈ 470 KB). v0.4 was fine-tuned from v0.3 on real corrected squares mixed with simulated ones.
 
 ## License
 

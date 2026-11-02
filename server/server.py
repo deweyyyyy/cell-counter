@@ -9,6 +9,8 @@ Endpoints
   GET  /api/info      model version, default threshold
   POST /api/count     body = JPEG/PNG of the frame (+margin), ?diam=<cell diameter px in that image>
   POST /api/training  body = JSON export from the page; saved under training_data/
+  GET  /public        public demo page (count only, rate-limited)
+  POST /api/public/count, /api/public/training   the demo's endpoints; uploads go to pb_train_dt/
   POST /api/runs      a named counting round: report PNG + each square's image; saved under reports/
   GET  /api/runs      saved rounds, newest first
   GET  /reports/...   saved report files, and reports/runs.csv (all rounds, opens in Excel)
@@ -31,6 +33,34 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 NET = CellNet(os.path.join(HERE, "cellnet_w.json"))
 LOCK = threading.Lock()                     # one inference at a time; others wait their turn
 DATA = os.path.join(HERE, "training_data"); os.makedirs(DATA, exist_ok=True)
+PUBLIC_DATA = os.path.join(HERE, "pb_train_dt"); os.makedirs(PUBLIC_DATA, exist_ok=True)   # public demo uploads, kept apart
+
+# ---------- public demo: rate limits (it runs on this Mac, so keep it light) ----------
+PUBLIC_LIMITS = {                      # name: [(max requests, window seconds), ...] per visitor IP
+    "count": [(6, 60), (40, 3600), (120, 86400)],
+    "train": [(5, 600), (20, 86400)],
+}
+PUBLIC_GLOBAL = {"count": (300, 3600), "train": (200, 86400)}   # all visitors together
+PUBLIC_MAX_BODY = 6 * 1024 * 1024
+_rl_lock = threading.Lock(); _rl_hits = {}
+PUBLIC_BUSY = threading.Semaphore(1)  # at most one public count at a time; the lab never waits behind a queue
+
+def rate_check(kind, ip):
+    """Record a hit; return seconds to wait (0 = allowed)."""
+    now = time.time()
+    with _rl_lock:
+        g = _rl_hits.setdefault(("*", kind), []); mx, win = PUBLIC_GLOBAL[kind]
+        g[:] = [t for t in g if now - t < win]
+        if len(g) >= mx: return int(win - (now - g[0])) + 1
+        h = _rl_hits.setdefault((ip, kind), []); longest = max(w for _, w in PUBLIC_LIMITS[kind])
+        h[:] = [t for t in h if now - t < longest]
+        for mx, win in PUBLIC_LIMITS[kind]:
+            recent = [t for t in h if now - t < win]
+            if len(recent) >= mx: return int(win - (now - recent[0])) + 1
+        h.append(now); g.append(now)
+        if len(_rl_hits) > 5000:   # forget idle visitors
+            for k in [k for k, v in _rl_hits.items() if not v or now - v[-1] > 86400]: _rl_hits.pop(k, None)
+        return 0
 REPORTS = os.path.join(HERE, "reports"); os.makedirs(REPORTS, exist_ok=True)
 CSV_PATH = os.path.join(REPORTS, "runs.csv")
 FILE_LOCK = threading.Lock()
@@ -318,9 +348,9 @@ class H(BaseHTTPRequestHandler):
     def log_message(self, *a):  # keep the console readable
         pass
 
-    def body(self):
+    def body(self, limit=MAX_BODY):
         n = int(self.headers.get("Content-Length") or 0)
-        if n <= 0 or n > MAX_BODY: raise ValueError("body size")
+        if n <= 0 or n > limit: raise ValueError("body size")
         return self.rfile.read(n)
 
     def do_GET(self):
@@ -352,6 +382,8 @@ class H(BaseHTTPRequestHandler):
         if p in ("/old", "/old/", "/old/index.html"):
             classic = "classic.html" if os.path.exists(os.path.join(HERE, "classic.html")) else "index.html"
             return self.send(200, _page(classic), "text/html; charset=utf-8")
+        if p in ("/public", "/public/"): return self.send(200, _page("public.html"), "text/html; charset=utf-8")
+        if p == "/api/public/info": return self.send(200, {"version": NET.version, "thr": NET.thr, "target": NET.target})
         if p == "/api/info": return self.send(200, {"version": NET.version, "thr": NET.thr, "target": NET.target, "engine": NET.backend, "host": {"Darwin": "Mac", "Windows": "PC"}.get(platform.system(), "Server")})
         if p == "/api/runs": return self.send(200, {"runs": list_runs()})
         if p == "/reports/runs.csv":
@@ -368,6 +400,8 @@ class H(BaseHTTPRequestHandler):
         p = _strip_old(p)
         args = dict(kv.split("=", 1) for kv in q.split("&") if "=" in kv)
         try:
+            if p == "/api/public/count": return self.public_count(args)
+            if p == "/api/public/training": return self.public_training()
             if p == "/api/count": return self.count(args)
             if p == "/api/training": return self.training(args)
             if p == "/api/runs": return self.save_run()
@@ -394,10 +428,49 @@ class H(BaseHTTPRequestHandler):
         except Exception as e:
             log("ERROR", repr(e)); self.send(500, {"error": "server error"})
 
-    def count(self, args):
+    def ip(self):
+        return self.headers.get("Cf-Connecting-Ip") or self.client_address[0]
+
+    def too_many(self, wait):
+        self.send_response(429); body = json.dumps({"error": "too many requests", "retry_after": wait}).encode()
+        self.send_header("Content-Type", "application/json"); self.send_header("Retry-After", str(wait))
+        self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+
+    def public_count(self, args):
+        wait = rate_check("count", self.ip())
+        if wait: return self.too_many(wait)
+        if not PUBLIC_BUSY.acquire(blocking=False): return self.too_many(5)
+        try: return self.count(args, public=True)
+        finally: PUBLIC_BUSY.release()
+
+    def public_training(self):
+        wait = rate_check("train", self.ip())
+        if wait: return self.too_many(wait)
+        d = json.loads(self.body(PUBLIC_MAX_BODY))
+        img = str(d.get("image", ""))
+        cells, dead = d.get("cells", []), d.get("dead", [])
+        ok = (d.get("format") == "cellcount-v1" and img.startswith("data:image/jpeg;base64,")
+              and isinstance(cells, list) and isinstance(dead, list) and len(cells) + len(dead) <= 5000
+              and all(isinstance(c, list) and len(c) == 2 and all(isinstance(v, (int, float)) for v in c) for c in cells + dead))
+        if not ok: raise ValueError("not a cellcount-v1 export")
+        try:
+            im = Image.open(io.BytesIO(base64.b64decode(img.split(",", 1)[1], validate=True))); im.verify()
+            if im.width * im.height > 12_000_000: raise ValueError
+        except Exception: raise ValueError("bad image")
+        keep = {k: d[k] for k in ("format", "cell_diameter_px", "roi", "cells", "dead", "image") if k in d}
+        keep.update(source="public", received=datetime.now().isoformat(timespec="seconds"))
+        name = datetime.now().strftime("pb_%Y%m%d_%H%M%S_") + base64.b32encode(os.urandom(5)).decode().lower() + ".json"
+        json.dump(keep, open(os.path.join(PUBLIC_DATA, name), "w"))
+        log(f"pbtrain {self.ip():29s} {len(cells)} cells  -> pb_train_dt/{name}")
+        self.send(200, {"ok": True})
+
+    def count(self, args, public=False):
         diam = float(args.get("diam", "0"))
         if not 2 <= diam <= 200: raise ValueError("diam must be 2..200")
-        im = Image.open(io.BytesIO(self.body())).convert("RGB")
+        try: im = Image.open(io.BytesIO(self.body(PUBLIC_MAX_BODY if public else MAX_BODY))).convert("RGB")
+        except ValueError: raise
+        except Exception: raise ValueError("not an image")
+        if public and im.width * im.height > 6_000_000: raise ValueError("image too large")
         k = NET.target / diam
         w, h = max(8, round(im.width * k)), max(8, round(im.height * k))
         if w * h > MAX_PIXELS: raise ValueError("image too large for this cell size")
@@ -419,7 +492,7 @@ class H(BaseHTTPRequestHandler):
         # back to the uploaded image's pixel grid; 4th value 1 = stained (dead)
         out = [[round((x + .5) / k - .5, 1), round((y + .5) / k - .5, 1), round(p, 3), dd] for (x, y, p), dd in zip(pts, dead)]
         live = sum(1 for o in out if o[2] > NET.thr and not o[3])
-        log(f"count  {self.who():30s} {w}x{h}px  {live} live / {sum(1 for o in out if o[2] > NET.thr) - live} dead  {'frame ' if frame else ''}{secs:.2f}s  [{NET.backend}]")
+        log(f"count  {('public ' + self.ip()) if public else self.who():30s} {w}x{h}px  {live} live / {sum(1 for o in out if o[2] > NET.thr) - live} dead  {'frame ' if frame else ''}{secs:.2f}s  [{NET.backend}]")
         self.send(200, {"points": out, "frame": frame, "secs": secs, "version": NET.version})
 
     def save_run(self):
