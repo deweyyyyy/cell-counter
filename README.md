@@ -15,7 +15,7 @@ Count cells on a Neubauer-improved hemocytometer from a phone photo. Photograph 
 - **Training data:** squares you have corrected can be saved as training data for a better model.
 - **Lab log:** record hand counts (works offline), sub-passages with pipetting volumes, and treatments with stock-volume calculations, a plate map and a harvest timer. See [Lab log](#lab-log).
 
-> **Accuracy:** the bundled model (CellNet v0.4) was trained on simulated hemocytometer images and fine-tuned on a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
+> **Accuracy:** the bundled model (CellNet v0.5) was trained on simulated hemocytometer images and fine-tuned on a small set of hand-corrected squares. Before relying on it, count a few squares by hand and compare. Retrain it on your own corrected photos for best results (see [training/](training/)). This is a research tool, not a medical device.
 
 ## Run it on your computer
 
@@ -134,7 +134,7 @@ If you put the server behind Cloudflare Access, add a **Bypass** policy for exac
 - `server/cellnet_np.py`: CellNet inference in NumPy, plus an MLX path for Apple GPUs. The model is a ~118k-parameter U-Net that outputs a heatmap of cell centres.
 - `server/analysis.py`: marks trypan-blue (dead) cells by colour and finds the large square from the grid lines.
 - `server/public.html`: the public demo page.
-- `server/cellnet_w.json`: the weights (≈ 470 KB). v0.4 was fine-tuned from v0.3 on real corrected squares mixed with simulated ones.
+- `server/cellnet_w.json`: the weights (≈ 470 KB). v0.5 was fine-tuned from v0.4 on real corrected squares mixed with simulated ones.
 
 ## License
 

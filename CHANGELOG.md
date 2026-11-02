@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.0 — 2026-11-02
+
+- **CellNet v0.5**: far fewer extra rings. Fine-tuned from v0.4 on all hand-corrected real squares (including squares sent from the public page) plus simulated samples drawn like the public demo, so it learns that dust specks are not cells.
+  - Simulated demo samples (8 unseen): 21 extra rings instead of 132; missed cells 9 instead of 12.
+  - Real held-out half squares (2, 146 cells): F1 0.979 (3 extra, 3 missed), up from 0.968 (2 extra, 7 missed).
+  - Original simulated test set unchanged (F1 0.88). Default strictness stays 0.87.
+- `training/demo_gen.py`: the public page's simulated sample in Python, for training and testing.
+
 ## v0.5.0 — 2026-11-02
 
 - Public demo: **Try a simulated sample** draws a hemocytometer square with live and dead cells and an answer key, counts it, and shows how many live cells CellNet found, added or missed.
