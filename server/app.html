@@ -98,6 +98,8 @@ h1{margin:0;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-.01e
 .legend-row span{display:inline-flex;align-items:center;gap:6px}
 .ring-ai{width:10px;height:10px;border-radius:50%;border:2px solid #12936B}
 .ring-man{width:10px;height:10px;border-radius:50%;border:2px solid var(--manual)}
+.ring-dead{width:10px;height:10px;border-radius:50%;border:2px dashed #3D6BE0}
+#cBadge small{display:block;font-size:12px;font-weight:600;opacity:.85;margin-top:2px}
 .dash{width:14px;border-top:2px dashed #C99A1E}
 .notice{margin:10px 16px 0;padding:10px 12px;border-radius:12px;font-size:13px;display:flex;gap:10px;align-items:center;justify-content:space-between}
 .notice.warn{background:var(--warn-bg);color:var(--warn)}
@@ -679,16 +681,17 @@ body.sm-open{overflow:hidden}
       <label class="btn primary" for="camIn" data-i18n="takePhoto"></label>
       <label class="btn ghost" for="pickIn" data-i18n="fromAlbum"></label>
     </div>
-    <div class="badge" id="cBadge" hidden><b id="cCount">0</b><span data-i18n="cells"></span></div>
+    <div class="badge" id="cBadge" hidden><b id="cCount">0</b><span data-i18n="cellsLive"></span><small id="cDead" hidden></small></div>
     <span class="meta" id="cTime" hidden></span>
     <div class="busy" id="cBusy" hidden><div class="spin"></div><span id="cBusyText"></span></div>
   </section>
   <input id="camIn" class="visually-hidden" type="file" accept="image/*" capture="environment">
   <input id="pickIn" class="visually-hidden" type="file" accept="image/*">
   <div class="legend-row" id="cLegend" hidden>
-    <span><span class="ring-ai"></span><span data-i18n="legendAi"></span></span><span><span class="ring-man"></span><span data-i18n="legendManual"></span></span><span><span class="dash"></span><span data-i18n="legendFrame"></span></span>
+    <span><span class="ring-ai"></span><span data-i18n="legendAi"></span></span><span><span class="ring-man"></span><span data-i18n="legendManual"></span></span><span><span class="ring-dead"></span><span data-i18n="legendDead"></span></span><span><span class="dash"></span><span data-i18n="legendFrame"></span></span>
   </div>
   <div class="notice warn" id="roiNote" hidden><span data-i18n="noFrame"></span><button type="button" id="roiFix" data-i18n="setFrame"></button></div>
+  <div class="notice info" id="roiAuto" hidden><span data-i18n="frameAuto"></span><button type="button" id="roiAutoCheck" data-i18n="checkFrame"></button></div>
   <div class="notice info" id="roiReuse" hidden><span data-i18n="frameReused"></span><button type="button" id="roiCheck" data-i18n="checkFrame"></button></div>
   <footer class="foot">
     <div class="row2">
@@ -956,7 +959,7 @@ const I18N={
   startCounting:'เริ่มนับ',recentRounds:'รอบล่าสุด',allCsv:'CSV ทุกรอบ',oldPage:'หน้าเดิม',loading:'กำลังโหลด…',
   countScreen:'นับช่อง',backToStart:'กลับหน้าเริ่มรอบ',squares:'ช่องที่นับ',stageLabel:'ภาพช่องที่กำลังนับ',
   shootHint:'ให้ 1 large square อยู่เต็มภาพ โฟกัสให้ขอบเซลล์คม',takePhoto:'ถ่ายรูป',fromAlbum:'เลือกจากอัลบั้ม',cells:'เซลล์',
-  legendAi:'CellNet เจอ',legendManual:'เพิ่มเอง',legendFrame:'ขอบช่อง (กฎขอบ)',noFrame:'ยังไม่ได้ตั้งกรอบช่อง จึงยังไม่ใช้กฎขอบ',setFrame:'ตั้งกรอบ',
+  legendAi:'เซลล์มีชีวิต',legendManual:'เพิ่มเอง',legendDead:'เซลล์ตาย (ไม่นับ)',cellsLive:'เซลล์มีชีวิต',deadLine:(d,v)=>`ตาย ${d} · มีชีวิต ${v}%`,deadShort:d=>`ตาย ${d}`,deadWord:'ตาย',viabSum:(v,d)=>`มีชีวิต ${v}% (ตายรวม ${d})`,frameAuto:'ตรวจพบกรอบช่องอัตโนมัติ นับเฉพาะเซลล์ในกรอบ',legendFrame:'ขอบช่อง (กฎขอบ)',noFrame:'ยังไม่ได้ตั้งกรอบช่อง จึงยังไม่ใช้กฎขอบ',setFrame:'ตั้งกรอบ',
   frameReused:'ใช้กรอบเดียวกับช่องก่อนหน้า',checkFrame:'ตรวจกรอบ',review:'ตรวจแก้',retake:'ถ่ายใหม่',undo:'ย้อนการแก้ล่าสุด',done:'เสร็จ',
   rvCanvas:'ภาพขยาย แตะเพื่อแก้จุดเซลล์',recounting:'กำลังนับใหม่…',zoomIn:'ซูมเข้า',zoomOut:'ซูมออก',tools:'เครื่องมือ',
   toolPan:'เลื่อน',toolAdd:'เพิ่มเซลล์',toolErase:'ลบ',toolFrame:'กรอบช่อง',strictness:'ความเข้มงวด',strictLow:'นับมากขึ้น',strictHigh:'เข้มขึ้น ตัด noise',
@@ -987,7 +990,7 @@ const I18N={
   startCounting:'Start counting',recentRounds:'Recent rounds',allCsv:'All rounds (CSV)',oldPage:'Classic page',loading:'Loading…',
   countScreen:'Count a square',backToStart:'Back to start',squares:'Squares',stageLabel:'Photo of the square being counted',
   shootHint:'Fill the photo with one large square and focus on the cell edges',takePhoto:'Take photo',fromAlbum:'Choose from album',cells:'cells',
-  legendAi:'Found by CellNet',legendManual:'Added by you',legendFrame:'Square border (edge rule)',noFrame:'No square border set, so the edge rule is off',setFrame:'Set border',
+  legendAi:'Live cell',legendManual:'Added by you',legendDead:'Dead cell (not counted)',cellsLive:'live cells',deadLine:(d,v)=>`${d} dead · ${v}% viable`,deadShort:d=>`${d} dead`,deadWord:'dead',viabSum:(v,d)=>`${v}% viable (${d} dead)`,frameAuto:'Square found automatically; only cells inside it are counted',legendFrame:'Square border (edge rule)',noFrame:'No square border set, so the edge rule is off',setFrame:'Set border',
   frameReused:'Using the border from the previous square',checkFrame:'Check border',review:'Review',retake:'Retake',undo:'Undo last edit',done:'Done',
   rvCanvas:'Zoomed photo. Tap to edit cell marks',recounting:'Recounting…',zoomIn:'Zoom in',zoomOut:'Zoom out',tools:'Tools',
   toolPan:'Move',toolAdd:'Add cell',toolErase:'Remove',toolFrame:'Border',strictness:'Strictness',strictLow:'Count more',strictHigh:'Stricter, less noise',
@@ -1143,6 +1146,8 @@ function paintCount(){
   $('saveSlot').disabled=!has||shot.pts==null;
   if(has){const n=cellsNow().length,nx=nextEmpty(R.cur);
     $('cCount').textContent=n; $('saveMain').textContent=t('saveN',n,curName());
+    $('cDead').textContent=shot.pts?viabTxt(n,deadNow().length):''; $('cDead').hidden=!$('cDead').textContent;
+    $('roiAuto').hidden=!(shot.roi&&shot.roiAuto);
     $('saveNext').innerHTML='';
     const sp=document.createElement('span');sp.textContent=nx>=0&&nx!==R.cur?t('nextIs',slotLabel(slots()[nx][0],R.layout)):t('toSummary');$('saveNext').append(sp);
     if(nx>=0&&nx!==R.cur)$('saveNext').insertAdjacentHTML('beforeend','<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
@@ -1161,7 +1166,6 @@ function loadFile(f){
     c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
     autoLevels(c);
     shot={img:c,roi:null,roiReused:false,pts:null,added:[],removed:new Set(),undo:[]};
-    if(lastRoiFrac){const fr=lastRoiFrac;shot.roi={x:fr.x*c.width,y:fr.y*c.height,w:fr.w*c.width,h:fr.h*c.height};shot.roiReused=true;}
     paintCount(); countShot();
   };
   im.onerror=()=>{URL.revokeObjectURL(url);toast(t('badImage'),true);};
@@ -1194,10 +1198,15 @@ async function countShot(){
   $('cBusy').hidden=false;$('rBusy').hidden=false;$('cBusyText').textContent=t('counting',host());
   const t0=performance.now();
   try{
-    const res=await api(`api/count?diam=${(d*k).toFixed(2)}`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob,signal:ctl.signal});
+    const wantFrame=!s.roi;
+    const res=await api(`api/count?diam=${(d*k).toFixed(2)}&frame=${wantFrame?1:0}`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob,signal:ctl.signal});
     if(!res.ok){const m=await res.text().catch(()=>'');throw new Error(res.status+(m?' '+m.slice(0,80):''));}
     const j=await res.json(); if(shot!==s||seq!==s.seq) return;
-    s.pts=j.points.map(([x,y,p],i)=>({x:x0+(x+.5)/k-.5,y:y0+(y+.5)/k-.5,p,i}));
+    s.pts=j.points.map(([x,y,p,dd],i)=>({x:x0+(x+.5)/k-.5,y:y0+(y+.5)/k-.5,p,i,dead:!!dd}));
+    if(wantFrame&&!s.roi){
+      if(j.frame){const f=j.frame;s.roi={x:x0+f.x/k,y:y0+f.y/k,w:f.w/k,h:f.h/k};s.roiAuto=true;s.roiReused=false;}
+      else if(lastRoiFrac){const fr=lastRoiFrac;s.roi={x:fr.x*s.img.width,y:fr.y*s.img.height,w:fr.w*s.img.width,h:fr.h*s.img.height};s.roiReused=true;}
+    }
     s.secs=j.secs; s.diamUsed=d; s.removed=new Set();
   }catch(e){
     if(e.name==='AbortError') return;
@@ -1206,12 +1215,15 @@ async function countShot(){
   paintCount(); if(!$('sReview').hidden) drawReview(); updateRecount();
 }
 function inFrame(p,roi,d){if(!roi)return true;const rad=d/2;return p.x>=roi.x-rad&&p.y>=roi.y-rad&&p.x<roi.x+roi.w-rad&&p.y<roi.y+roi.h-rad;}
-function aiCells(){
+function aiAll(){
   if(!shot||!shot.pts) return [];
   const d=diam(),sep=d*.55,out=[];
   for(const p of shot.pts.filter(p=>p.p>thrV).sort((a,b)=>b.p-a.p)) if(!out.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<sep)) out.push(p);
   return out.filter(p=>inFrame(p,shot.roi,d));
 }
+function aiCells(){return aiAll().filter(p=>!p.dead);}
+function deadNow(){if(!shot||!shot.pts)return [];return aiAll().filter(p=>p.dead&&!shot.removed.has(p.i)).map(p=>({x:p.x,y:p.y,src:'dead',i:p.i}));}
+function viabTxt(live,dead){return live+dead?t('deadLine',dead,(100*live/(live+dead)).toFixed(1)):'';}
 function cellsNow(){
   if(!shot) return [];
   return aiCells().filter(p=>!shot.removed.has(p.i)).map(p=>({x:p.x,y:p.y,src:'ai',i:p.i})).concat(shot.added.map((p,j)=>({x:p.x,y:p.y,src:'man',j})));
@@ -1221,7 +1233,7 @@ function tally(){const ai=aiCells();return {ai:ai.length,added:shot.added.length
 function drawCells(g,list,map,rad,lw){
   for(const c of list){const [X,Y]=map(c.x,c.y);
     g.lineWidth=lw+1.6;g.strokeStyle='rgba(0,0,0,.6)';g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();
-    g.lineWidth=lw;g.strokeStyle=c.src==='man'?'#FF9F1C':'#29E0A8';g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();}
+    g.lineWidth=lw;g.strokeStyle=c.src==='man'?'#FF9F1C':c.src==='dead'?'#5B8CFF':'#29E0A8';if(c.src==='dead')g.setLineDash([lw*2.2,lw*1.6]);g.beginPath();g.arc(X,Y,rad,0,7);g.stroke();g.setLineDash([]);}
 }
 function drawRoi(g,roi,map,lw){if(!roi)return;const [a,b]=map(roi.x,roi.y),[c,d]=map(roi.x+roi.w,roi.y+roi.h);
   g.save();g.setLineDash([lw*4,lw*3]);g.lineWidth=lw;g.strokeStyle='#FFD166';g.strokeRect(a,b,c-a,d-b);g.restore();}
@@ -1234,7 +1246,7 @@ function drawCount(){
   g.drawImage(im,ox,oy,im.width*k,im.height*k);
   const map=(x,y)=>[ox+x*k,oy+y*k];
   drawRoi(g,shot.roi,map,2);
-  drawCells(g,cellsNow(),map,Math.max(3,(diam()/2+1.5)*k),Math.max(1.4,k*1.4));
+  drawCells(g,deadNow().concat(cellsNow()),map,Math.max(3,(diam()/2+1.5)*k),Math.max(1.4,k*1.4));
 }
 
 function snapshot(){
@@ -1244,7 +1256,7 @@ function snapshot(){
   const g=c.getContext('2d');g.drawImage(s.img,x0,y0,x1-x0,y1-y0,0,0,c.width,c.height);
   const map=(x,y)=>[(x-x0)*k,(y-y0)*k];
   drawRoi(g,s.roi,map,Math.max(1.2,c.width/650));
-  drawCells(g,cellsNow(),map,Math.max(2.5,(d/2+1.5)*k),Math.max(1.2,c.width/650));
+  drawCells(g,deadNow().concat(cellsNow()),map,Math.max(2.5,(d/2+1.5)*k),Math.max(1.2,c.width/650));
   return c.toDataURL('image/jpeg',.82);
 }
 function trainingPayload(){
@@ -1258,7 +1270,7 @@ const training={};
 $('saveSlot').onclick=()=>{
   if(!shot||!shot.pts) return;
   const tl=tally(),n=cellsNow().length;
-  R.slots[curKey()]={n,ai:tl.ai,added:tl.added,removed:tl.removed,thumb:snapshot(),counter:`${INFO?.version||'CellNet'} (threshold ${thrV.toFixed(2)})`,diam:diam(),at:new Date().toISOString()};
+  R.slots[curKey()]={n,dead:deadNow().length,ai:tl.ai,added:tl.added,removed:tl.removed,thumb:snapshot(),counter:`${INFO?.version||'CellNet'} (threshold ${thrV.toFixed(2)})`,diam:diam(),at:new Date().toISOString()};
   try{training[curKey()]=trainingPayload();}catch(e){}
   if(shot.roi) lastRoiFrac={x:shot.roi.x/shot.img.width,y:shot.roi.y/shot.img.height,w:shot.roi.w/shot.img.width,h:shot.roi.h/shot.img.height};
   R.diam=diam();
@@ -1271,7 +1283,7 @@ $('saveSlot').onclick=()=>{
 let tool='add',view={s:1,tx:0,ty:0},fitS=1;
 const rvCv=$('rvCv');
 $('toReview').onclick=()=>{if(!shot)return;setTool('add');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
-$('roiFix').onclick=$('roiCheck').onclick=()=>{if(!shot)return;setTool('frame');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
+$('roiFix').onclick=$('roiCheck').onclick=$('roiAutoCheck').onclick=()=>{if(!shot)return;setTool('frame');$('rTitle').textContent=t('reviewOf',curName());show('sReview');};
 $('rDone').onclick=()=>{paintCount();show('sCount');};
 function setTool(x){tool=x;document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tool===x));
   $('rHint').textContent=t({pan:'hintPan',add:'hintAdd',erase:'hintErase',frame:'hintFrame'}[x]);}
@@ -1286,8 +1298,8 @@ function drawReview(){
   g.imageSmoothingEnabled=view.s<2;g.drawImage(shot.img,view.tx,view.ty,shot.img.width*view.s,shot.img.height*view.s);
   const dpr=rvCv.width/Math.max(1,rvCv.clientWidth);
   drawRoi(g,dragRect||shot.roi,toScr,2*dpr);
-  drawCells(g,cellsNow(),toScr,Math.max(4*dpr,(diam()/2+1.5)*view.s),Math.max(1.6*dpr,Math.min(3*dpr,view.s*1.2)));
-  const tl=tally();$('rTally').textContent=`AI ${tl.ai-tl.removed} · +${tl.added} · −${tl.removed} = ${cellsNow().length}`;
+  drawCells(g,deadNow().concat(cellsNow()),toScr,Math.max(4*dpr,(diam()/2+1.5)*view.s),Math.max(1.6*dpr,Math.min(3*dpr,view.s*1.2)));
+  const tl=tally(),nd=deadNow().length;$('rTally').textContent=`AI ${tl.ai-tl.removed} · +${tl.added} · −${tl.removed} = ${cellsNow().length}`+(nd?` · ${t('deadShort',nd)}`:'');
   $('zLabel').textContent=(view.s/fitS).toFixed(view.s/fitS<10?1:0).replace(/\.0$/,'')+'×';
 }
 function zoomAt(f,X,Y){const ns=Math.max(fitS*.8,Math.min(fitS*12,view.s*f));const [ix,iy]=toImg(X,Y);view.s=ns;view.tx=X-ix*ns;view.ty=Y-iy*ns;drawReview();}
@@ -1307,19 +1319,19 @@ rvCv.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!gest)return;
   if(gest.pan||gest.moved>14){view.tx+=p[0]-gest.last[0];view.ty+=p[1]-gest.last[1];gest.last=p;drawReview();}});
 function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(!gest)return;
   if(gest.type==='pinch'){if(ptrs.size===0)gest=null;return;}
-  if(gest.type==='frame'){if(dragRect&&dragRect.w*view.s>40&&dragRect.h*view.s>40){shot.undo.push({t:'roi',prev:shot.roi});shot.roi=dragRect;shot.roiReused=false;dragRect=null;drawReview();countShot();}else{dragRect=null;drawReview();}gest=null;return;}
+  if(gest.type==='frame'){if(dragRect&&dragRect.w*view.s>40&&dragRect.h*view.s>40){shot.undo.push({t:'roi',prev:shot.roi});shot.roi=dragRect;shot.roiReused=false;shot.roiAuto=false;dragRect=null;drawReview();countShot();}else{dragRect=null;drawReview();}gest=null;return;}
   if(gest.type==='tap'&&!gest.pan&&gest.moved<=14&&e.type==='pointerup') tap(...gest.start);
   gest=null;}
 rvCv.addEventListener('pointerup',endPtr);rvCv.addEventListener('pointercancel',endPtr);
 rvCv.addEventListener('wheel',e=>{e.preventDefault();const [X,Y]=evXY(e);zoomAt(e.deltaY<0?1.15:1/1.15,X,Y);},{passive:false});
 function tap(X,Y){
-  const [x,y]=toImg(X,Y),list=cellsNow();
+  const [x,y]=toImg(X,Y),list=tool==='erase'?cellsNow().concat(deadNow()):cellsNow();
   const fingerImg=(16*(rvCv.width/rvCv.clientWidth))/view.s;
   const hitR=tool==='erase'?Math.max(diam()*.8,Math.min(fingerImg,diam()*2)):diam()*.6;
   let best=null,bd=Infinity;for(const c of list){const d=Math.hypot(c.x-x,c.y-y);if(d<bd){bd=d;best=c;}}
   const hit=bd<hitR?best:null;
   if(tool==='erase'){if(!hit)return;
-    if(hit.src==='ai'){shot.removed.add(hit.i);shot.undo.push({t:'rm',i:hit.i});}
+    if(hit.src==='ai'||hit.src==='dead'){shot.removed.add(hit.i);shot.undo.push({t:'rm',i:hit.i});}
     else{const p=shot.added.splice(hit.j,1)[0];shot.undo.push({t:'rmAdd',p,j:hit.j});}}
   else if(tool==='add'){if(hit)return;shot.added.push({x,y});shot.undo.push({t:'add'});}
   drawReview();
@@ -1351,13 +1363,14 @@ function paintSummary(){
   $('sPerMl').textContent=sci(S.perMl); $('sMean').textContent=isFinite(S.mean)?S.mean.toFixed(1):'–';
   $('sSd').textContent=isFinite(S.sd)?'±'+S.sd.toFixed(1):'–';
   const [cls,lab]=cvTag(S.cv);$('sCvBox').className='stat '+cls;$('sCvLab').textContent=lab;$('sCv').textContent=isFinite(S.cv)?S.cv.toFixed(1)+'%':'–';
-  $('sFormula').textContent=`(${S.sum} ÷ ${S.n}) × ${S.df} ÷ ${S.vol} mL`;
+  const dd=S.recs.filter(r=>r.s&&r.s.dead!=null),dl=dd.reduce((a,r)=>a+r.s.n,0),dx=dd.reduce((a,r)=>a+r.s.dead,0);
+  $('sFormula').textContent=`(${S.sum} ÷ ${S.n}) × ${S.df} ÷ ${S.vol} mL`+(dd.length?` · ${t('viabSum',(100*dl/Math.max(1,dl+dx)).toFixed(1),dx)}`:'');
   $('sCh').hidden=R.layout!==8; if(R.layout===8) $('sCh').textContent=chText(S.chambers);
   const box=$('sThumbs');box.className='thumbs'+(R.layout===8?' eight':'');box.innerHTML='';
   S.recs.forEach((r,i)=>{const f=document.createElement('figure');
     if(r.s){const im=document.createElement('img');im.src=r.s.thumb;im.alt=t('nCells',r.name,r.s.n);f.append(im);}
     else{f.classList.add('missing');f.append(document.createTextNode(t('notCounted')));}
-    const cap=document.createElement('figcaption');cap.textContent=`${r.name} · ${r.s?r.s.n:'–'}`;f.append(cap);
+    const cap=document.createElement('figcaption');cap.textContent=`${r.name} · ${r.s?r.s.n:'–'}`+(r.s&&r.s.dead?` (+${r.s.dead} ${t('deadWord')})`:'');f.append(cap);
     f.style.cursor='pointer';f.tabIndex=0;f.setAttribute('role','button');f.setAttribute('aria-label',t('open',r.name));
     f.onclick=f.onkeydown=ev=>{if(ev.type==='keydown'&&ev.key!=='Enter')return;R.cur=i;shot=null;saveRound();enterCount();};
     box.append(f);});

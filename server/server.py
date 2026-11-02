@@ -19,6 +19,7 @@ Endpoints
   POST /api/lab/event add one lab-log event (idempotent by its "id", so offline phones can resend safely)
   GET  /sw.js, /manifest.webmanifest   let the page open and record entries without internet
 """
+import analysis
 import argparse, base64, csv, io, json, os, platform, re, sys, threading, time
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -406,11 +407,20 @@ class H(BaseHTTPRequestHandler):
         with LOCK:
             hm = NET.heatmap(rgb)
         pts = NET.peaks(hm, 0.3)                   # low cut; the page applies its own threshold
+        dead = analysis.classify_dead(rgb, pts, NET.target)
+        frame = None
+        if args.get("frame") == "1":
+            try:
+                f = analysis.detect_frame(rgb)
+                if f: frame = {kk: round(f[kk] / k, 1) for kk in ("x", "y", "w", "h")}
+            except Exception as e:
+                log("frame detection failed:", repr(e))
         secs = time.time() - t
-        # back to the uploaded image's pixel grid
-        out = [[round((x + .5) / k - .5, 1), round((y + .5) / k - .5, 1), round(p, 3)] for x, y, p in pts]
-        log(f"count  {self.who():30s} {w}x{h}px  {sum(1 for o in out if o[2] > NET.thr)} cells  {secs:.2f}s  [{NET.backend}]")
-        self.send(200, {"points": out, "secs": secs, "version": NET.version})
+        # back to the uploaded image's pixel grid; 4th value 1 = stained (dead)
+        out = [[round((x + .5) / k - .5, 1), round((y + .5) / k - .5, 1), round(p, 3), dd] for (x, y, p), dd in zip(pts, dead)]
+        live = sum(1 for o in out if o[2] > NET.thr and not o[3])
+        log(f"count  {self.who():30s} {w}x{h}px  {live} live / {sum(1 for o in out if o[2] > NET.thr) - live} dead  {'frame ' if frame else ''}{secs:.2f}s  [{NET.backend}]")
+        self.send(200, {"points": out, "frame": frame, "secs": secs, "version": NET.version})
 
     def save_run(self):
         folder, meta = _save_run(self)
