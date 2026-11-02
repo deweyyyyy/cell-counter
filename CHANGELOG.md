@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- "Send this photo as CellNet training data" on the count screen: correct one photo and send it, without counting a whole round. Dead-cell positions are included.
 - Live/dead: cells stained by trypan blue are marked as dead (dashed blue rings) and left out of the count; the count screen and summary show the dead count and % viable.
 - The large square is found automatically from the grid lines, so only cells inside it are counted. If no whole square is in the photo, the previous square or the manual border is used.
 - AI chat renders LaTeX formulas with KaTeX, served from the app itself (`server/vendor/katex`, MIT) so it works without a CDN.
